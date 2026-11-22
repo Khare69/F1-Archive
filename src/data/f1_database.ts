@@ -12,7 +12,7 @@ export const TEAMS: Team[] = [
     firstEntry: 2005,
     polePositions: 98,
     fastestLaps: 95,
-    logoUrl: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/teams/2024/red-bull-racing-logo.png',
+    logoUrl: '',
     description: 'Red Bull Racing, officially Oracle Red Bull Racing, is a Formula One racing team, racing under an Austrian license and based in the United Kingdom. Formed after the purchase of the Jaguar Racing team, they have become one of the most dominant forces in modern F1.',
     specs: {
       powerUnit: 'Honda RBPT V6 Turbo Hybrid',
@@ -33,7 +33,7 @@ export const TEAMS: Team[] = [
     firstEntry: 1950,
     polePositions: 249,
     fastestLaps: 260,
-    logoUrl: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/teams/2024/ferrari-logo.png',
+    logoUrl: '',
     description: 'Scuderia Ferrari is the racing division of luxury auto manufacturer Ferrari and the racing team that competes in Formula One. It is the oldest surviving and most successful Formula One team, having competed in every world championship since the 1950 Formula One season.',
     specs: {
       powerUnit: 'Ferrari 066/12 V6 Turbo Hybrid',
@@ -54,7 +54,7 @@ export const TEAMS: Team[] = [
     firstEntry: 1954,
     polePositions: 137,
     fastestLaps: 106,
-    logoUrl: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/teams/2024/mercedes-logo.png',
+    logoUrl: '',
     description: "The Mercedes-Benz Formula One team, operated by Mercedes-Benz Grand Prix Limited, is a highly successful British-based German team. They achieved unprecedented success in the turbo-hybrid era, securing eight consecutive Constructors' Championships from 2014 to 2021.",
     specs: {
       powerUnit: 'Mercedes-AMG F1 M15',
@@ -75,7 +75,7 @@ export const TEAMS: Team[] = [
     firstEntry: 1966,
     polePositions: 156,
     fastestLaps: 165,
-    logoUrl: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/teams/2024/mclaren-logo.png',
+    logoUrl: '',
     description: 'McLaren Racing Limited is a British motor racing team based at the McLaren Technology Centre in Woking. Founded by Bruce McLaren in 1963, it is the second oldest active team and one of the most successful in F1 history.',
     specs: {
       powerUnit: 'Mercedes-AMG F1 M15',
@@ -96,7 +96,7 @@ export const TEAMS: Team[] = [
     firstEntry: 1959,
     polePositions: 0,
     fastestLaps: 1,
-    logoUrl: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/teams/2024/aston-martin-logo.png',
+    logoUrl: '',
     description: 'Aston Martin Aramco Formula One Team is a British motor racing team. The Aston Martin brand returned to F1 in 2021 after a rebrand of the Racing Point team, heavily investing in their new Silverstone headquarters and technical campus.',
     specs: {
       powerUnit: 'Mercedes-AMG F1 M15',
@@ -117,7 +117,7 @@ export const TEAMS: Team[] = [
     firstEntry: 1986,
     polePositions: 20,
     fastestLaps: 15,
-    logoUrl: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/teams/2024/alpine-logo.png',
+    logoUrl: '',
     description: 'Alpine F1 Team is the Formula One entry for the French sports car brand Alpine, owned by Renault. The team serves to promote the Alpine brand, racing out of the historic Enstone facility which has hosted championship-winning teams like Benetton and Renault.',
     specs: {
       powerUnit: 'Renault E-Tech RE24',
@@ -138,7 +138,7 @@ export const TEAMS: Team[] = [
     firstEntry: 1977,
     polePositions: 128,
     fastestLaps: 133,
-    logoUrl: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/teams/2024/williams-logo.png',
+    logoUrl: '',
     description: "Williams Grand Prix Engineering Limited is a British Formula One motor racing team and constructor. Founded by Sir Frank Williams and Sir Patrick Head in 1977, it dominated the 1980s and 90s, winning 9 Constructors' titles.",
     specs: {
       powerUnit: 'Mercedes-AMG F1 M15',
@@ -159,7 +159,7 @@ export const TEAMS: Team[] = [
     firstEntry: 2006,
     polePositions: 1,
     fastestLaps: 3,
-    logoUrl: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/teams/2024/rb-logo.png',
+    logoUrl: '',
     description: 'Visa Cash App RB Formula One Team (often abbreviated as VCARB) is an Italian racing team. Originally formed as Scuderia Toro Rosso after Red Bull purchased Minardi, it serves as the sister team to Red Bull Racing.',
     specs: {
       powerUnit: 'Honda RBPT V6 Turbo Hybrid',
@@ -180,7 +180,7 @@ export const TEAMS: Team[] = [
     firstEntry: 1993,
     polePositions: 1,
     fastestLaps: 7,
-    logoUrl: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/teams/2024/kick-sauber-logo.png',
+    logoUrl: '',
     description: 'Sauber Motorsport AG is a Swiss motorsport engineering company. Operating under the Stake F1 Team Kick Sauber branding for 2024, the team is in a transition period ahead of becoming the official Audi factory team in 2026.',
     specs: {
       powerUnit: 'Ferrari 066/12 V6 Turbo Hybrid',
@@ -201,7 +201,7 @@ export const TEAMS: Team[] = [
     firstEntry: 2016,
     polePositions: 1,
     fastestLaps: 2,
-    logoUrl: 'https://media.formula1.com/image/upload/f_auto,c_limit,q_auto,w_1320/content/dam/fom-website/teams/2024/haas-logo.png',
+    logoUrl: '',
     description: 'Haas Formula LLC is an American Formula One racing team established by NASCAR Cup Series co-owner Gene Haas. Entering the sport in 2016, they are known for their unique technical partnership with Ferrari.',
     specs: {
       powerUnit: 'Ferrari 066/12 V6 Turbo Hybrid',
@@ -223,7 +223,7 @@ export const TEAMS: Team[] = [
     polePositions: 107,
     fastestLaps: 71,
     isLegendary: true,
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/en/thumb/4/4e/Team_Lotus_logo.svg/500px-Team_Lotus_logo.svg.png',
+    logoUrl: '',
     description: "Team Lotus was the motorsport sister company of English sports car manufacturer Lotus Cars. The team ran cars in many motorsport categories, including Formula One, where they won seven Formula One Constructors' titles and six Drivers' Championships.",
     specs: {
       powerUnit: 'Ford Cosworth DFV 3.0 V8',
@@ -245,7 +245,7 @@ export const TEAMS: Team[] = [
     polePositions: 15,
     fastestLaps: 36,
     isLegendary: true,
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d3/Benetton_Formula_logo.svg/500px-Benetton_Formula_logo.svg.png',
+    logoUrl: '',
     description: 'Benetton Formula Ltd., commonly referred to simply as Benetton, was a Formula One constructor that participated from 1986 to 2001. The team was owned by the Benetton family who run a worldwide chain of clothing stores of the same name.',
     specs: {
       powerUnit: 'Renault RS7 3.0 V10',
@@ -267,7 +267,7 @@ export const TEAMS: Team[] = [
     polePositions: 5,
     fastestLaps: 4,
     isLegendary: true,
-    logoUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Brawn_GP_logo.svg/500px-Brawn_GP_logo.svg.png',
+    logoUrl: '',
     description: "Brawn GP Formula One Team, the trading name of Brawn Racing, was a Formula One constructor created by a management buyout of Honda Racing F1 Team. They competed in only the 2009 season, winning both the Drivers' and Constructors' Championships.",
     specs: {
       powerUnit: 'Mercedes-Benz FO 108W 2.4 V8',
@@ -289,7 +289,7 @@ export const DRIVERS: Driver[] = [
     podiums: 108,
     championships: 4,
     country: 'Netherlands',
-    imageUrl: 'https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/M/MAXVER01_Max_Verstappen/maxver01.png',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Bahrain', position: 1 },
       { race: 'Saudi Arabia', position: 1 },
@@ -309,7 +309,7 @@ export const DRIVERS: Driver[] = [
     podiums: 39,
     championships: 0,
     country: 'Mexico',
-    imageUrl: 'https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/S/SERPER01_Sergio_Perez/serper01.png',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Bahrain', position: 2 },
       { race: 'Saudi Arabia', position: 2 },
@@ -329,7 +329,7 @@ export const DRIVERS: Driver[] = [
     podiums: 201,
     championships: 7,
     country: 'United Kingdom',
-    imageUrl: 'https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/L/LEWHAM01_Lewis_Hamilton/lewham01.png',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Bahrain', position: 7 },
       { race: 'Saudi Arabia', position: 9 },
@@ -349,7 +349,7 @@ export const DRIVERS: Driver[] = [
     podiums: 14,
     championships: 0,
     country: 'United Kingdom',
-    imageUrl: 'https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/G/GEORUS01_George_Russell/georus01.png',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Bahrain', position: 5 },
       { race: 'Saudi Arabia', position: 6 },
@@ -369,7 +369,7 @@ export const DRIVERS: Driver[] = [
     podiums: 36,
     championships: 0,
     country: 'Monaco',
-    imageUrl: 'https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/C/CHALEC01_Charles_Leclerc/chalec01.png',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Bahrain', position: 4 },
       { race: 'Saudi Arabia', position: 3 },
@@ -389,7 +389,7 @@ export const DRIVERS: Driver[] = [
     podiums: 23,
     championships: 0,
     country: 'Spain',
-    imageUrl: 'https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/C/CARSAI01_Carlos_Sainz/carsai01.png',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Bahrain', position: 3 },
       { race: 'Saudi Arabia', position: 'DNS' },
@@ -409,7 +409,7 @@ export const DRIVERS: Driver[] = [
     podiums: 26,
     championships: 1,
     country: 'United Kingdom',
-    imageUrl: 'https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/L/LANNOR01_Lando_Norris/lannor01.png',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Bahrain', position: 6 },
       { race: 'Saudi Arabia', position: 8 },
@@ -429,7 +429,7 @@ export const DRIVERS: Driver[] = [
     podiums: 9,
     championships: 0,
     country: 'Australia',
-    imageUrl: 'https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/O/OSCPIA01_Oscar_Piastri/oscpia01.png',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Bahrain', position: 8 },
       { race: 'Saudi Arabia', position: 4 },
@@ -449,7 +449,7 @@ export const DRIVERS: Driver[] = [
     podiums: 106,
     championships: 2,
     country: 'Spain',
-    imageUrl: 'https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/F/FERALO01_Fernando_Alonso/feralo01.png',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Bahrain', position: 9 },
       { race: 'Saudi Arabia', position: 5 },
@@ -469,7 +469,7 @@ export const DRIVERS: Driver[] = [
     podiums: 3,
     championships: 0,
     country: 'Canada',
-    imageUrl: 'https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/L/LANSTR01_Lance_Stroll/lanstr01.png',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Bahrain', position: 10 },
       { race: 'Saudi Arabia', position: 'DNF' },
@@ -489,7 +489,7 @@ export const DRIVERS: Driver[] = [
     podiums: 2,
     championships: 0,
     country: 'Thailand',
-    imageUrl: 'https://media.formula1.com/d_driver_fallback_image.png/content/dam/fom-website/drivers/A/ALEALB01_Alexander_Albon/alealb01.png',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Bahrain', position: 15 },
       { race: 'Saudi Arabia', position: 11 },
@@ -510,7 +510,7 @@ export const DRIVERS: Driver[] = [
     championships: 7,
     country: 'Germany',
     isLegend: true,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Michael_Schumacher%2C_September_2005.jpg/500px-Michael_Schumacher%2C_September_2005.jpg',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Career Wins', position: 91 },
       { race: 'Pole Positions', position: 68 },
@@ -527,7 +527,7 @@ export const DRIVERS: Driver[] = [
     championships: 3,
     country: 'Brazil',
     isLegend: true,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/a/ad/Ayrton_Senna_9_-_Cropped.jpg/500px-Ayrton_Senna_9_-_Cropped.jpg',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Career Wins', position: 41 },
       { race: 'Pole Positions', position: 65 },
@@ -544,7 +544,7 @@ export const DRIVERS: Driver[] = [
     championships: 4,
     country: 'France',
     isLegend: true,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f6/Festival_automobile_international_2015_-_Photocall_-_065_%28cropped%29.jpg/500px-Festival_automobile_international_2015_-_Photocall_-_065_%28cropped%29.jpg',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Career Wins', position: 51 },
       { race: 'Pole Positions', position: 33 },
@@ -561,7 +561,7 @@ export const DRIVERS: Driver[] = [
     championships: 3,
     country: 'Austria',
     isLegend: true,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Lauda_at_1982_Dutch_Grand_Prix.jpg/500px-Lauda_at_1982_Dutch_Grand_Prix.jpg',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Career Wins', position: 25 },
       { race: 'Pole Positions', position: 24 },
@@ -578,7 +578,7 @@ export const DRIVERS: Driver[] = [
     championships: 4,
     country: 'Germany',
     isLegend: true,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/91/Sebastian_Vettel_2011_Sebastian_Vettel_in_Yokohama.jpg/500px-Sebastian_Vettel_2011_Sebastian_Vettel_in_Yokohama.jpg',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Career Wins', position: 53 },
       { race: 'Pole Positions', position: 57 },
@@ -595,7 +595,7 @@ export const DRIVERS: Driver[] = [
     championships: 1,
     country: 'United Kingdom',
     isLegend: true,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Jenson_Button_2016_Malaysia.jpg/500px-Jenson_Button_2016_Malaysia.jpg',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Career Wins', position: 15 },
       { race: 'Pole Positions', position: 8 },
@@ -612,7 +612,7 @@ export const DRIVERS: Driver[] = [
     championships: 2,
     country: 'Brazil',
     isLegend: true,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Emerson_Fittipaldi_1974.jpg/500px-Emerson_Fittipaldi_1974.jpg',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Career Wins', position: 14 },
       { race: 'Pole Positions', position: 6 },
@@ -629,7 +629,7 @@ export const DRIVERS: Driver[] = [
     championships: 5,
     country: 'Argentina',
     isLegend: true,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Juan_Manuel_Fangio_%281952%29.jpg/500px-Juan_Manuel_Fangio_%281952%29.jpg',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Career Wins', position: 24 },
       { race: 'Pole Positions', position: 29 },
@@ -646,7 +646,7 @@ export const DRIVERS: Driver[] = [
     championships: 2,
     country: 'United Kingdom',
     isLegend: true,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Jim_Clark_1966.jpg/500px-Jim_Clark_1966.jpg',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Career Wins', position: 25 },
       { race: 'Pole Positions', position: 33 },
@@ -663,7 +663,7 @@ export const DRIVERS: Driver[] = [
     championships: 2,
     country: 'Finland',
     isLegend: true,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Mika_Hakkinen_in_Spa_2010_%28cropped%29.jpg/500px-Mika_Hakkinen_in_Spa_2010_%28cropped%29.jpg',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Career Wins', position: 20 },
       { race: 'Pole Positions', position: 26 },
@@ -680,7 +680,7 @@ export const DRIVERS: Driver[] = [
     championships: 1,
     country: 'Finland',
     isLegend: true,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/7b/Kimi_R%C3%A4ikk%C3%B6nen_2012_Malaysia.jpg/500px-Kimi_R%C3%A4ikk%C3%B6nen_2012_Malaysia.jpg',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Career Wins', position: 21 },
       { race: 'Pole Positions', position: 18 },
@@ -697,7 +697,7 @@ export const DRIVERS: Driver[] = [
     championships: 1,
     country: 'United Kingdom',
     isLegend: true,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Nigel_Mansell_2015.jpg/500px-Nigel_Mansell_2015.jpg',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Career Wins', position: 31 },
       { race: 'Pole Positions', position: 32 },
@@ -714,7 +714,7 @@ export const DRIVERS: Driver[] = [
     championships: 3,
     country: 'Brazil',
     isLegend: true,
-    imageUrl: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Nelson_Piquet_1983_Silverstone.jpg/500px-Nelson_Piquet_1983_Silverstone.jpg',
+    imageUrl: '',
     raceFinishes: [
       { race: 'Career Wins', position: 23 },
       { race: 'Pole Positions', position: 24 },

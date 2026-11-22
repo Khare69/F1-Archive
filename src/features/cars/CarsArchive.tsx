@@ -231,6 +231,7 @@ export const CarsArchive: React.FC = () => {
                 src={selectedTeam.logoUrl}
                 alt={`${selectedTeam.name} Logo`}
                 type="team"
+                teamId={selectedTeam.id}
                 accentColor={selectedTeam.color}
                 className="specs-brand-logo"
               />
