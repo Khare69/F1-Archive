@@ -133,6 +133,9 @@ export const DriverComparison: React.FC = () => {
               fallbackText={driverA.id}
               accentColor={colorA}
               type="driver"
+              driverCode={driverA.id}
+              driverNumber={driverA.number}
+              championships={driverA.championships}
               className="showdown-portrait-img"
             />
           </div>
@@ -165,6 +168,9 @@ export const DriverComparison: React.FC = () => {
               fallbackText={driverB.id}
               accentColor={colorB}
               type="driver"
+              driverCode={driverB.id}
+              driverNumber={driverB.number}
+              championships={driverB.championships}
               className="showdown-portrait-img"
             />
           </div>

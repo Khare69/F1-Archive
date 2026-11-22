@@ -14,7 +14,7 @@ export interface Team {
   base: string;
   principal: string;
   championships: number;
-  logoUrl: string;
+  logoUrl?: string;
   description: string;
   firstEntry: number;
   polePositions: number;
@@ -37,7 +37,7 @@ export interface Driver {
   podiums: number;
   championships: number;
   country: string;
-  imageUrl: string;
+  imageUrl?: string;
   isLegend?: boolean;
   raceFinishes: RaceFinish[];
 }

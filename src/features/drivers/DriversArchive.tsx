@@ -153,6 +153,9 @@ export const DriversArchive: React.FC = () => {
                   fallbackText={selectedDriver.id}
                   accentColor={teamColor}
                   type="driver"
+                  driverCode={selectedDriver.id}
+                  driverNumber={selectedDriver.number}
+                  championships={selectedDriver.championships}
                   className="driver-portrait-img"
                 />
                 <div className="portrait-backdrop-gradient"></div>

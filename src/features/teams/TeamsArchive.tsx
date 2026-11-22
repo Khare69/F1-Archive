@@ -63,6 +63,7 @@ export const TeamsArchive: React.FC = () => {
                 src={selectedTeam.logoUrl}
                 alt={`${selectedTeam.name} Logo`}
                 type="team"
+                teamId={selectedTeam.id}
                 accentColor={selectedTeam.color}
                 className="team-brand-logo"
               />
