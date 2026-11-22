@@ -188,9 +188,10 @@ const AppContent: React.FC = () => {
           </div>
 
           <p className="footer-disclaimer telemetry">
-            F1 // ARCHIVE is an independent historical tribute and portfolio project. Formula 1, F1,
-            constructors, and driver marks are registered trademarks of their respective owners.
-            No official association or endorsement is implied.
+            This website is unofficial and is not associated in any way with the Formula 1 companies.
+            F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks
+            are trade marks of Formula One Licensing B.V. Historical statistics and telemetry are aggregated for
+            educational and non-commercial research purposes.
           </p>
 
           <div className="footer-links telemetry">

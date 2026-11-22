@@ -154,8 +154,8 @@ f1 project/
 
 ```bash
 # Clone the repository
-git clone <repository-url>
-cd "f1 project"
+git clone https://github.com/Khare69/F1-Archive.git
+cd F1-Archive
 
 # Install dependencies
 npm install
@@ -197,14 +197,33 @@ npm run verify:ui
 
 ---
 
+## 🏗️ Architecture & Engineering Design
+
+```mermaid
+flowchart TD
+    UI[React Viewport & Pages] --> Service[Data Service Layer]
+    Service --> StaticData[Offline Data Store]
+    Service --> APIClient[Jolpica Client]
+    APIClient --> MemCache[(Memory Cache)]
+    APIClient --> LocalCache[(localStorage Cache)]
+    APIClient --> RemoteAPI[Jolpica / Ergast API]
+    UI --> R3F[React Three Fiber / Three.js CAD Lab]
+    R3F --> Shaders[Procedural PBR Shaders & Wind Tunnel]
+```
+
+- **Separation of Concerns**: Components never touch raw database arrays or API endpoints directly; all queries flow through `src/data/dataService.ts`.
+- **Resilient Dual-Tier Caching**: The API client checks memory cache first, then localStorage, and falls back gracefully to curated historical data if offline.
+- **Modular WebGL Pipeline**: The 3D viewer is lazily loaded with `@react-three/fiber` and `@react-three/drei`, applying procedural liveries via PBR shaders.
+
+---
+
 ## 🌐 API & Data Sources
 
-| Source | Usage |
-|---|---|
-| **Jolpica F1 API** (`api.jolpi.ca/ergast/f1`) | Live driver standings, constructor standings, and season race schedule |
-| **Curated `f1_database.ts`** | Offline-first database of teams, drivers, seasons (1950–2026), and circuits with full metadata |
-
-The app is designed as **offline‑resilient** — if the Jolpica API is unreachable, curated fallback data is used seamlessly so the experience never breaks.
+| Source | Usage | License / Terms |
+|---|---|---|
+| **Jolpica F1 API** (`api.jolpi.ca/ergast/f1`) | Live driver standings, constructor standings, and race schedule | CC BY-NC-SA 4.0 |
+| **Curated Historical Data** | Offline-first database covering 1950–2026 seasons, teams, drivers, and circuits | CC-BY-4.0 |
+| **Track Geometries** | Topographic elevation and 3D track ribbon coordinates | MIT License |
 
 ---
 
@@ -231,12 +250,14 @@ The UI is inspired by Formula 1 **race‑control telemetry screens** and **broad
 
 ---
 
-## ⚖️ Disclaimer
+## ⚖️ Legal Disclaimer
 
-> **F1 // ARCHIVE** is an independent historical tribute and portfolio project. Formula 1, F1, constructors, and driver marks are registered trademarks of their respective owners. No official association or endorsement is implied.
+> This website is unofficial and is not associated in any way with the Formula 1 companies. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of Formula One Licensing B.V. Historical statistics and telemetry are aggregated for non-commercial educational and research purposes.
 
 ---
 
-## 📄 License
+## 📄 License & Security
 
-This project is a personal portfolio piece. All rights reserved.
+- **Source Code**: Licensed under the **MIT License**.
+- **Data & Assets**: See [LICENSES.md](LICENSES.md) for full upstream attribution and terms.
+- **Security Policy**: See [SECURITY.md](SECURITY.md) for vulnerability reporting guidelines.
