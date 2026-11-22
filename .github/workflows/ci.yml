@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [dev, main]
+    branches: [dev, main, "debugging-&-error-correction"]
   pull_request:
-    branches: [dev, main]
+    branches: [dev, main, "debugging-&-error-correction"]
 
 jobs:
   build-and-test:
@@ -23,11 +23,20 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Code Quality & Linting
+        run: npm run lint
+
       - name: TypeScript Compilation Check
         run: npx tsc -b
 
-      - name: Run Unit Tests
+      - name: Run Unit Tests (MSW Offline Suite)
         run: npm test
 
       - name: Build Production Bundle
         run: npm run build
+
+      - name: Install Playwright Browsers (Chromium only)
+        run: npx playwright install --with-deps chromium
+
+      - name: Run E2E Integration Suite (SwiftShader Headless)
+        run: npm run test:e2e

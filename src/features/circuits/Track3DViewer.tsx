@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useRef } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { OrbitControls, Html, Float } from '@react-three/drei';
+import { OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
 import type { Circuit } from '../../types/f1';
 import './Track3DViewer.css';
@@ -21,7 +21,7 @@ const TrackMesh: React.FC<{
   const meshRef = useRef<THREE.Group>(null);
 
   // Build 3D CatmullRom Curve
-  const { curve, geometry, turnMarkers, drsGeometry } = useMemo(() => {
+  const { geometry, turnMarkers, drsGeometry } = useMemo(() => {
     const vectors = points.map(
       p => new THREE.Vector3(p[0], is3DMode ? p[1] : 0, p[2])
     );

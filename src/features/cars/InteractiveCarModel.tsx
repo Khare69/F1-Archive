@@ -4,6 +4,7 @@ import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import type { Team } from '../../types/f1';
 import { WindTunnel } from './WindTunnel';
+import { getMaterialRole } from './config/carMaterialMap';
 
 export interface PartHoverInfo {
   name: string;
@@ -119,33 +120,30 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
           ? mesh.material[0]?.name
           : mesh.material?.name;
 
-        switch (matName) {
-          case 'Default_OBJ.003': // Main Monocoque Body & Engine Cover
-          case 'Default_OBJ.007': // Nosecone & Front Crash Structure
-          case 'Default_OBJ.008': // Cockpit Flanks & Upper Body
+        const role = getMaterialRole(matName);
+
+        switch (role) {
+          case 'bodyPrimary':
             mesh.material = bodyPaint;
             break;
 
-          case 'Default_OBJ.006': // Rear Wing & Endplates
+          case 'bodyAccent':
             mesh.material = accentPaint;
             break;
 
-          case 'Default_OBJ.005': // Front Wing Multi-Tier Airfoils & Floor Diffuser
-          case 'Default_OBJ.009': // Suspension Carbon Wishbones
+          case 'carbonComposite':
             mesh.material = carbonComposite;
             break;
 
-          case 'Default_OBJ.011': // Front-Left Wheel & Tyre
-          case 'Default_OBJ.013': // Front-Right Wheel & Tyre
-          case 'Default_OBJ.004': // Rear Driven Axle Wheels & Tyres
+          case 'tyreRubber':
             mesh.material = tyreRubber;
             break;
 
-          case 'Default_OBJ.002': // Titanium Halo Safety Cell & Mirror Stems
+          case 'titaniumHalo':
             mesh.material = titaniumMetal;
             break;
 
-          case 'Default_OBJ.001': // Brake Discs, Internal Radiators & Gearbox
+          case 'mechanicals':
           default:
             mesh.material = darkMechanicals;
             break;

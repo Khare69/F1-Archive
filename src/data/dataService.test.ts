@@ -8,7 +8,6 @@ import {
   getSeasonsWonByDriver,
   getAllSeasons,
   getSeasonByYear,
-  getAllCircuits,
   getCircuitById,
   getArchiveStats
 } from './dataService';
@@ -48,6 +47,7 @@ describe('DataService Queries & Integrity', () => {
 
   it('should verify 2000-2026 unbroken seasonal continuity (27 consecutive seasons)', () => {
     const seasons = getAllSeasons();
+    expect(seasons.length).toBeGreaterThanOrEqual(27);
     for (let year = 2000; year <= 2026; year++) {
       const season = getSeasonByYear(year);
       expect(season, `Missing season for year ${year}`).toBeDefined();

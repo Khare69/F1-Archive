@@ -22,6 +22,65 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.75rem;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.live-status-container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.live-status-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  border: 1px solid;
+  letter-spacing: 0.05em;
+}
+
+.source-icon {
+  font-size: 0.85rem;
+}
+
+.timestamp-separator {
+  opacity: 0.5;
+}
+
+.source-timestamp {
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.fetching-indicator {
+  font-size: 0.7rem;
+  color: #00D2FF;
+  animation: pulse 1.5s infinite;
+}
+
+.fallback-banner {
+  background: rgba(255, 179, 0, 0.1);
+  border: 1px solid rgba(255, 179, 0, 0.4);
+  color: #FFB300;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  font-size: 0.78rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.standings-empty-state {
+  padding: 4rem 2rem;
+  text-align: center;
+  color: var(--color-text-muted);
+  border: 1px dashed var(--color-border);
+  border-radius: 6px;
 }
 
 .source-tag {

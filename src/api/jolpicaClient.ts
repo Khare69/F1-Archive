@@ -1,9 +1,11 @@
+import { useQuery } from '@tanstack/react-query';
 import type {
   LiveDriverStanding,
   LiveConstructorStanding,
-  RaceScheduleRound
+  RaceScheduleRound,
+  QueryMetadata
 } from '../types/f1';
-import { TEAMS, DRIVERS } from '../data/f1_database';
+import { safeStorage } from '../utils/safeStorage';
 
 const JOLPICA_BASE_URL = 'https://api.jolpi.ca/ergast/f1';
 const CACHE_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours TTL
@@ -14,27 +16,33 @@ interface CacheEntry<T> {
 }
 
 // In-memory runtime cache
-const memoryCache: Record<string, CacheEntry<any>> = {};
+const memoryCache: Record<string, CacheEntry<unknown>> = {};
 
-function getFromCache<T>(key: string): T | null {
+export function clearApiCache(): void {
+  for (const k of Object.keys(memoryCache)) {
+    delete memoryCache[k];
+  }
+}
+
+function getFromCache<T>(key: string): { data: T; timestamp: number } | null {
   // Check memory cache
-  const mem = memoryCache[key];
+  const mem = memoryCache[key] as CacheEntry<T> | undefined;
   if (mem && Date.now() - mem.timestamp < CACHE_TTL_MS) {
-    return mem.data;
+    return { data: mem.data, timestamp: mem.timestamp };
   }
 
-  // Check localStorage
+  // Check safeStorage
   try {
-    const raw = localStorage.getItem(`f1_cache_${key}`);
+    const raw = safeStorage.getItem(`f1_cache_${key}`);
     if (raw) {
       const parsed: CacheEntry<T> = JSON.parse(raw);
       if (Date.now() - parsed.timestamp < CACHE_TTL_MS) {
         memoryCache[key] = parsed;
-        return parsed.data;
+        return { data: parsed.data, timestamp: parsed.timestamp };
       }
     }
-  } catch (e) {
-    // localStorage unavailable or full
+  } catch {
+    // safeStorage unavailable or invalid JSON
   }
 
   return null;
@@ -48,18 +56,31 @@ function saveToCache<T>(key: string, data: T): void {
   memoryCache[key] = entry;
 
   try {
-    localStorage.setItem(`f1_cache_${key}`, JSON.stringify(entry));
-  } catch (e) {
+    safeStorage.setItem(`f1_cache_${key}`, JSON.stringify(entry));
+  } catch {
     // Ignore storage quota errors
   }
 }
 
-// Fetch helper with timeout
-async function fetchWithTimeout(url: string, timeoutMs = 5000): Promise<Response> {
+// Fetch helper with timeout and AbortSignal forwarding
+async function fetchWithTimeout(url: string, signal?: AbortSignal, timeoutMs = 6000): Promise<Response> {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
 
+  if (signal) {
+    if (signal.aborted) {
+      clearTimeout(timeoutId);
+      controller.abort();
+    } else {
+      signal.addEventListener('abort', () => {
+        clearTimeout(timeoutId);
+        controller.abort();
+      }, { once: true });
+    }
+  }
+
   try {
+    // Note: Do NOT set custom User-Agent in browser fetch() calls to avoid CORS preflight failures
     const response = await fetch(url, { signal: controller.signal });
     clearTimeout(timeoutId);
     return response;
@@ -69,57 +90,110 @@ async function fetchWithTimeout(url: string, timeoutMs = 5000): Promise<Response
   }
 }
 
-/**
- * Fetch Live Drivers Championship Standings
- */
-export async function fetchDriverStandings(year = 'current'): Promise<{
+export interface DriverStandingsPayload {
   standings: LiveDriverStanding[];
   season: string;
   round: string;
-  isFallback: boolean;
-}> {
+}
+
+export interface ConstructorStandingsPayload {
+  standings: LiveConstructorStanding[];
+  season: string;
+  round: string;
+}
+
+export interface RaceSchedulePayload {
+  races: RaceScheduleRound[];
+  season: string;
+}
+
+export type DriverStandingsResponse = QueryMetadata<DriverStandingsPayload>;
+export type ConstructorStandingsResponse = QueryMetadata<ConstructorStandingsPayload>;
+export type RaceScheduleResponse = QueryMetadata<RaceSchedulePayload>;
+
+/**
+ * Fetch Live Drivers Championship Standings
+ */
+export async function fetchDriverStandings(
+  year = 'current',
+  signal?: AbortSignal
+): Promise<DriverStandingsResponse> {
   const cacheKey = `driver_standings_${year}`;
-  const cached = getFromCache<any>(cacheKey);
+  const cached = getFromCache<DriverStandingsPayload>(cacheKey);
   if (cached) {
-    return { ...cached, isFallback: false };
+    return {
+      data: cached.data,
+      source: 'cached',
+      updatedAt: cached.timestamp
+    };
   }
 
   try {
-    const res = await fetchWithTimeout(`${JOLPICA_BASE_URL}/${year}/driverStandings.json?limit=30`);
-    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    const res = await fetchWithTimeout(`${JOLPICA_BASE_URL}/${year}/driverStandings.json?limit=30`, signal);
+    if (!res.ok) {
+      const err = new Error(`HTTP error ${res.status}`);
+      (err as unknown as { status: number }).status = res.status;
+      throw err;
+    }
 
     const json = await res.json();
     const list = json.MRData?.StandingsTable?.StandingsLists?.[0];
+    const total = parseInt(json.MRData?.total || '0', 10);
     const rawStandings = list?.DriverStandings || [];
 
-    const standings: LiveDriverStanding[] = rawStandings.map((s: any) => ({
-      position: parseInt(s.position, 10) || 0,
-      points: parseFloat(s.points) || 0,
-      wins: parseInt(s.wins, 10) || 0,
-      driverId: s.Driver?.driverId || '',
-      driverName: `${s.Driver?.givenName || ''} ${s.Driver?.familyName || ''}`.trim(),
-      driverCode: s.Driver?.code || s.Driver?.familyName?.substring(0, 3)?.toUpperCase() || '',
-      permanentNumber: s.Driver?.permanentNumber || s.number || '',
-      nationality: s.Driver?.nationality || '',
-      constructorId: s.Constructors?.[0]?.constructorId || '',
-      constructorName: s.Constructors?.[0]?.name || ''
-    }));
+    // Handle future rounds or empty data with total: "0"
+    if (total === 0 || rawStandings.length === 0) {
+      return {
+        data: {
+          standings: getFallbackDriverStandings(),
+          season: list?.season || (year === 'current' ? '2026' : year),
+          round: 'Pre-Season'
+        },
+        source: 'fallback',
+        updatedAt: Date.now()
+      };
+    }
 
-    const result = {
+    const standings: LiveDriverStanding[] = rawStandings.map((s: Record<string, unknown>) => {
+      const driver = s.Driver as Record<string, string> | undefined;
+      const constructors = s.Constructors as Array<Record<string, string>> | undefined;
+      return {
+        position: parseInt(String(s.position), 10) || 0,
+        points: parseFloat(String(s.points)) || 0,
+        wins: parseInt(String(s.wins), 10) || 0,
+        driverId: driver?.driverId || '',
+        driverName: `${driver?.givenName || ''} ${driver?.familyName || ''}`.trim(),
+        driverCode: driver?.code || driver?.familyName?.substring(0, 3)?.toUpperCase() || '',
+        permanentNumber: driver?.permanentNumber || String(s.number || ''),
+        nationality: driver?.nationality || '',
+        constructorId: constructors?.[0]?.constructorId || '',
+        constructorName: constructors?.[0]?.name || ''
+      };
+    });
+
+    const payload: DriverStandingsPayload = {
       standings,
       season: list?.season || year,
       round: list?.round || '1'
     };
 
-    saveToCache(cacheKey, result);
-    return { ...result, isFallback: false };
+    saveToCache(cacheKey, payload);
+    return {
+      data: payload,
+      source: 'live',
+      updatedAt: Date.now()
+    };
   } catch (err) {
     console.warn('Jolpica API Driver Standings fetch failed, using curated fallback:', err);
     return {
-      standings: getFallbackDriverStandings(),
-      season: '2026',
-      round: 'Live Vault',
-      isFallback: true
+      data: {
+        standings: getFallbackDriverStandings(),
+        season: year === 'current' ? '2026' : year,
+        round: 'Official Vault'
+      },
+      source: 'fallback',
+      updatedAt: Date.now(),
+      error: err instanceof Error ? err.message : 'Network error'
     };
   }
 }
@@ -127,50 +201,80 @@ export async function fetchDriverStandings(year = 'current'): Promise<{
 /**
  * Fetch Live Constructors Championship Standings
  */
-export async function fetchConstructorStandings(year = 'current'): Promise<{
-  standings: LiveConstructorStanding[];
-  season: string;
-  round: string;
-  isFallback: boolean;
-}> {
+export async function fetchConstructorStandings(
+  year = 'current',
+  signal?: AbortSignal
+): Promise<ConstructorStandingsResponse> {
   const cacheKey = `constructor_standings_${year}`;
-  const cached = getFromCache<any>(cacheKey);
+  const cached = getFromCache<ConstructorStandingsPayload>(cacheKey);
   if (cached) {
-    return { ...cached, isFallback: false };
+    return {
+      data: cached.data,
+      source: 'cached',
+      updatedAt: cached.timestamp
+    };
   }
 
   try {
-    const res = await fetchWithTimeout(`${JOLPICA_BASE_URL}/${year}/constructorStandings.json?limit=20`);
-    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    const res = await fetchWithTimeout(`${JOLPICA_BASE_URL}/${year}/constructorStandings.json?limit=20`, signal);
+    if (!res.ok) {
+      const err = new Error(`HTTP error ${res.status}`);
+      (err as unknown as { status: number }).status = res.status;
+      throw err;
+    }
 
     const json = await res.json();
     const list = json.MRData?.StandingsTable?.StandingsLists?.[0];
+    const total = parseInt(json.MRData?.total || '0', 10);
     const rawStandings = list?.ConstructorStandings || [];
 
-    const standings: LiveConstructorStanding[] = rawStandings.map((s: any) => ({
-      position: parseInt(s.position, 10) || 0,
-      points: parseFloat(s.points) || 0,
-      wins: parseInt(s.wins, 10) || 0,
-      constructorId: s.Constructor?.constructorId || '',
-      constructorName: s.Constructor?.name || '',
-      nationality: s.Constructor?.nationality || ''
-    }));
+    if (total === 0 || rawStandings.length === 0) {
+      return {
+        data: {
+          standings: getFallbackConstructorStandings(),
+          season: list?.season || (year === 'current' ? '2026' : year),
+          round: 'Pre-Season'
+        },
+        source: 'fallback',
+        updatedAt: Date.now()
+      };
+    }
 
-    const result = {
+    const standings: LiveConstructorStanding[] = rawStandings.map((s: Record<string, unknown>) => {
+      const constructor = s.Constructor as Record<string, string> | undefined;
+      return {
+        position: parseInt(String(s.position), 10) || 0,
+        points: parseFloat(String(s.points)) || 0,
+        wins: parseInt(String(s.wins), 10) || 0,
+        constructorId: constructor?.constructorId || '',
+        constructorName: constructor?.name || '',
+        nationality: constructor?.nationality || ''
+      };
+    });
+
+    const payload: ConstructorStandingsPayload = {
       standings,
       season: list?.season || year,
       round: list?.round || '1'
     };
 
-    saveToCache(cacheKey, result);
-    return { ...result, isFallback: false };
+    saveToCache(cacheKey, payload);
+    return {
+      data: payload,
+      source: 'live',
+      updatedAt: Date.now()
+    };
   } catch (err) {
     console.warn('Jolpica API Constructor Standings fetch failed, using curated fallback:', err);
     return {
-      standings: getFallbackConstructorStandings(),
-      season: '2026',
-      round: 'Live Vault',
-      isFallback: true
+      data: {
+        standings: getFallbackConstructorStandings(),
+        season: year === 'current' ? '2026' : year,
+        round: 'Official Vault'
+      },
+      source: 'fallback',
+      updatedAt: Date.now(),
+      error: err instanceof Error ? err.message : 'Network error'
     };
   }
 }
@@ -178,55 +282,109 @@ export async function fetchConstructorStandings(year = 'current'): Promise<{
 /**
  * Fetch Official Race Schedule
  */
-export async function fetchSeasonSchedule(year = 'current'): Promise<{
-  races: RaceScheduleRound[];
-  season: string;
-  isFallback: boolean;
-}> {
+export async function fetchSeasonSchedule(
+  year = 'current',
+  signal?: AbortSignal
+): Promise<RaceScheduleResponse> {
   const cacheKey = `schedule_${year}`;
-  const cached = getFromCache<any>(cacheKey);
+  const cached = getFromCache<RaceSchedulePayload>(cacheKey);
   if (cached) {
-    return { ...cached, isFallback: false };
+    return {
+      data: cached.data,
+      source: 'cached',
+      updatedAt: cached.timestamp
+    };
   }
 
   try {
-    const res = await fetchWithTimeout(`${JOLPICA_BASE_URL}/${year}.json`);
-    if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+    const res = await fetchWithTimeout(`${JOLPICA_BASE_URL}/${year}.json`, signal);
+    if (!res.ok) {
+      const err = new Error(`HTTP error ${res.status}`);
+      (err as unknown as { status: number }).status = res.status;
+      throw err;
+    }
 
     const json = await res.json();
     const rawRaces = json.MRData?.RaceTable?.Races || [];
+    const total = parseInt(json.MRData?.total || '0', 10);
 
-    const races: RaceScheduleRound[] = rawRaces.map((r: any) => ({
-      round: parseInt(r.round, 10) || 0,
-      raceName: r.raceName || '',
-      circuitName: r.Circuit?.circuitName || '',
-      locality: r.Circuit?.Location?.locality || '',
-      country: r.Circuit?.Location?.country || '',
-      date: r.date || '',
-      time: r.time,
-      url: r.url
-    }));
+    if (total === 0 || rawRaces.length === 0) {
+      return {
+        data: {
+          races: getFallbackRaceSchedule(),
+          season: json.MRData?.RaceTable?.season || (year === 'current' ? '2026' : year)
+        },
+        source: 'fallback',
+        updatedAt: Date.now()
+      };
+    }
 
-    const result = {
+    const races: RaceScheduleRound[] = rawRaces.map((r: Record<string, unknown>) => {
+      const circuit = r.Circuit as Record<string, unknown> | undefined;
+      const location = circuit?.Location as Record<string, string> | undefined;
+      return {
+        round: parseInt(String(r.round), 10) || 0,
+        raceName: String(r.raceName || ''),
+        circuitName: String(circuit?.circuitName || ''),
+        locality: location?.locality || '',
+        country: location?.country || '',
+        date: String(r.date || ''),
+        time: r.time as string | undefined,
+        url: r.url as string | undefined
+      };
+    });
+
+    const payload: RaceSchedulePayload = {
       races,
       season: json.MRData?.RaceTable?.season || year
     };
 
-    saveToCache(cacheKey, result);
-    return { ...result, isFallback: false };
+    saveToCache(cacheKey, payload);
+    return {
+      data: payload,
+      source: 'live',
+      updatedAt: Date.now()
+    };
   } catch (err) {
     console.warn('Jolpica API Schedule fetch failed, using curated fallback:', err);
     return {
-      races: getFallbackRaceSchedule(),
-      season: '2026',
-      isFallback: true
+      data: {
+        races: getFallbackRaceSchedule(),
+        season: year === 'current' ? '2026' : year
+      },
+      source: 'fallback',
+      updatedAt: Date.now(),
+      error: err instanceof Error ? err.message : 'Network error'
     };
   }
 }
 
+// ── TanStack Query Hooks ──
+
+export function useDriverStandingsQuery(year = 'current') {
+  return useQuery({
+    queryKey: ['driverStandings', year],
+    queryFn: ({ signal }) => fetchDriverStandings(year, signal),
+  });
+}
+
+export function useConstructorStandingsQuery(year = 'current') {
+  return useQuery({
+    queryKey: ['constructorStandings', year],
+    queryFn: ({ signal }) => fetchConstructorStandings(year, signal),
+  });
+}
+
+export function useSeasonScheduleQuery(year = 'current') {
+  return useQuery({
+    queryKey: ['seasonSchedule', year],
+    queryFn: ({ signal }) => fetchSeasonSchedule(year, signal),
+  });
+}
+
 // ── Curated Offline Fallbacks ──
 
-function getFallbackDriverStandings(): LiveDriverStanding[] {
+export function getFallbackDriverStandings(): LiveDriverStanding[] {
   return [
     { position: 1, points: 219, wins: 6, driverId: 'antonelli', driverName: 'Andrea Kimi Antonelli', driverCode: 'ANT', permanentNumber: '12', nationality: 'Italian', constructorId: 'mercedes', constructorName: 'Mercedes-AMG PETRONAS' },
     { position: 2, points: 198, wins: 4, driverId: 'leclerc', driverName: 'Charles Leclerc', driverCode: 'LEC', permanentNumber: '16', nationality: 'Monegasque', constructorId: 'ferrari', constructorName: 'Scuderia Ferrari' },
@@ -235,24 +393,30 @@ function getFallbackDriverStandings(): LiveDriverStanding[] {
     { position: 5, points: 164, wins: 3, driverId: 'verstappen', driverName: 'Max Verstappen', driverCode: 'VER', permanentNumber: '1', nationality: 'Dutch', constructorId: 'redbull', constructorName: 'Red Bull Racing' },
     { position: 6, points: 140, wins: 2, driverId: 'russell', driverName: 'George Russell', driverCode: 'RUS', permanentNumber: '63', nationality: 'British', constructorId: 'mercedes', constructorName: 'Mercedes-AMG PETRONAS' },
     { position: 7, points: 112, wins: 1, driverId: 'piastri', driverName: 'Oscar Piastri', driverCode: 'PIA', permanentNumber: '81', nationality: 'Australian', constructorId: 'mclaren', constructorName: 'McLaren F1 Team' },
-    { position: 8, points: 78, wins: 0, driverId: 'alonso', driverName: 'Fernando Alonso', driverCode: 'ALO', permanentNumber: '14', nationality: 'Spanish', constructorId: 'astonmartin', constructorName: 'Aston Martin F1' }
+    { position: 8, points: 78, wins: 0, driverId: 'alonso', driverName: 'Fernando Alonso', driverCode: 'ALO', permanentNumber: '14', nationality: 'Spanish', constructorId: 'astonmartin', constructorName: 'Aston Martin F1' },
+    { position: 9, points: 52, wins: 0, driverId: 'gasly', driverName: 'Pierre Gasly', driverCode: 'GAS', permanentNumber: '10', nationality: 'French', constructorId: 'alpine', constructorName: 'BWT Alpine F1 Team' },
+    { position: 10, points: 41, wins: 0, driverId: 'albon', driverName: 'Alexander Albon', driverCode: 'ALB', permanentNumber: '23', nationality: 'Thai', constructorId: 'williams', constructorName: 'Williams Racing' },
+    { position: 11, points: 28, wins: 0, driverId: 'tsunoda', driverName: 'Yuki Tsunoda', driverCode: 'TSU', permanentNumber: '22', nationality: 'Japanese', constructorId: 'rb', constructorName: 'Visa Cash App RB' },
+    { position: 12, points: 16, wins: 0, driverId: 'hulkenberg', driverName: 'Nico Hulkenberg', driverCode: 'HUL', permanentNumber: '27', nationality: 'German', constructorId: 'sauber', constructorName: 'Stake F1 Team Kick Sauber' }
   ];
 }
 
-function getFallbackConstructorStandings(): LiveConstructorStanding[] {
+export function getFallbackConstructorStandings(): LiveConstructorStanding[] {
   return [
     { position: 1, points: 370, wins: 6, constructorId: 'ferrari', constructorName: 'Scuderia Ferrari', nationality: 'Italian' },
     { position: 2, points: 359, wins: 8, constructorId: 'mercedes', constructorName: 'Mercedes-AMG PETRONAS', nationality: 'German' },
     { position: 3, points: 297, wins: 4, constructorId: 'mclaren', constructorName: 'McLaren F1 Team', nationality: 'British' },
     { position: 4, points: 196, wins: 3, constructorId: 'redbull', constructorName: 'Red Bull Racing', nationality: 'Austrian' },
     { position: 5, points: 94, wins: 0, constructorId: 'astonmartin', constructorName: 'Aston Martin F1', nationality: 'British' },
-    { position: 6, points: 42, wins: 0, constructorId: 'alpine', constructorName: 'Alpine F1 Team', nationality: 'French' },
-    { position: 7, points: 38, wins: 0, constructorId: 'williams', constructorName: 'Williams Racing', nationality: 'British' },
-    { position: 8, points: 24, wins: 0, constructorId: 'haas', constructorName: 'Haas F1 Team', nationality: 'American' }
+    { position: 6, points: 52, wins: 0, constructorId: 'alpine', constructorName: 'Alpine F1 Team', nationality: 'French' },
+    { position: 7, points: 41, wins: 0, constructorId: 'williams', constructorName: 'Williams Racing', nationality: 'British' },
+    { position: 8, points: 28, wins: 0, constructorId: 'rb', constructorName: 'Visa Cash App RB', nationality: 'Italian' },
+    { position: 9, points: 16, wins: 0, constructorId: 'sauber', constructorName: 'Stake F1 Team Kick Sauber', nationality: 'Swiss' },
+    { position: 10, points: 12, wins: 0, constructorId: 'haas', constructorName: 'Haas F1 Team', nationality: 'American' }
   ];
 }
 
-function getFallbackRaceSchedule(): RaceScheduleRound[] {
+export function getFallbackRaceSchedule(): RaceScheduleRound[] {
   return [
     { round: 1, raceName: 'Bahrain Grand Prix', circuitName: 'Bahrain International Circuit', locality: 'Sakhir', country: 'Bahrain', date: '2026-03-01' },
     { round: 2, raceName: 'Saudi Arabian Grand Prix', circuitName: 'Jeddah Corniche Circuit', locality: 'Jeddah', country: 'Saudi Arabia', date: '2026-03-15' },

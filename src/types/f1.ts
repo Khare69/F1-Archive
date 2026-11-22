@@ -130,3 +130,10 @@ export interface UserPreferences {
   isSlowConnection: boolean;
 }
 
+export interface QueryMetadata<T> {
+  data: T;
+  source: 'live' | 'cached' | 'fallback';
+  updatedAt: number;
+  error?: string;
+}
+
