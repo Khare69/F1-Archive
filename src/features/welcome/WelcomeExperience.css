@@ -1,0 +1,45 @@
+.welcome-experience-overlay {
+  position: fixed;
+  inset: 0;
+  background: #05070C;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 0.8s cubic-bezier(0.25, 1, 0.5, 1), transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.welcome-experience-overlay.phase-exit {
+  opacity: 0;
+  transform: scale(1.04);
+  pointer-events: none;
+}
+
+/* Perspective Grid Background Layer */
+.environment-grid {
+  position: absolute;
+  inset: -100px;
+  background-image: 
+    linear-gradient(to right, rgba(0, 210, 255, 0.15) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 210, 255, 0.15) 1px, transparent 1px);
+  background-size: 50px 50px;
+  transform-origin: center bottom;
+  animation: gridMove 8s linear infinite;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.reduced-motion-fallback {
+  margin: auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.welcome-title {
+  font-size: 3rem;
+  color: var(--color-accent-primary);
+}
