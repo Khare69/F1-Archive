@@ -1,0 +1,104 @@
+.fallback-image-wrapper {
+  position: relative;
+  display: inline-block;
+  overflow: hidden;
+  border-radius: 6px;
+}
+
+.fallback-image-wrapper img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.3s ease, transform 0.4s ease;
+}
+
+.fallback-image-wrapper.is-loading img {
+  opacity: 0;
+}
+
+.image-skeleton-loader {
+  position: absolute;
+  inset: 0;
+  background: rgba(13, 19, 34, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.skeleton-pulse {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.02) 0%,
+    rgba(0, 210, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0.02) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* CSS Fallback Badges */
+.fallback-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(13, 19, 34, 0.9), rgba(5, 7, 12, 0.95));
+  border: 1px solid var(--fallback-color, var(--color-accent-primary));
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.5), inset 0 0 12px rgba(0, 210, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+}
+
+.fallback-badge {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+}
+
+.fallback-team {
+  width: 120px;
+  height: 60px;
+  border-radius: 8px;
+}
+
+.fallback-driver {
+  width: 100%;
+  height: 100%;
+  min-height: 280px;
+  border-radius: 12px;
+}
+
+.fallback-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.fallback-text {
+  font-family: var(--font-headline);
+  font-weight: 900;
+  font-size: 1.5rem;
+  letter-spacing: 0.1em;
+  color: var(--fallback-color, var(--color-accent-primary));
+  text-shadow: 0 0 10px var(--fallback-color, var(--color-accent-primary));
+}
+
+.fallback-driver .fallback-text {
+  font-size: 4rem;
+}
+
+.fallback-scanner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: var(--fallback-color, var(--color-accent-primary));
+  box-shadow: 0 0 8px var(--fallback-color, var(--color-accent-primary));
+  opacity: 0.6;
+  animation: scanline 3s linear infinite;
+}

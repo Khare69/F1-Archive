@@ -1,0 +1,289 @@
+import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { getAllDrivers, getAllTeams, getAllSeasons, getAllCircuits } from '../../data/dataService';
+import './SearchPalette.css';
+
+interface SearchPaletteProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+interface SearchItem {
+  id: string;
+  name: string;
+  category: 'driver' | 'team' | 'season' | 'circuit';
+  stat: string;
+  path: string;
+}
+
+export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose }) => {
+  const [query, setQuery] = useState('');
+  const [selectedIndex, setSelectedIndex] = useState(0);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const navigate = useNavigate();
+
+  // Focus input whenever palette opens
+  useEffect(() => {
+    if (isOpen) {
+      setQuery('');
+      setSelectedIndex(0);
+      setTimeout(() => {
+        inputRef.current?.focus();
+      }, 50);
+    }
+  }, [isOpen]);
+
+  const allItems = useMemo<SearchItem[]>(() => {
+    const drivers = getAllDrivers().map(d => ({
+      id: d.id,
+      name: d.name,
+      category: 'driver' as const,
+      stat: `${d.championships} Titles // ${d.wins} Wins`,
+      path: `/drivers/${d.id}`
+    }));
+
+    const teams = getAllTeams().map(t => ({
+      id: t.id,
+      name: t.name,
+      category: 'team' as const,
+      stat: `${t.carName} // ${t.championships} Titles`,
+      path: `/teams/${t.id}`
+    }));
+
+    const seasons = getAllSeasons().map(s => ({
+      id: String(s.year),
+      name: `${s.year} World Championship`,
+      category: 'season' as const,
+      stat: `Champ: ${s.championDriver}`,
+      path: `/seasons/${s.year}`
+    }));
+
+    const circuits = getAllCircuits().map(c => ({
+      id: c.id,
+      name: c.name,
+      category: 'circuit' as const,
+      stat: `${c.country} // ${c.lengthKm}`,
+      path: `/circuits/${c.id}`
+    }));
+
+    return [...drivers, ...teams, ...seasons, ...circuits];
+  }, []);
+
+  // Filter items based on query
+  const filteredResults = useMemo(() => {
+    if (!query.trim()) {
+      return {
+        drivers: allItems.filter(i => i.category === 'driver').slice(0, 3),
+        teams: allItems.filter(i => i.category === 'team').slice(0, 3),
+        seasons: allItems.filter(i => i.category === 'season').slice(0, 3),
+        circuits: allItems.filter(i => i.category === 'circuit').slice(0, 3)
+      };
+    }
+
+    const clean = query.trim().toLowerCase();
+    const matches = allItems.filter(item =>
+      item.name.toLowerCase().includes(clean) ||
+      item.id.toLowerCase().includes(clean) ||
+      item.stat.toLowerCase().includes(clean)
+    );
+
+    return {
+      drivers: matches.filter(i => i.category === 'driver').slice(0, 4),
+      teams: matches.filter(i => i.category === 'team').slice(0, 4),
+      seasons: matches.filter(i => i.category === 'season').slice(0, 4),
+      circuits: matches.filter(i => i.category === 'circuit').slice(0, 4)
+    };
+  }, [allItems, query]);
+
+  const flatResults = useMemo(() => {
+    return [
+      ...filteredResults.drivers,
+      ...filteredResults.teams,
+      ...filteredResults.seasons,
+      ...filteredResults.circuits
+    ];
+  }, [filteredResults]);
+
+  // Handle keyboard events (ESC, Arrow keys, Enter)
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      } else if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        setSelectedIndex(prev => (prev + 1) % (flatResults.length || 1));
+      } else if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        setSelectedIndex(prev => (prev - 1 + flatResults.length) % (flatResults.length || 1));
+      } else if (e.key === 'Enter') {
+        e.preventDefault();
+        if (flatResults[selectedIndex]) {
+          navigate(flatResults[selectedIndex].path);
+          onClose();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen, flatResults, selectedIndex, navigate, onClose]);
+
+  if (!isOpen) return null;
+
+  const handleSelect = (path: string) => {
+    navigate(path);
+    onClose();
+  };
+
+  let globalIndexCounter = 0;
+
+  return (
+    <div
+      className="search-palette-overlay"
+      onClick={onClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label="Search F1 Archive"
+    >
+      <div className="search-palette-modal" onClick={e => e.stopPropagation()}>
+        <div className="search-input-wrapper">
+          <svg className="search-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input
+            ref={inputRef}
+            type="text"
+            className="search-palette-input"
+            placeholder="SEARCH ARCHIVE... (DRIVERS, TEAMS, SEASONS, CIRCUITS)"
+            value={query}
+            onChange={e => {
+              setQuery(e.target.value);
+              setSelectedIndex(0);
+            }}
+          />
+          <button type="button" className="search-esc-hint telemetry" onClick={onClose}>
+            ESC
+          </button>
+        </div>
+
+        <div className="search-results-container">
+          {flatResults.length === 0 ? (
+            <div className="search-empty-state">
+              [ NO TELEMETRY MATCHES FOUND FOR &quot;{query}&quot; ]
+            </div>
+          ) : (
+            <>
+              {filteredResults.drivers.length > 0 && (
+                <div className="search-category-group">
+                  <div className="search-category-header telemetry">// DRIVERS ROSTER</div>
+                  {filteredResults.drivers.map(item => {
+                    const currentIndex = globalIndexCounter++;
+                    return (
+                      <div
+                        key={item.id}
+                        className={`search-result-item ${selectedIndex === currentIndex ? 'selected' : ''}`}
+                        onClick={() => handleSelect(item.path)}
+                      >
+                        <div className="search-item-left">
+                          <span className="search-type-badge badge-driver">PILOT</span>
+                          <span className="search-item-name">{item.name}</span>
+                        </div>
+                        <div className="search-item-right">
+                          <span className="search-item-stat telemetry">{item.stat}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {filteredResults.teams.length > 0 && (
+                <div className="search-category-group">
+                  <div className="search-category-header telemetry">// CONSTRUCTORS</div>
+                  {filteredResults.teams.map(item => {
+                    const currentIndex = globalIndexCounter++;
+                    return (
+                      <div
+                        key={item.id}
+                        className={`search-result-item ${selectedIndex === currentIndex ? 'selected' : ''}`}
+                        onClick={() => handleSelect(item.path)}
+                      >
+                        <div className="search-item-left">
+                          <span className="search-type-badge badge-team">TEAM</span>
+                          <span className="search-item-name">{item.name}</span>
+                        </div>
+                        <div className="search-item-right">
+                          <span className="search-item-stat telemetry">{item.stat}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {filteredResults.seasons.length > 0 && (
+                <div className="search-category-group">
+                  <div className="search-category-header telemetry">// SEASONS VAULT</div>
+                  {filteredResults.seasons.map(item => {
+                    const currentIndex = globalIndexCounter++;
+                    return (
+                      <div
+                        key={item.id}
+                        className={`search-result-item ${selectedIndex === currentIndex ? 'selected' : ''}`}
+                        onClick={() => handleSelect(item.path)}
+                      >
+                        <div className="search-item-left">
+                          <span className="search-type-badge badge-season">SEASON</span>
+                          <span className="search-item-name">{item.name}</span>
+                        </div>
+                        <div className="search-item-right">
+                          <span className="search-item-stat telemetry">{item.stat}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {filteredResults.circuits.length > 0 && (
+                <div className="search-category-group">
+                  <div className="search-category-header telemetry">// RACE CIRCUITS</div>
+                  {filteredResults.circuits.map(item => {
+                    const currentIndex = globalIndexCounter++;
+                    return (
+                      <div
+                        key={item.id}
+                        className={`search-result-item ${selectedIndex === currentIndex ? 'selected' : ''}`}
+                        onClick={() => handleSelect(item.path)}
+                      >
+                        <div className="search-item-left">
+                          <span className="search-type-badge badge-circuit">TRACK</span>
+                          <span className="search-item-name">{item.name}</span>
+                        </div>
+                        <div className="search-item-right">
+                          <span className="search-item-stat telemetry">{item.stat}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+
+        <div className="search-palette-footer telemetry">
+          <div className="search-footer-shortcuts">
+            <span><kbd>↑</kbd><kbd>↓</kbd> NAVIGATE</span>
+            <span><kbd>↵</kbd> SELECT</span>
+            <span><kbd>ESC</kbd> CLOSE</span>
+          </div>
+          <span>F1 // ARCHIVE COMMAND PALETTE</span>
+        </div>
+      </div>
+    </div>
+  );
+};
