@@ -1,0 +1,376 @@
+.live-standings-page {
+  min-height: calc(100vh - 80px);
+  padding: 2.5rem 2rem 4rem;
+  background: radial-gradient(circle at 50% 10%, rgba(0, 210, 255, 0.05) 0%, transparent 60%);
+}
+
+.standings-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.standings-header-panel {
+  padding: 2rem 2.5rem;
+  background: rgba(13, 19, 34, 0.85);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  margin-bottom: 2rem;
+}
+
+.standings-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.source-tag {
+  font-size: 0.75rem;
+  color: #00E701;
+  background: rgba(0, 231, 1, 0.1);
+  padding: 0.25rem 0.6rem;
+  border-radius: 3px;
+  border: 1px solid rgba(0, 231, 1, 0.3);
+}
+
+.season-badge {
+  font-size: 0.8rem;
+  color: var(--color-accent-primary);
+  letter-spacing: 0.12em;
+}
+
+.standings-title {
+  font-size: 2.4rem;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.75rem;
+}
+
+.standings-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 0.95rem;
+  max-width: 800px;
+  line-height: 1.6;
+  margin-bottom: 1.75rem;
+}
+
+/* Tabs */
+.standings-tab-bar {
+  display: flex;
+  gap: 1rem;
+  border-top: 1px solid var(--color-border-card);
+  padding-top: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.standings-tab {
+  background: rgba(5, 7, 12, 0.7);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  padding: 0.65rem 1.25rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  letter-spacing: 0.1em;
+  transition: all var(--transition-fast);
+}
+
+.standings-tab:hover {
+  border-color: var(--color-accent-primary);
+  color: var(--color-text-primary);
+}
+
+.standings-tab.active {
+  background: rgba(0, 210, 255, 0.12);
+  border-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+  box-shadow: 0 0 15px var(--color-accent-primary-glow);
+}
+
+/* Next Race Banner */
+.next-race-banner {
+  background: linear-gradient(90deg, rgba(13, 19, 34, 0.95) 0%, rgba(5, 7, 12, 0.85) 100%);
+  border: 1px solid var(--color-accent-primary);
+  border-left: 4px solid var(--color-accent-primary);
+  border-radius: 6px;
+  padding: 1.25rem 2rem;
+  margin-bottom: 2rem;
+  box-shadow: 0 0 20px rgba(0, 210, 255, 0.1);
+}
+
+.next-race-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: var(--color-accent-primary);
+  margin-bottom: 0.5rem;
+}
+
+.next-race-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+}
+
+.next-race-title {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.next-race-circuit {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+}
+
+.next-race-date-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  background: rgba(5, 7, 12, 0.8);
+  padding: 0.6rem 1.25rem;
+  border-radius: 4px;
+  border: 1px solid var(--color-border-card);
+}
+
+.next-race-date-box .label {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+}
+
+.next-race-date-box .date-val {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: #FFD700;
+}
+
+/* Standings Table */
+.standings-table-card {
+  background: rgba(13, 19, 34, 0.9);
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.table-header-row {
+  display: grid;
+  grid-template-columns: 80px 1.5fr 100px 2fr 100px;
+  padding: 1rem 1.5rem;
+  background: rgba(5, 7, 12, 0.8);
+  border-bottom: 1px solid var(--color-border-card);
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.1em;
+  align-items: center;
+}
+
+.standings-row {
+  display: grid;
+  grid-template-columns: 80px 1.5fr 100px 2fr 100px;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  align-items: center;
+  transition: background var(--transition-fast);
+}
+
+.standings-row:hover {
+  background: rgba(0, 210, 255, 0.04);
+}
+
+.pos-badge {
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--color-text-secondary);
+}
+
+.pos-badge.pos-1 {
+  color: #FFD700;
+  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.pos-badge.pos-2 {
+  color: #C0C0C0;
+}
+
+.pos-badge.pos-3 {
+  color: #CD7F32;
+}
+
+.driver-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.driver-team-stripe {
+  width: 4px;
+  height: 36px;
+  border-radius: 2px;
+}
+
+.driver-meta-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.driver-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-text-primary);
+}
+
+.driver-link {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.driver-link:hover {
+  color: var(--color-accent-primary);
+}
+
+.constructor-name {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.wins-pill {
+  background: rgba(0, 210, 255, 0.1);
+  color: var(--color-accent-primary);
+  border: 1px solid rgba(0, 210, 255, 0.3);
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+}
+
+.no-wins {
+  color: var(--color-text-muted);
+  font-size: 0.9rem;
+}
+
+.pts-bar-track {
+  width: 100%;
+  height: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.pts-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.6s ease;
+}
+
+.col-points {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--color-text-primary);
+  text-align: right;
+}
+
+/* Schedule Grid */
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.25rem;
+}
+
+.schedule-card {
+  padding: 1.25rem 1.5rem;
+  background: rgba(13, 19, 34, 0.8);
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  transition: all var(--transition-fast);
+}
+
+.schedule-card:hover {
+  border-color: var(--color-accent-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 210, 255, 0.1);
+}
+
+.schedule-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.round-badge {
+  font-size: 0.7rem;
+  color: var(--color-accent-primary);
+  background: rgba(0, 210, 255, 0.1);
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+}
+
+.race-date {
+  font-size: 0.75rem;
+  color: #FFD700;
+}
+
+.schedule-race-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  margin-bottom: 0.4rem;
+  color: var(--color-text-primary);
+}
+
+.schedule-circuit-name {
+  font-size: 0.8rem;
+  color: var(--color-text-secondary);
+  margin-bottom: 0.2rem;
+}
+
+.schedule-location {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+/* Loading */
+.standings-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 5rem 2rem;
+  gap: 1rem;
+  color: var(--color-accent-primary);
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(0, 210, 255, 0.1);
+  border-top-color: var(--color-accent-primary);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .live-standings-page {
+    padding: 1.5rem 1rem;
+  }
+
+  .table-header-row,
+  .standings-row {
+    grid-template-columns: 50px 1.5fr 60px 80px;
+  }
+
+  .col-progress {
+    display: none;
+  }
+
+  .next-race-date-box {
+    align-items: flex-start;
+  }
+}
