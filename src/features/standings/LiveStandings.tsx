@@ -1,79 +1,59 @@
-import React, { useState, useEffect, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useMemo } from 'react';
 import {
-  fetchDriverStandings,
-  fetchConstructorStandings,
-  fetchSeasonSchedule,
-  getTeamById,
-  getDriverById
-} from '../../data/dataService';
-import type {
-  LiveDriverStanding,
-  LiveConstructorStanding,
-  RaceScheduleRound
-} from '../../types/f1';
+  useDriverStandingsQuery,
+  useConstructorStandingsQuery,
+  useSeasonScheduleQuery
+} from '../../api/jolpicaClient';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { LiveStatusBadge } from './LiveStatusBadge';
+import { StandingsTable } from './StandingsTable';
 import './LiveStandings.css';
 
 export const LiveStandings: React.FC = () => {
   useDocumentTitle('Live Standings & Calendar');
 
   const [activeTab, setActiveTab] = useState<'wdc' | 'wcc' | 'schedule'>('wdc');
-  const [driverStandings, setDriverStandings] = useState<LiveDriverStanding[]>([]);
-  const [constructorStandings, setConstructorStandings] = useState<LiveConstructorStanding[]>([]);
-  const [schedule, setSchedule] = useState<RaceScheduleRound[]>([]);
-  const [seasonLabel, setSeasonLabel] = useState<string>('2026');
-  const [isLiveConnected, setIsLiveConnected] = useState<boolean>(true);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    let isMounted = true;
+  const driversQuery = useDriverStandingsQuery('current');
+  const constructorsQuery = useConstructorStandingsQuery('current');
+  const scheduleQuery = useSeasonScheduleQuery('current');
 
-    async function loadLiveData() {
-      setIsLoading(true);
-      try {
-        const [driversRes, constructorsRes, scheduleRes] = await Promise.all([
-          fetchDriverStandings('current'),
-          fetchConstructorStandings('current'),
-          fetchSeasonSchedule('current')
-        ]);
+  const isLoading = driversQuery.isLoading || constructorsQuery.isLoading || scheduleQuery.isLoading;
+  const isFetching = driversQuery.isFetching || constructorsQuery.isFetching || scheduleQuery.isFetching;
 
-        if (isMounted) {
-          setDriverStandings(driversRes.standings);
-          setConstructorStandings(constructorsRes.standings);
-          setSchedule(scheduleRes.races);
-          setSeasonLabel(driversRes.season || '2026');
-          setIsLiveConnected(!driversRes.isFallback);
-          setIsLoading(false);
-        }
-      } catch (err) {
-        if (isMounted) {
-          setIsLoading(false);
-        }
-      }
-    }
+  // Extract metadata and data payloads
+  const driverStandings = useMemo(
+    () => driversQuery.data?.data.standings || [],
+    [driversQuery.data?.data.standings]
+  );
+  const constructorStandings = useMemo(
+    () => constructorsQuery.data?.data.standings || [],
+    [constructorsQuery.data?.data.standings]
+  );
+  const schedule = useMemo(
+    () => scheduleQuery.data?.data.races || [],
+    [scheduleQuery.data?.data.races]
+  );
 
-    loadLiveData();
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  const seasonLabel = driversQuery.data?.data.season || '2026';
+  const activeSource = driversQuery.data?.source || 'fallback';
+  const activeUpdatedAt = driversQuery.data?.updatedAt || Date.now();
 
   const maxDriverPoints = useMemo(() => {
     if (driverStandings.length === 0) return 1;
-    return Math.max(...driverStandings.map(d => d.points), 1);
+    return Math.max(...driverStandings.map((d) => d.points), 1);
   }, [driverStandings]);
 
   const maxConstructorPoints = useMemo(() => {
     if (constructorStandings.length === 0) return 1;
-    return Math.max(...constructorStandings.map(c => c.points), 1);
+    return Math.max(...constructorStandings.map((c) => c.points), 1);
   }, [constructorStandings]);
 
   // Find next upcoming race
   const nextRace = useMemo(() => {
     if (schedule.length === 0) return null;
     const now = new Date();
-    const upcoming = schedule.find(r => new Date(r.date) >= now);
+    const upcoming = schedule.find((r) => new Date(r.date) >= now);
     return upcoming || schedule[0];
   }, [schedule]);
 
@@ -83,14 +63,16 @@ export const LiveStandings: React.FC = () => {
         {/* Top Header Panel */}
         <div className="standings-header-panel telemetry-panel corner-bracket">
           <div className="standings-meta telemetry">
-            <span className="source-tag">
-              {isLiveConnected ? '⚡ LIVE JOLPICA REST FEED' : '🔒 CURATED ARCHIVE VAULT'}
-            </span>
+            <LiveStatusBadge
+              source={activeSource}
+              updatedAt={activeUpdatedAt}
+              isFetching={isFetching}
+            />
             <span className="season-badge headline">{seasonLabel} FIA WORLD CHAMPIONSHIP</span>
           </div>
 
           <h1 className="standings-title headline">
-            CHAMPIONSHIP <span className="text-gradient-cyan">STANDINGS & CALENDAR</span>
+            CHAMPIONSHIP <span className="text-gradient-cyan">STANDINGS &amp; CALENDAR</span>
           </h1>
 
           <p className="standings-subtitle">
@@ -154,174 +136,25 @@ export const LiveStandings: React.FC = () => {
           </div>
         ) : (
           <>
-            {/* ── DRIVERS STANDINGS TABLE ── */}
+            {/* Drivers Standings Table */}
             {activeTab === 'wdc' && (
-              <div className="standings-table-card telemetry-panel">
-                <div className="table-header-row telemetry">
-                  <span className="col-pos">POS</span>
-                  <span className="col-driver">PILOT & CONSTRUCTOR</span>
-                  <span className="col-wins">WINS</span>
-                  <span className="col-progress">POINTS SHARE</span>
-                  <span className="col-points">PTS</span>
-                </div>
-
-                <div className="table-body">
-                  {driverStandings.map((driver) => {
-                    const localTeam = getTeamById(driver.constructorId);
-                    const teamColor = localTeam?.color || '#00D2FF';
-                    const localDriver = getDriverById(driver.driverCode);
-                    const pct = (driver.points / maxDriverPoints) * 100;
-
-                    return (
-                      <div key={driver.driverId} className="standings-row">
-                        <div className="col-pos">
-                          <span
-                            className={`pos-badge headline ${
-                              driver.position === 1
-                                ? 'pos-1'
-                                : driver.position === 2
-                                ? 'pos-2'
-                                : driver.position === 3
-                                ? 'pos-3'
-                                : ''
-                            }`}
-                          >
-                            P{driver.position}
-                          </span>
-                        </div>
-
-                        <div className="col-driver">
-                          <div className="driver-cell">
-                            <span className="driver-team-stripe" style={{ backgroundColor: teamColor }}></span>
-                            <div className="driver-meta-text">
-                              <span className="driver-name headline">
-                                {localDriver ? (
-                                  <Link to={`/drivers/${localDriver.id}`} className="driver-link">
-                                    {driver.driverName}
-                                  </Link>
-                                ) : (
-                                  driver.driverName
-                                )}
-                              </span>
-                              <span className="constructor-name telemetry" style={{ color: teamColor }}>
-                                {driver.constructorName}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="col-wins headline">
-                          {driver.wins > 0 ? (
-                            <span className="wins-pill">{driver.wins} W</span>
-                          ) : (
-                            <span className="no-wins">-</span>
-                          )}
-                        </div>
-
-                        <div className="col-progress">
-                          <div className="pts-bar-track">
-                            <div
-                              className="pts-bar-fill"
-                              style={{
-                                width: `${pct}%`,
-                                backgroundColor: teamColor
-                              }}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="col-points headline">{driver.points}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+              <StandingsTable
+                type="wdc"
+                standings={driverStandings}
+                maxPoints={maxDriverPoints}
+              />
             )}
 
-            {/* ── CONSTRUCTORS STANDINGS TABLE ── */}
+            {/* Constructors Standings Table */}
             {activeTab === 'wcc' && (
-              <div className="standings-table-card telemetry-panel">
-                <div className="table-header-row telemetry">
-                  <span className="col-pos">POS</span>
-                  <span className="col-driver">CONSTRUCTOR</span>
-                  <span className="col-wins">WINS</span>
-                  <span className="col-progress">CHAMPIONSHIP POINTS</span>
-                  <span className="col-points">PTS</span>
-                </div>
-
-                <div className="table-body">
-                  {constructorStandings.map((team) => {
-                    const localTeam = getTeamById(team.constructorId);
-                    const teamColor = localTeam?.color || '#00D2FF';
-                    const pct = (team.points / maxConstructorPoints) * 100;
-
-                    return (
-                      <div key={team.constructorId} className="standings-row">
-                        <div className="col-pos">
-                          <span
-                            className={`pos-badge headline ${
-                              team.position === 1
-                                ? 'pos-1'
-                                : team.position === 2
-                                ? 'pos-2'
-                                : team.position === 3
-                                ? 'pos-3'
-                                : ''
-                            }`}
-                          >
-                            P{team.position}
-                          </span>
-                        </div>
-
-                        <div className="col-driver">
-                          <div className="driver-cell">
-                            <span className="driver-team-stripe" style={{ backgroundColor: teamColor }}></span>
-                            <div className="driver-meta-text">
-                              <span className="driver-name headline">
-                                {localTeam ? (
-                                  <Link to={`/teams/${localTeam.id}`} className="driver-link">
-                                    {team.constructorName}
-                                  </Link>
-                                ) : (
-                                  team.constructorName
-                                )}
-                              </span>
-                              <span className="constructor-name telemetry">
-                                {team.nationality.toUpperCase()}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <div className="col-wins headline">
-                          {team.wins > 0 ? (
-                            <span className="wins-pill">{team.wins} W</span>
-                          ) : (
-                            <span className="no-wins">-</span>
-                          )}
-                        </div>
-
-                        <div className="col-progress">
-                          <div className="pts-bar-track">
-                            <div
-                              className="pts-bar-fill"
-                              style={{
-                                width: `${pct}%`,
-                                backgroundColor: teamColor
-                              }}
-                            />
-                          </div>
-                        </div>
-
-                        <div className="col-points headline">{team.points}</div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
+              <StandingsTable
+                type="wcc"
+                standings={constructorStandings}
+                maxPoints={maxConstructorPoints}
+              />
             )}
 
-            {/* ── OFFICIAL RACE CALENDAR ── */}
+            {/* Official Race Calendar */}
             {activeTab === 'schedule' && (
               <div className="schedule-grid">
                 {schedule.map((race) => (
@@ -333,7 +166,9 @@ export const LiveStandings: React.FC = () => {
 
                     <h3 className="schedule-race-title headline">{race.raceName}</h3>
                     <div className="schedule-circuit-name telemetry">📍 {race.circuitName}</div>
-                    <div className="schedule-location telemetry">{race.locality}, {race.country}</div>
+                    <div className="schedule-location telemetry">
+                      {race.locality}, {race.country}
+                    </div>
                   </div>
                 ))}
               </div>

@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { usePreferencesContext } from '../../contexts/UserPreferencesContext';
 import './Navigation.css';
 
 interface NavigationProps {

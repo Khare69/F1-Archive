@@ -1,4 +1,19 @@
 import '@testing-library/jest-dom';
+import { beforeAll, afterEach, afterAll } from 'vitest';
+import { server } from './mocks/server';
+
+// MSW Server lifecycle for 100% offline Vitest test execution
+beforeAll(() => {
+  server.listen({ onUnhandledRequest: 'error' });
+});
+
+afterEach(() => {
+  server.resetHandlers();
+});
+
+afterAll(() => {
+  server.close();
+});
 
 // Mock window.matchMedia for JSDOM environments
 Object.defineProperty(window, 'matchMedia', {
@@ -31,4 +46,4 @@ global.IntersectionObserver = class IntersectionObserver {
   unobserve() {}
   disconnect() {}
   takeRecords() { return []; }
-} as any;
+} as unknown as typeof IntersectionObserver;

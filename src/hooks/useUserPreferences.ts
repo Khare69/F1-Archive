@@ -1,16 +1,13 @@
 import { useState, useEffect, useCallback } from 'react';
+import { safeStorage } from '../utils/safeStorage';
 
 const STORAGE_FIRST_VISIT = 'f1_first_visit';
 
 export function useUserPreferences() {
   // First visit state (defaults to true if never set)
   const [isFirstVisit, setIsFirstVisitState] = useState<boolean>(() => {
-    try {
-      const stored = localStorage.getItem(STORAGE_FIRST_VISIT);
-      return stored === null ? true : stored === 'true';
-    } catch {
-      return true;
-    }
+    const stored = safeStorage.getItem(STORAGE_FIRST_VISIT);
+    return stored === null ? true : stored === 'true';
   });
 
   // Reduced motion media query detection
@@ -20,7 +17,7 @@ export function useUserPreferences() {
   });
 
   // Slow connection detection
-  const [isSlowConnection, setIsSlowConnection] = useState<boolean>(() => {
+  const [isSlowConnection, _setIsSlowConnection] = useState<boolean>(() => {
     if (typeof navigator === 'undefined') return false;
     const conn = (navigator as unknown as { connection?: { effectiveType?: string; saveData?: boolean } }).connection;
     if (!conn) return false;
@@ -39,11 +36,7 @@ export function useUserPreferences() {
 
   const setFirstVisit = useCallback((value: boolean) => {
     setIsFirstVisitState(value);
-    try {
-      localStorage.setItem(STORAGE_FIRST_VISIT, String(value));
-    } catch (e) {
-      console.warn('Unable to access localStorage', e);
-    }
+    safeStorage.setItem(STORAGE_FIRST_VISIT, String(value));
   }, []);
 
   return {

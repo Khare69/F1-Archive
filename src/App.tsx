@@ -1,6 +1,8 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
+import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { queryClient, queryPersister, QUERY_PERSIST_BUSTER } from './lib/queryClient';
 import { UserPreferencesProvider, usePreferencesContext } from './contexts/UserPreferencesContext';
 import { Navigation } from './components/Navigation/Navigation';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
@@ -219,11 +221,16 @@ const AppContent: React.FC = () => {
 
 export const App: React.FC = () => {
   return (
-    <BrowserRouter>
-      <UserPreferencesProvider>
-        <AppContent />
-      </UserPreferencesProvider>
-    </BrowserRouter>
+    <PersistQueryClientProvider
+      client={queryClient}
+      persistOptions={{ persister: queryPersister, buster: QUERY_PERSIST_BUSTER }}
+    >
+      <BrowserRouter>
+        <UserPreferencesProvider>
+          <AppContent />
+        </UserPreferencesProvider>
+      </BrowserRouter>
+    </PersistQueryClientProvider>
   );
 };
 
