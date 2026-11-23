@@ -8,7 +8,7 @@ import {
   getCircuitById
 } from '../../data/dataService';
 import type { CarSetupConfig } from '../../types/f1';
-import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { usePageMeta } from '../../hooks/usePageMeta';
 import { safeStorage } from '../../utils/safeStorage';
 import { useLapSimulation } from './hooks/useLapSimulation';
 import { SetupTuningControls } from './components/SetupTuningControls';
@@ -21,7 +21,12 @@ const STORAGE_GARAGE_DRIVER = 'f1_garage_fav_driver';
 const STORAGE_GARAGE_CIRCUIT = 'f1_garage_target_circuit';
 
 export const Garage: React.FC = () => {
-  useDocumentTitle('Paddock Telemetry Simulator');
+  usePageMeta({
+    title: 'Paddock Telemetry Simulator — Virtual Pit Wall & Setup Lab',
+    description:
+      'Virtual Formula 1 garage engineering simulator. Tune aero downforce, tyre compounds, and engine mapping against realistic circuit lap delta models.',
+    canonicalPath: '/garage'
+  });
   const teams = getAllTeams();
   const drivers = getAllDrivers();
   const circuits = getAllCircuits();

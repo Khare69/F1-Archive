@@ -24,10 +24,21 @@ const __dirname = path.dirname(__filename);
 const ROOT_DIR = path.resolve(__dirname, '..');
 
 const SRC_GEN_DIR = path.join(ROOT_DIR, 'src', 'data', 'generated');
+const PUBLIC_DATA_DIR = path.join(ROOT_DIR, 'public', 'data');
 const PUBLIC_SEASONS_DIR = path.join(ROOT_DIR, 'public', 'data', 'seasons');
 const PUBLIC_CIRCUITS_DIR = path.join(ROOT_DIR, 'public', 'data', 'circuits');
 const CACHE_DIR = path.join(__dirname, '.cache');
 let F1DB_CACHE_DIR = path.join(CACHE_DIR, 'f1db');
+
+// The 6 famous half-point races in Formula 1 history
+const HALF_POINT_RACES = new Set([
+  '1975_4',  // 1975 Spanish GP (Montjuïc)
+  '1975_12', // 1975 Austrian GP (Österreichring)
+  '1984_6',  // 1984 Monaco GP
+  '1991_16', // 1991 Australian GP (Adelaide)
+  '2009_2',  // 2009 Malaysian GP (Sepang)
+  '2021_12'  // 2021 Belgian GP (Spa)
+]);
 
 // Parse CLI flags
 const args = process.argv.slice(2);
@@ -457,6 +468,7 @@ async function main() {
 
   // Ensure directories exist
   fs.mkdirSync(SRC_GEN_DIR, { recursive: true });
+  fs.mkdirSync(PUBLIC_DATA_DIR, { recursive: true });
   fs.mkdirSync(PUBLIC_SEASONS_DIR, { recursive: true });
   fs.mkdirSync(PUBLIC_CIRCUITS_DIR, { recursive: true });
 
@@ -470,6 +482,86 @@ async function main() {
   const rawRaces = JSON.parse(fs.readFileSync(path.join(F1DB_CACHE_DIR, 'f1db-races.json'), 'utf8'));
   const rawResults = JSON.parse(fs.readFileSync(path.join(F1DB_CACHE_DIR, 'f1db-races-race-results.json'), 'utf8'));
   const rawCountries = JSON.parse(fs.readFileSync(path.join(F1DB_CACHE_DIR, 'f1db-countries.json'), 'utf8'));
+
+  const rawSprintResults = fs.existsSync(path.join(F1DB_CACHE_DIR, 'f1db-races-sprint-race-results.json'))
+    ? JSON.parse(fs.readFileSync(path.join(F1DB_CACHE_DIR, 'f1db-races-sprint-race-results.json'), 'utf8'))
+    : [];
+  const rawRacesDriverStandings = fs.existsSync(path.join(F1DB_CACHE_DIR, 'f1db-races-driver-standings.json'))
+    ? JSON.parse(fs.readFileSync(path.join(F1DB_CACHE_DIR, 'f1db-races-driver-standings.json'), 'utf8'))
+    : [];
+  const rawCircuitsLayouts = fs.existsSync(path.join(F1DB_CACHE_DIR, 'f1db-circuits-layouts.json'))
+    ? JSON.parse(fs.readFileSync(path.join(F1DB_CACHE_DIR, 'f1db-circuits-layouts.json'), 'utf8'))
+    : [];
+
+  const rawConstructorsMap = new Map();
+  for (const c of rawConstructors) {
+    rawConstructorsMap.set(c.id, c);
+  }
+
+  // Pre-calculate races by year and max available championship points per season
+  const racesByYear = new Map();
+  for (const r of rawRaces) {
+    let yrRaces = racesByYear.get(r.year);
+    if (!yrRaces) {
+      yrRaces = [];
+      racesByYear.set(r.year, yrRaces);
+    }
+    yrRaces.push(r);
+  }
+
+  const maxPointsByYear = new Map();
+  for (const s of rawSeasons) {
+    const yr = s.year;
+    const yrRaces = racesByYear.get(yr) || [];
+    let maxPts = 0;
+    for (const r of yrRaces) {
+      const isHalf = HALF_POINT_RACES.has(`${yr}_${r.round}`);
+      let winPts = 0;
+      if (yr <= 1959) winPts = 8 + 1;
+      else if (yr === 1960) winPts = 8;
+      else if (yr <= 1990) winPts = 9;
+      else if (yr <= 2009) winPts = 10;
+      else if (yr <= 2018) winPts = (yr === 2014 && r.round === yrRaces.length) ? 50 : 25;
+      else if (yr <= 2024) winPts = 25 + 1;
+      else winPts = 25;
+
+      if (isHalf) winPts *= 0.5;
+      maxPts += winPts;
+
+      if (r.sprintRaceDate) {
+        if (yr === 2021) maxPts += 3;
+        else maxPts += 8;
+      }
+    }
+    maxPointsByYear.set(yr, Math.max(1, maxPts));
+  }
+
+  // Pre-index driver active years & points for era-normalized points share
+  const driverActiveYears = new Map();
+  const driverTotalPoints = new Map();
+
+  for (const res of rawResults) {
+    if (!res.driverId) continue;
+    if (!driverActiveYears.has(res.driverId)) {
+      driverActiveYears.set(res.driverId, new Set());
+      driverTotalPoints.set(res.driverId, 0);
+    }
+    driverActiveYears.get(res.driverId).add(res.year);
+    if (res.points) {
+      driverTotalPoints.set(res.driverId, driverTotalPoints.get(res.driverId) + res.points);
+    }
+  }
+  for (const sres of rawSprintResults) {
+    if (!sres.driverId) continue;
+    if (!driverActiveYears.has(sres.driverId)) {
+      driverActiveYears.set(sres.driverId, new Set());
+      driverTotalPoints.set(sres.driverId, 0);
+    }
+    driverActiveYears.get(sres.driverId).add(sres.year);
+    if (sres.points) {
+      driverTotalPoints.set(sres.driverId, driverTotalPoints.get(sres.driverId) + sres.points);
+    }
+  }
 
   let geoCircuits = [];
   const geoPath = path.join(CACHE_DIR, 'f1-circuits.geojson');
@@ -529,6 +621,17 @@ async function main() {
     // High profile driver ID aliases (e.g. 'VER', 'HAM', 'MSC', 'SEN')
     const primaryId = DRIVER_SLUG_TO_CODE[d.id] || d.id;
 
+    // Era-normalized points share calculation (earned points / max possible points in active seasons)
+    let sumMaxPossible = 0;
+    const activeYrs = driverActiveYears.get(d.id);
+    if (activeYrs) {
+      for (const yr of activeYrs) {
+        sumMaxPossible += (maxPointsByYear.get(yr) || 100);
+      }
+    }
+    const earnedPts = driverTotalPoints.get(d.id) || d.totalPoints || 0;
+    const pointsSharePct = sumMaxPossible > 0 ? Number(((earnedPts / sumMaxPossible) * 100).toFixed(1)) : 0;
+
     driversMap.set(d.id, {
       id: primaryId,
       slug: d.id,
@@ -545,8 +648,10 @@ async function main() {
       starts,
       winRate,
       podiumRate,
+      pointsSharePct,
       country,
       dateOfBirth: d.dateOfBirth ?? null,
+      birthDate: d.dateOfBirth ?? null,
       isLegend,
       isActive2026,
       raceFinishes: []
@@ -594,15 +699,6 @@ async function main() {
   // ── Construct Seasons Data ──
   console.log('🏆 Compiling 1950–2026 unbroken seasonal chronology...');
   const seasons = [];
-  const racesByYear = new Map();
-  for (const r of rawRaces) {
-    let yrRaces = racesByYear.get(r.year);
-    if (!yrRaces) {
-      yrRaces = [];
-      racesByYear.set(r.year, yrRaces);
-    }
-    yrRaces.push(r);
-  }
 
   const driverStandingsByYear = new Map();
   for (const s of rawSeasonDriverStandings) {
@@ -617,6 +713,8 @@ async function main() {
       constructorStandingsByYear.set(s.year, s);
     }
   }
+
+  const allHistoricalRaces = [];
 
   for (const s of rawSeasons) {
     const yr = s.year;
@@ -690,27 +788,218 @@ async function main() {
       recordsBroken
     });
 
-    // Write compact lazy-load per-season race file
+    // Write rich lazy-load per-season race file
     const seasonClassification = {
       year: yr,
       racesCount: yrRaces.length,
       championDriver,
       championTeam,
-      rounds: yrRaces.map(r => ({
-        round: r.round,
-        date: r.date,
-        name: r.officialName || `${yr} GP`,
-        circuitId: r.circuitId,
-        laps: r.laps,
-        distanceKm: r.distance,
-        isCancelled: Boolean(r.scheduledLaps && r.laps === 0)
-      }))
+      rounds: yrRaces.map(r => {
+        const isCancelled = Boolean(r.scheduledLaps && r.laps === 0);
+        const isHalfPoints = HALF_POINT_RACES.has(`${yr}_${r.round}`);
+        const hasSprint = Boolean(r.sprintRaceDate);
+
+        // Find race results for this round
+        const roundResults = rawResults.filter(res => res.raceId === r.id);
+        const results = roundResults.map(res => {
+          const d = driversMap.get(res.driverId);
+          let status = 'FINISHED';
+          if (res.positionText === 'D' || res.positionText === 'R' || res.positionText === 'DNF') status = 'DNF';
+          else if (res.positionText === 'W' || res.positionText === 'DNS') status = 'DNS';
+          else if (res.positionText === 'DSQ') status = 'DSQ';
+          else if (res.positionText === 'NC') status = 'NC';
+          else if (!res.positionNumber) status = 'DNF';
+
+          return {
+            driverId: d ? d.slug : res.driverId,
+            driverCode: d ? d.code : (res.driverId ? res.driverId.slice(0, 3).toUpperCase() : 'UNK'),
+            driverName: d ? d.name : (res.driverId || 'Unknown'),
+            constructorId: normalizeTeamId(res.constructorId),
+            constructorName: rawConstructorsMap.get(res.constructorId)?.name || res.constructorId,
+            gridPosition: res.gridPositionNumber ?? null,
+            finishPosition: res.positionNumber ?? null,
+            positionText: res.positionText || (res.positionNumber ? String(res.positionNumber) : 'DNF'),
+            points: res.points ?? 0,
+            status,
+            fastestLap: Boolean(res.fastestLap),
+            sharedCar: Boolean(res.sharedCar)
+          };
+        });
+
+        // Sprint results
+        let sprintResults = undefined;
+        if (hasSprint) {
+          const roundSprints = rawSprintResults.filter(sres => sres.raceId === r.id);
+          if (roundSprints.length > 0) {
+            sprintResults = roundSprints.map(sres => {
+              const d = driversMap.get(sres.driverId);
+              let status = 'FINISHED';
+              if (sres.positionText === 'DNF' || sres.positionText === 'R') status = 'DNF';
+              else if (sres.positionText === 'DNS' || sres.positionText === 'W') status = 'DNS';
+              else if (sres.positionText === 'DSQ') status = 'DSQ';
+              else if (!sres.positionNumber) status = 'DNF';
+
+              return {
+                driverId: d ? d.slug : sres.driverId,
+                driverCode: d ? d.code : (sres.driverId ? sres.driverId.slice(0, 3).toUpperCase() : 'UNK'),
+                driverName: d ? d.name : (sres.driverId || 'Unknown'),
+                constructorId: normalizeTeamId(sres.constructorId),
+                constructorName: rawConstructorsMap.get(sres.constructorId)?.name || sres.constructorId,
+                gridPosition: sres.gridPositionNumber ?? null,
+                finishPosition: sres.positionNumber ?? null,
+                positionText: sres.positionText || (sres.positionNumber ? String(sres.positionNumber) : 'DNF'),
+                points: sres.points ?? 0,
+                status,
+                fastestLap: Boolean(sres.fastestLap),
+                sharedCar: false
+              };
+            });
+          }
+        }
+
+        if (r.date && !isCancelled) {
+          const winner = results.find(res => res.finishPosition === 1);
+          allHistoricalRaces.push({
+            year: yr,
+            round: r.round,
+            date: r.date,
+            name: r.officialName || `${yr} GP`,
+            circuitId: r.circuitId,
+            winnerName: winner ? winner.driverName : null,
+            winnerConstructor: winner ? winner.constructorName : null
+          });
+        }
+
+        return {
+          round: r.round,
+          date: r.date,
+          name: r.officialName || `${yr} GP`,
+          circuitId: r.circuitId,
+          circuitLayoutId: r.circuitLayoutId || null,
+          laps: r.laps,
+          distanceKm: r.distance,
+          isCancelled,
+          isHalfPoints,
+          hasSprint,
+          results,
+          sprintResults
+        };
+      }),
+      standingsProgression: yrRaces.map(r => {
+        const roundStandings = rawRacesDriverStandings
+          .filter(s => s.raceId === r.id)
+          .sort((a, b) => (a.positionNumber || a.positionDisplayOrder) - (b.positionNumber || b.positionDisplayOrder))
+          .slice(0, 10)
+          .map(s => {
+            const d = driversMap.get(s.driverId);
+            return {
+              driverId: d ? d.slug : s.driverId,
+              driverCode: d ? d.code : s.driverId.slice(0, 3).toUpperCase(),
+              driverName: d ? d.name : s.driverId,
+              constructorId: d ? d.teamId : 'historic',
+              points: s.points,
+              position: s.positionNumber || s.positionDisplayOrder
+            };
+          });
+
+        return {
+          round: r.round,
+          standings: roundStandings
+        };
+      })
     };
     fs.writeFileSync(
       path.join(PUBLIC_SEASONS_DIR, `${yr}.json`),
       JSON.stringify(seasonClassification, null, 2)
     );
   }
+
+  // Precompute Teammate Head-to-Head records across all mutual races
+  console.log('🤝 Precomputing Teammate Head-to-Head records across all mutual races...');
+  const racesByConstructor = new Map();
+  for (const r of rawResults) {
+    if (r.positionText === 'DNS') continue;
+    const key = `${r.year}_${r.round}_${r.constructorId}`;
+    if (!racesByConstructor.has(key)) racesByConstructor.set(key, []);
+    racesByConstructor.get(key).push(r);
+  }
+
+  const teammateMap = {};
+  for (const [key, entries] of racesByConstructor.entries()) {
+    if (entries.length < 2) continue;
+    const parts = key.split('_');
+    const yr = parseInt(parts[0], 10);
+    const constr = normalizeTeamId(parts[2]);
+
+    for (let i = 0; i < entries.length; i++) {
+      for (let j = i + 1; j < entries.length; j++) {
+        const eA = entries[i];
+        const eB = entries[j];
+        const slugA = eA.driverId;
+        const slugB = eB.driverId;
+        if (!slugA || !slugB || slugA === slugB) continue;
+
+        const aIsFirst = slugA < slugB;
+        const d1 = aIsFirst ? eA : eB;
+        const d2 = aIsFirst ? eB : eA;
+        const pairKey = `${d1.driverId}__${d2.driverId}`;
+
+        if (!teammateMap[pairKey]) {
+          teammateMap[pairKey] = {
+            racesTogether: 0,
+            driverAWins: 0,
+            driverBWins: 0,
+            driverAOutqualified: 0,
+            driverBOutqualified: 0,
+            driverAPoints: 0,
+            driverBPoints: 0,
+            years: new Set(),
+            constructors: new Set()
+          };
+        }
+        const rec = teammateMap[pairKey];
+        rec.racesTogether++;
+        rec.years.add(yr);
+        rec.constructors.add(constr);
+
+        // Race finish comparison
+        if (d1.positionNumber && d2.positionNumber) {
+          if (d1.positionNumber < d2.positionNumber) rec.driverAWins++;
+          else if (d2.positionNumber < d1.positionNumber) rec.driverBWins++;
+        } else if (d1.positionNumber && !d2.positionNumber) {
+          rec.driverAWins++;
+        } else if (!d1.positionNumber && d2.positionNumber) {
+          rec.driverBWins++;
+        }
+
+        // Qualifying comparison
+        if (d1.gridPositionNumber && d2.gridPositionNumber) {
+          if (d1.gridPositionNumber < d2.gridPositionNumber) rec.driverAOutqualified++;
+          else if (d2.gridPositionNumber < d1.gridPositionNumber) rec.driverBOutqualified++;
+        }
+
+        rec.driverAPoints += (d1.points || 0);
+        rec.driverBPoints += (d2.points || 0);
+      }
+    }
+  }
+
+  // Serialize compact lookup
+  const serializedTeammates = {};
+  for (const [k, v] of Object.entries(teammateMap)) {
+    serializedTeammates[k] = {
+      racesTogether: v.racesTogether,
+      driverAWins: v.driverAWins,
+      driverBWins: v.driverBWins,
+      driverAOutqualified: v.driverAOutqualified,
+      driverBOutqualified: v.driverBOutqualified,
+      driverAPoints: Math.round(v.driverAPoints * 10) / 10,
+      driverBPoints: Math.round(v.driverBPoints * 10) / 10,
+      years: Array.from(v.years).sort((a, b) => a - b),
+      constructors: Array.from(v.constructors)
+    };
+  }
+  fs.writeFileSync(path.join(PUBLIC_DATA_DIR, 'teammates.json'), JSON.stringify(serializedTeammates));
 
   // ── Construct Constructors Data ──
   console.log('🏎️ Compiling Constructors registry with 2026 11-team grid & legends...');
@@ -861,6 +1150,13 @@ async function main() {
     ]
   };
 
+  // Group layouts by circuitId
+  const layoutsByCircuit = new Map();
+  for (const l of rawCircuitsLayouts) {
+    if (!layoutsByCircuit.has(l.circuitId)) layoutsByCircuit.set(l.circuitId, []);
+    layoutsByCircuit.get(l.circuitId).push(l);
+  }
+
   for (const rc of rawCircuits) {
     const cId = rc.id.toLowerCase();
     const cleanName = (rc.name || '').toLowerCase().replace(/[^\w]/g, '');
@@ -883,6 +1179,55 @@ async function main() {
     const country = countryNameMap[rc.countryId] || rc.countryId || 'International';
     const trackType = rc.type === 'STREET' ? 'Street' : rc.type === 'SEMI_PERMANENT' ? 'Semi-Permanent' : 'Permanent';
 
+    // Compute circuit history metrics (pole-to-win, layout eras, past winners)
+    const circuitRaces = rawRaces.filter(r => r.circuitId === cId).sort((a, b) => a.year - b.year);
+    let poleWins = 0;
+    let recordedPoles = 0;
+    const pastWinners = [];
+    const layoutUsage = new Map();
+
+    for (const r of circuitRaces) {
+      const lid = r.circuitLayoutId;
+      if (lid) {
+        if (!layoutUsage.has(lid)) layoutUsage.set(lid, { count: 0, minYear: r.year, maxYear: r.year });
+        const u = layoutUsage.get(lid);
+        u.count++;
+        u.minYear = Math.min(u.minYear, r.year);
+        u.maxYear = Math.max(u.maxYear, r.year);
+      }
+
+      const winner = rawResults.find(res => res.raceId === r.id && res.positionNumber === 1);
+      if (winner) {
+        if (winner.gridPositionNumber !== null && winner.gridPositionNumber !== undefined) {
+          recordedPoles++;
+          if (winner.gridPositionNumber === 1) poleWins++;
+        }
+        const dObj = driversMap.get(winner.driverId);
+        pastWinners.push({
+          year: r.year,
+          driverName: dObj ? dObj.name : winner.driverId,
+          constructorName: rawConstructorsMap.get(winner.constructorId)?.name || winner.constructorId,
+          gridPosition: winner.gridPositionNumber ?? null
+        });
+      }
+    }
+
+    const poleToWinRate = recordedPoles > 0 ? Number(((poleWins / recordedPoles) * 100).toFixed(1)) : null;
+
+    const circuitLayouts = layoutsByCircuit.get(cId) || [];
+    const layoutEras = circuitLayouts.map(cl => {
+      const usage = layoutUsage.get(cl.id);
+      const years = usage ? (usage.minYear === usage.maxYear ? `${usage.minYear}` : `${usage.minYear}–${usage.maxYear}`) : 'Historic / Alternative';
+      return {
+        layoutId: cl.id,
+        lengthKm: cl.length,
+        turns: cl.turns,
+        effective: Boolean(cl.effective),
+        years,
+        racesCount: usage ? usage.count : 0
+      };
+    }).sort((a, b) => b.racesCount - a.racesCount);
+
     // Write lazy-loaded circuit 3D spline file
     fs.writeFileSync(
       path.join(PUBLIC_CIRCUITS_DIR, `${cId}.json`),
@@ -903,6 +1248,12 @@ async function main() {
       elevation: rc.elevation || '+25m',
       type: trackType,
       description: `${rc.fullName || rc.name} is an officially indexed Formula 1 venue located in ${rc.placeName || country}, ${country}.`,
+      totalRaces: circuitRaces.length,
+      poleToWinRate,
+      poleToWinCount: poleWins,
+      racesWithRecordedPole: recordedPoles,
+      pastWinners: pastWinners.slice(-10).reverse(),
+      layoutEras,
       trackCoordinates: spline
     });
   }
@@ -928,6 +1279,21 @@ async function main() {
       elevation: '+18m',
       type: 'Semi-Permanent',
       description: 'The all-new semi-permanent Madrid street circuit around IFEMA, featuring banked corners and high-speed tunnel sections for the 2026 Formula 1 Spanish Grand Prix.',
+      totalRaces: 0,
+      poleToWinRate: null,
+      poleToWinCount: 0,
+      racesWithRecordedPole: 0,
+      pastWinners: [],
+      layoutEras: [
+        {
+          layoutId: 'madring-1',
+          lengthKm: 5.474,
+          turns: 20,
+          effective: true,
+          years: '2026',
+          racesCount: 0
+        }
+      ],
       trackCoordinates: madridSpline
     });
   }
@@ -962,6 +1328,25 @@ async function main() {
   fs.writeFileSync(path.join(SRC_GEN_DIR, 'drivers.json'), JSON.stringify(allDriversArray, null, 2));
   fs.writeFileSync(path.join(SRC_GEN_DIR, 'circuits.json'), JSON.stringify(circuits, null, 2));
   fs.writeFileSync(path.join(SRC_GEN_DIR, 'meta.json'), JSON.stringify(meta, null, 2));
+
+  // Write compact historical events index for "On This Day in F1"
+  const driversWithBirthdays = allDriversArray
+    .filter(d => d.birthDate)
+    .map(d => ({
+      id: d.id,
+      name: d.name,
+      code: d.code,
+      birthDate: d.birthDate,
+      country: d.country,
+      championships: d.championships,
+      wins: d.wins
+    }));
+
+  const historicalEvents = {
+    races: allHistoricalRaces,
+    birthdays: driversWithBirthdays
+  };
+  fs.writeFileSync(path.join(PUBLIC_DATA_DIR, 'historical-events.json'), JSON.stringify(historicalEvents));
 
   console.log(`✅ ETL Complete!
   • Seasons: ${seasons.length} (1950 - 2026 unbroken)

@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getAllCircuits, getCircuitById, getF1DBMetadata } from '../../data/dataService';
 import { StatCard } from '../../components/StatCard/StatCard';
 import { Track3DViewer } from './Track3DViewer';
-import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { usePageMeta } from '../../hooks/usePageMeta';
 import './CircuitsArchive.css';
 
 export const CircuitsArchive: React.FC = () => {
@@ -26,11 +26,6 @@ export const CircuitsArchive: React.FC = () => {
   }, [allCircuits, searchQuery]);
 
   const selectedCircuit = getCircuitById(circuitId) || allCircuits[0];
-  useDocumentTitle(selectedCircuit ? selectedCircuit.name : 'Race Circuits');
-
-  const handleSelectCircuit = (id: string) => {
-    navigate(`/circuits/${id}`);
-  };
 
   const getTypeColor = (type: string) => {
     if (type === 'Permanent') return '#00D2FF';
@@ -39,6 +34,37 @@ export const CircuitsArchive: React.FC = () => {
   };
 
   const accentColor = getTypeColor(selectedCircuit.type);
+
+  // Dynamic route SEO and structured schema
+  usePageMeta({
+    title: `${selectedCircuit.name} (${selectedCircuit.country}) — Grand Prix Circuit Archive`,
+    description: `Explore ${selectedCircuit.name} circuit map, 3D ribbon geometry, official lap record (${selectedCircuit.lapRecord || 'Benchmark'}), pole-to-win conversion rate, and historical layout configurations.`,
+    canonicalPath: `/circuits/${selectedCircuit.id}`,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'Place',
+      name: selectedCircuit.name,
+      address: {
+        '@type': 'PostalAddress',
+        addressLocality: selectedCircuit.city,
+        addressCountry: selectedCircuit.country
+      }
+    }
+  });
+
+  const handleSelectCircuit = (id: string) => {
+    navigate(`/circuits/${id}`);
+  };
+
+  const poleRateLabel =
+    selectedCircuit.poleToWinRate !== null && selectedCircuit.poleToWinRate !== undefined
+      ? `${selectedCircuit.poleToWinRate}%`
+      : 'N/A';
+
+  const poleRateSubtext =
+    selectedCircuit.racesWithRecordedPole && selectedCircuit.racesWithRecordedPole > 0
+      ? `${selectedCircuit.poleToWinCount}/${selectedCircuit.racesWithRecordedPole} recorded GPs`
+      : 'Sample size pending';
 
   return (
     <div className="archive-layout circuits-archive-page">
@@ -147,10 +173,10 @@ export const CircuitsArchive: React.FC = () => {
             accentColor="#00D2FF"
           />
           <StatCard
-            label="DRS ACTIVATION ZONES"
-            value={selectedCircuit.drsZones ?? '—'}
-            subtext="High-Speed DRS Traps"
-            accentColor="#00E701"
+            label="POLE-TO-WIN RATE"
+            value={poleRateLabel}
+            subtext={poleRateSubtext}
+            accentColor="#FFD700"
           />
           <StatCard
             label="ELEVATION CHANGE"
@@ -165,6 +191,79 @@ export const CircuitsArchive: React.FC = () => {
           circuit={selectedCircuit}
           accentColor={accentColor}
         />
+
+        {/* Historical Layout Configurations & Eras */}
+        {selectedCircuit.layoutEras && selectedCircuit.layoutEras.length > 0 && (
+          <section className="circuit-history-panel telemetry-panel corner-bracket">
+            <div className="section-title-bar">
+              <span className="section-dot" style={{ background: '#00D2FF' }}></span>
+              <h2 className="headline">HISTORICAL LAYOUT CONFIGURATIONS & ERAS</h2>
+            </div>
+            <div className="layouts-grid">
+              {selectedCircuit.layoutEras.map(layout => (
+                <div
+                  key={layout.layoutId}
+                  className={`layout-card ${layout.effective ? 'layout-effective' : ''}`}
+                >
+                  <div className="layout-header">
+                    <strong className="headline layout-id-tag">{layout.layoutId}</strong>
+                    {layout.effective && (
+                      <span className="telemetry layout-active-badge">CURRENT SPEC</span>
+                    )}
+                  </div>
+                  <div className="layout-specs telemetry">
+                    <span>LENGTH: <strong>{layout.lengthKm} km</strong></span>
+                    <span>TURNS: <strong>{layout.turns}</strong></span>
+                    <span>ERAS: <strong>{layout.years}</strong></span>
+                    <span>GRANDS PRIX: <strong>{layout.racesCount} GPs</strong></span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Recent Grand Prix Winners Table */}
+        {selectedCircuit.pastWinners && selectedCircuit.pastWinners.length > 0 && (
+          <section className="circuit-history-panel telemetry-panel corner-bracket">
+            <div className="section-title-bar">
+              <span className="section-dot" style={{ background: '#00E701' }}></span>
+              <h2 className="headline">RECENT GRAND PRIX WINNERS AT THIS VENUE</h2>
+            </div>
+            <div className="table-responsive-wrapper">
+              <table className="f1-table" aria-label={`Recent winners at ${selectedCircuit.name}`}>
+                <thead>
+                  <tr>
+                    <th className="telemetry">YEAR</th>
+                    <th className="telemetry">RACE WINNER</th>
+                    <th className="telemetry">CONSTRUCTOR</th>
+                    <th className="telemetry text-center">STARTING GRID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {selectedCircuit.pastWinners.slice(0, 8).map(w => (
+                    <tr key={w.year}>
+                      <td className="headline" style={{ color: 'var(--color-accent-primary)' }}>
+                        {w.year}
+                      </td>
+                      <td className="headline">{w.driverName}</td>
+                      <td className="telemetry text-muted">{w.constructorName}</td>
+                      <td className="telemetry text-center">
+                        {w.gridPosition === 1 ? (
+                          <span style={{ color: '#FFD700', fontWeight: 'bold' }}>POLE (P1)</span>
+                        ) : w.gridPosition !== null ? (
+                          `P${w.gridPosition}`
+                        ) : (
+                          '—'
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
       </main>
     </div>
   );

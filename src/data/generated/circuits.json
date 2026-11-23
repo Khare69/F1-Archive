@@ -13,6 +13,82 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Adelaide Street Circuit is an officially indexed Formula 1 venue located in Adelaide, Australia.",
+    "totalRaces": 11,
+    "poleToWinRate": 45.5,
+    "poleToWinCount": 5,
+    "racesWithRecordedPole": 11,
+    "pastWinners": [
+      {
+        "year": 1995,
+        "driverName": "Damon Hill",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 1994,
+        "driverName": "Nigel Mansell",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 1993,
+        "driverName": "Ayrton Senna",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1992,
+        "driverName": "Gerhard Berger",
+        "constructorName": "McLaren",
+        "gridPosition": 4
+      },
+      {
+        "year": 1991,
+        "driverName": "Ayrton Senna",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1990,
+        "driverName": "Nelson Piquet",
+        "constructorName": "Benetton",
+        "gridPosition": 7
+      },
+      {
+        "year": 1989,
+        "driverName": "Thierry Boutsen",
+        "constructorName": "Williams",
+        "gridPosition": 5
+      },
+      {
+        "year": 1988,
+        "driverName": "Alain Prost",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 1987,
+        "driverName": "Gerhard Berger",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 1986,
+        "driverName": "Alain Prost",
+        "constructorName": "McLaren",
+        "gridPosition": 4
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "adelaide-1",
+        "lengthKm": 3.78,
+        "turns": 16,
+        "effective": true,
+        "years": "1985–1995",
+        "racesCount": 11
+      }
+    ],
     "trackCoordinates": [
       [
         5.101,
@@ -510,6 +586,34 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Okayama International Circuit is an officially indexed Formula 1 venue located in Aida, Japan.",
+    "totalRaces": 2,
+    "poleToWinRate": 0,
+    "poleToWinCount": 0,
+    "racesWithRecordedPole": 2,
+    "pastWinners": [
+      {
+        "year": 1995,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Benetton",
+        "gridPosition": 3
+      },
+      {
+        "year": 1994,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Benetton",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "aida-1",
+        "lengthKm": 3.703,
+        "turns": 13,
+        "effective": true,
+        "years": "1994–1995",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         6.868,
@@ -917,6 +1021,28 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Ain-Diab Circuit is an officially indexed Formula 1 venue located in Casablanca, Morocco.",
+    "totalRaces": 1,
+    "poleToWinRate": 0,
+    "poleToWinCount": 0,
+    "racesWithRecordedPole": 1,
+    "pastWinners": [
+      {
+        "year": 1958,
+        "driverName": "Stirling Moss",
+        "constructorName": "Vanwall",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "ain-diab-1",
+        "lengthKm": 7.618,
+        "turns": 18,
+        "effective": true,
+        "years": "1958",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         7.122,
@@ -1414,6 +1540,52 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Aintree Motor Racing Circuit is an officially indexed Formula 1 venue located in Aintree, United Kingdom.",
+    "totalRaces": 5,
+    "poleToWinRate": 60,
+    "poleToWinCount": 3,
+    "racesWithRecordedPole": 5,
+    "pastWinners": [
+      {
+        "year": 1962,
+        "driverName": "Jim Clark",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      },
+      {
+        "year": 1961,
+        "driverName": "Wolfgang von Trips",
+        "constructorName": "Ferrari",
+        "gridPosition": 4
+      },
+      {
+        "year": 1959,
+        "driverName": "Jack Brabham",
+        "constructorName": "Cooper",
+        "gridPosition": 1
+      },
+      {
+        "year": 1957,
+        "driverName": "Tony Brooks",
+        "constructorName": "Vanwall",
+        "gridPosition": 3
+      },
+      {
+        "year": 1955,
+        "driverName": "Stirling Moss",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "aintree-1",
+        "lengthKm": 4.828,
+        "turns": 8,
+        "effective": true,
+        "years": "1955–1962",
+        "racesCount": 5
+      }
+    ],
     "trackCoordinates": [
       [
         7.852,
@@ -1671,6 +1843,58 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Anderstorp Raceway is an officially indexed Formula 1 venue located in Anderstorp, Sweden.",
+    "totalRaces": 6,
+    "poleToWinRate": 16.7,
+    "poleToWinCount": 1,
+    "racesWithRecordedPole": 6,
+    "pastWinners": [
+      {
+        "year": 1978,
+        "driverName": "Niki Lauda",
+        "constructorName": "Brabham",
+        "gridPosition": 3
+      },
+      {
+        "year": 1977,
+        "driverName": "Jacques Laffite",
+        "constructorName": "Ligier",
+        "gridPosition": 8
+      },
+      {
+        "year": 1976,
+        "driverName": "Jody Scheckter",
+        "constructorName": "Tyrrell",
+        "gridPosition": 1
+      },
+      {
+        "year": 1975,
+        "driverName": "Niki Lauda",
+        "constructorName": "Ferrari",
+        "gridPosition": 5
+      },
+      {
+        "year": 1974,
+        "driverName": "Jody Scheckter",
+        "constructorName": "Tyrrell",
+        "gridPosition": 2
+      },
+      {
+        "year": 1973,
+        "driverName": "Denny Hulme",
+        "constructorName": "McLaren",
+        "gridPosition": 6
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "anderstorp-1",
+        "lengthKm": 4.031,
+        "turns": 8,
+        "effective": true,
+        "years": "1973–1978",
+        "racesCount": 6
+      }
+    ],
     "trackCoordinates": [
       [
         7.138,
@@ -1928,6 +2152,82 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Circuit of the Americas is an officially indexed Formula 1 venue located in Austin, United States of America.",
+    "totalRaces": 14,
+    "poleToWinRate": 50,
+    "poleToWinCount": 7,
+    "racesWithRecordedPole": 14,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Kimi Antonelli",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Charles Leclerc",
+        "constructorName": "Ferrari",
+        "gridPosition": 4
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 6
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2021,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2019,
+        "driverName": "Valtteri Bottas",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2018,
+        "driverName": "Kimi Räikkönen",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2017,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2016,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "austin-1",
+        "lengthKm": 5.513,
+        "turns": 20,
+        "effective": true,
+        "years": "2012–2026",
+        "racesCount": 14
+      }
+    ],
     "trackCoordinates": [
       [
         -3.46,
@@ -2795,6 +3095,28 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "AVUS is an officially indexed Formula 1 venue located in Berlin, Germany.",
+    "totalRaces": 1,
+    "poleToWinRate": 100,
+    "poleToWinCount": 1,
+    "racesWithRecordedPole": 1,
+    "pastWinners": [
+      {
+        "year": 1959,
+        "driverName": "Tony Brooks",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "avus-1",
+        "lengthKm": 8.3,
+        "turns": 4,
+        "effective": true,
+        "years": "1959",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         8.303,
@@ -2932,6 +3254,98 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Bahrain International Circuit is an officially indexed Formula 1 venue located in Sakhir, Bahrain.",
+    "totalRaces": 22,
+    "poleToWinRate": 50,
+    "poleToWinCount": 11,
+    "racesWithRecordedPole": 22,
+    "pastWinners": [
+      {
+        "year": 2025,
+        "driverName": "Oscar Piastri",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "Charles Leclerc",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2021,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2020,
+        "driverName": "Sergio Pérez",
+        "constructorName": "Racing Point",
+        "gridPosition": 5
+      },
+      {
+        "year": 2020,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2019,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 3
+      },
+      {
+        "year": 2018,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2017,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Ferrari",
+        "gridPosition": 3
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "bahrain-1",
+        "lengthKm": 5.412,
+        "turns": 15,
+        "effective": true,
+        "years": "2004–2025",
+        "racesCount": 20
+      },
+      {
+        "layoutId": "bahrain-2",
+        "lengthKm": 6.299,
+        "turns": 23,
+        "effective": false,
+        "years": "2010",
+        "racesCount": 1
+      },
+      {
+        "layoutId": "bahrain-3",
+        "lengthKm": 3.543,
+        "turns": 11,
+        "effective": false,
+        "years": "2020",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         -3.769,
@@ -3414,6 +3828,82 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Baku City Circuit is an officially indexed Formula 1 venue located in Baku, Azerbaijan.",
+    "totalRaces": 10,
+    "poleToWinRate": 40,
+    "poleToWinCount": 4,
+    "racesWithRecordedPole": 10,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "George Russell",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Oscar Piastri",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 2023,
+        "driverName": "Sergio Pérez",
+        "constructorName": "Red Bull",
+        "gridPosition": 3
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 3
+      },
+      {
+        "year": 2021,
+        "driverName": "Sergio Pérez",
+        "constructorName": "Red Bull",
+        "gridPosition": 6
+      },
+      {
+        "year": 2019,
+        "driverName": "Valtteri Bottas",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2018,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2017,
+        "driverName": "Daniel Ricciardo",
+        "constructorName": "Red Bull",
+        "gridPosition": 10
+      },
+      {
+        "year": 2016,
+        "driverName": "Nico Rosberg",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "baku-1",
+        "lengthKm": 6.003,
+        "turns": 20,
+        "effective": true,
+        "years": "2016–2026",
+        "racesCount": 10
+      }
+    ],
     "trackCoordinates": [
       [
         6.254,
@@ -3856,6 +4346,90 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Brands Hatch is an officially indexed Formula 1 venue located in Fawkham, United Kingdom.",
+    "totalRaces": 14,
+    "poleToWinRate": 28.6,
+    "poleToWinCount": 4,
+    "racesWithRecordedPole": 14,
+    "pastWinners": [
+      {
+        "year": 1986,
+        "driverName": "Nigel Mansell",
+        "constructorName": "Williams",
+        "gridPosition": 2
+      },
+      {
+        "year": 1985,
+        "driverName": "Nigel Mansell",
+        "constructorName": "Williams",
+        "gridPosition": 3
+      },
+      {
+        "year": 1984,
+        "driverName": "Niki Lauda",
+        "constructorName": "McLaren",
+        "gridPosition": 3
+      },
+      {
+        "year": 1983,
+        "driverName": "Nelson Piquet",
+        "constructorName": "Brabham",
+        "gridPosition": 4
+      },
+      {
+        "year": 1982,
+        "driverName": "Niki Lauda",
+        "constructorName": "McLaren",
+        "gridPosition": 5
+      },
+      {
+        "year": 1980,
+        "driverName": "Alan Jones",
+        "constructorName": "Williams",
+        "gridPosition": 3
+      },
+      {
+        "year": 1978,
+        "driverName": "Carlos Reutemann",
+        "constructorName": "Ferrari",
+        "gridPosition": 8
+      },
+      {
+        "year": 1976,
+        "driverName": "Niki Lauda",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 1974,
+        "driverName": "Jody Scheckter",
+        "constructorName": "Tyrrell",
+        "gridPosition": 3
+      },
+      {
+        "year": 1972,
+        "driverName": "Emerson Fittipaldi",
+        "constructorName": "Lotus",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "brands-hatch-2",
+        "lengthKm": 4.207,
+        "turns": 9,
+        "effective": true,
+        "years": "1976–1986",
+        "racesCount": 8
+      },
+      {
+        "layoutId": "brands-hatch-1",
+        "lengthKm": 4.265,
+        "turns": 9,
+        "effective": false,
+        "years": "1964–1974",
+        "racesCount": 6
+      }
+    ],
     "trackCoordinates": [
       [
         5.305,
@@ -4143,6 +4717,52 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Circuit Bremgarten is an officially indexed Formula 1 venue located in Bern, Switzerland.",
+    "totalRaces": 5,
+    "poleToWinRate": 20,
+    "poleToWinCount": 1,
+    "racesWithRecordedPole": 5,
+    "pastWinners": [
+      {
+        "year": 1954,
+        "driverName": "Juan Manuel Fangio",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 1953,
+        "driverName": "Alberto Ascari",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 1952,
+        "driverName": "Piero Taruffi",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 1951,
+        "driverName": "Juan Manuel Fangio",
+        "constructorName": "Alfa Romeo",
+        "gridPosition": 1
+      },
+      {
+        "year": 1950,
+        "driverName": "Nino Farina",
+        "constructorName": "Alfa Romeo",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "bremgarten-1",
+        "lengthKm": 7.28,
+        "turns": 13,
+        "effective": true,
+        "years": "1950–1954",
+        "racesCount": 5
+      }
+    ],
     "trackCoordinates": [
       [
         8.537,
@@ -4550,6 +5170,40 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Buddh International Circuit is an officially indexed Formula 1 venue located in Greater Noida, India.",
+    "totalRaces": 3,
+    "poleToWinRate": 100,
+    "poleToWinCount": 3,
+    "racesWithRecordedPole": 3,
+    "pastWinners": [
+      {
+        "year": 2013,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2012,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2011,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "buddh-1",
+        "lengthKm": 5.125,
+        "turns": 16,
+        "effective": true,
+        "years": "2011–2013",
+        "racesCount": 3
+      }
+    ],
     "trackCoordinates": [
       [
         0,
@@ -4622,6 +5276,106 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Autódromo Juan y Oscar Gálvez is an officially indexed Formula 1 venue located in Buenos Aires, Argentina.",
+    "totalRaces": 20,
+    "poleToWinRate": 35,
+    "poleToWinCount": 7,
+    "racesWithRecordedPole": 20,
+    "pastWinners": [
+      {
+        "year": 1998,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 1997,
+        "driverName": "Jacques Villeneuve",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 1996,
+        "driverName": "Damon Hill",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 1995,
+        "driverName": "Damon Hill",
+        "constructorName": "Williams",
+        "gridPosition": 2
+      },
+      {
+        "year": 1981,
+        "driverName": "Nelson Piquet",
+        "constructorName": "Brabham",
+        "gridPosition": 1
+      },
+      {
+        "year": 1980,
+        "driverName": "Alan Jones",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 1979,
+        "driverName": "Jacques Laffite",
+        "constructorName": "Ligier",
+        "gridPosition": 1
+      },
+      {
+        "year": 1978,
+        "driverName": "Mario Andretti",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      },
+      {
+        "year": 1977,
+        "driverName": "Jody Scheckter",
+        "constructorName": "Wolf",
+        "gridPosition": 11
+      },
+      {
+        "year": 1975,
+        "driverName": "Emerson Fittipaldi",
+        "constructorName": "McLaren",
+        "gridPosition": 5
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "buenos-aires-1",
+        "lengthKm": 3.912,
+        "turns": 13,
+        "effective": false,
+        "years": "1953–1960",
+        "racesCount": 7
+      },
+      {
+        "layoutId": "buenos-aires-3",
+        "lengthKm": 5.968,
+        "turns": 16,
+        "effective": false,
+        "years": "1974–1981",
+        "racesCount": 7
+      },
+      {
+        "layoutId": "buenos-aires-4",
+        "lengthKm": 4.259,
+        "turns": 19,
+        "effective": true,
+        "years": "1995–1998",
+        "racesCount": 4
+      },
+      {
+        "layoutId": "buenos-aires-2",
+        "lengthKm": 3.353,
+        "turns": 14,
+        "effective": false,
+        "years": "1972–1973",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         -1.949,
@@ -5084,6 +5838,28 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Bugatti Circuit is an officially indexed Formula 1 venue located in Le Mans, France.",
+    "totalRaces": 1,
+    "poleToWinRate": 0,
+    "poleToWinCount": 0,
+    "racesWithRecordedPole": 1,
+    "pastWinners": [
+      {
+        "year": 1967,
+        "driverName": "Jack Brabham",
+        "constructorName": "Brabham",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "bugatti-1",
+        "lengthKm": 4.185,
+        "turns": 14,
+        "effective": true,
+        "years": "1967",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         5.25,
@@ -5521,6 +6297,34 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Caesars Palace is an officially indexed Formula 1 venue located in Las Vegas, United States of America.",
+    "totalRaces": 2,
+    "poleToWinRate": 0,
+    "poleToWinCount": 0,
+    "racesWithRecordedPole": 2,
+    "pastWinners": [
+      {
+        "year": 1982,
+        "driverName": "Michele Alboreto",
+        "constructorName": "Tyrrell",
+        "gridPosition": 3
+      },
+      {
+        "year": 1981,
+        "driverName": "Alan Jones",
+        "constructorName": "Williams",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "caesars-palace-1",
+        "lengthKm": 3.65,
+        "turns": 14,
+        "effective": true,
+        "years": "1981–1982",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         2.955,
@@ -6033,6 +6837,122 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Circuit de Barcelona-Catalunya is an officially indexed Formula 1 venue located in Montmeló, Spain.",
+    "totalRaces": 36,
+    "poleToWinRate": 69.4,
+    "poleToWinCount": 25,
+    "racesWithRecordedPole": 36,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2025,
+        "driverName": "Oscar Piastri",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2021,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2020,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2019,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2018,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2017,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "catalunya-4",
+        "lengthKm": 4.655,
+        "turns": 16,
+        "effective": false,
+        "years": "2007–2020",
+        "racesCount": 14
+      },
+      {
+        "layoutId": "catalunya-2",
+        "lengthKm": 4.73,
+        "turns": 13,
+        "effective": false,
+        "years": "1995–2003",
+        "racesCount": 9
+      },
+      {
+        "layoutId": "catalunya-1",
+        "lengthKm": 4.747,
+        "turns": 14,
+        "effective": false,
+        "years": "1991–1994",
+        "racesCount": 4
+      },
+      {
+        "layoutId": "catalunya-6",
+        "lengthKm": 4.657,
+        "turns": 14,
+        "effective": true,
+        "years": "2023–2026",
+        "racesCount": 4
+      },
+      {
+        "layoutId": "catalunya-3",
+        "lengthKm": 4.627,
+        "turns": 14,
+        "effective": false,
+        "years": "2004–2006",
+        "racesCount": 3
+      },
+      {
+        "layoutId": "catalunya-5",
+        "lengthKm": 4.675,
+        "turns": 16,
+        "effective": false,
+        "years": "2021–2022",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         8.022,
@@ -6470,6 +7390,46 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Charade Circuit is an officially indexed Formula 1 venue located in Clermont-Ferrand, France.",
+    "totalRaces": 4,
+    "poleToWinRate": 50,
+    "poleToWinCount": 2,
+    "racesWithRecordedPole": 4,
+    "pastWinners": [
+      {
+        "year": 1972,
+        "driverName": "Jackie Stewart",
+        "constructorName": "Tyrrell",
+        "gridPosition": 3
+      },
+      {
+        "year": 1970,
+        "driverName": "Jochen Rindt",
+        "constructorName": "Lotus",
+        "gridPosition": 6
+      },
+      {
+        "year": 1969,
+        "driverName": "Jackie Stewart",
+        "constructorName": "Matra",
+        "gridPosition": 1
+      },
+      {
+        "year": 1965,
+        "driverName": "Jim Clark",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "clermont-ferrand-1",
+        "lengthKm": 8.055,
+        "turns": 48,
+        "effective": true,
+        "years": "1965–1972",
+        "racesCount": 4
+      }
+    ],
     "trackCoordinates": [
       [
         5.108,
@@ -6967,6 +7927,28 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Fair Park is an officially indexed Formula 1 venue located in Dallas, United States of America.",
+    "totalRaces": 1,
+    "poleToWinRate": 0,
+    "poleToWinCount": 0,
+    "racesWithRecordedPole": 1,
+    "pastWinners": [
+      {
+        "year": 1984,
+        "driverName": "Keke Rosberg",
+        "constructorName": "Williams",
+        "gridPosition": 8
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "dallas-1",
+        "lengthKm": 3.901,
+        "turns": 23,
+        "effective": true,
+        "years": "1984",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         7.217,
@@ -7464,6 +8446,72 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Detroit Street Circuit is an officially indexed Formula 1 venue located in Detroit, United States of America.",
+    "totalRaces": 7,
+    "poleToWinRate": 42.9,
+    "poleToWinCount": 3,
+    "racesWithRecordedPole": 7,
+    "pastWinners": [
+      {
+        "year": 1988,
+        "driverName": "Ayrton Senna",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1987,
+        "driverName": "Ayrton Senna",
+        "constructorName": "Lotus",
+        "gridPosition": 2
+      },
+      {
+        "year": 1986,
+        "driverName": "Ayrton Senna",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      },
+      {
+        "year": 1985,
+        "driverName": "Keke Rosberg",
+        "constructorName": "Williams",
+        "gridPosition": 5
+      },
+      {
+        "year": 1984,
+        "driverName": "Nelson Piquet",
+        "constructorName": "Brabham",
+        "gridPosition": 1
+      },
+      {
+        "year": 1983,
+        "driverName": "Michele Alboreto",
+        "constructorName": "Tyrrell",
+        "gridPosition": 6
+      },
+      {
+        "year": 1982,
+        "driverName": "John Watson",
+        "constructorName": "McLaren",
+        "gridPosition": 17
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "detroit-2",
+        "lengthKm": 4.023,
+        "turns": 22,
+        "effective": true,
+        "years": "1983–1988",
+        "racesCount": 6
+      },
+      {
+        "layoutId": "detroit-1",
+        "lengthKm": 4.168,
+        "turns": 24,
+        "effective": false,
+        "years": "1982",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         7.613,
@@ -7961,6 +9009,66 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Dijon-Prenois is an officially indexed Formula 1 venue located in Dijon, France.",
+    "totalRaces": 6,
+    "poleToWinRate": 33.3,
+    "poleToWinCount": 2,
+    "racesWithRecordedPole": 6,
+    "pastWinners": [
+      {
+        "year": 1984,
+        "driverName": "Niki Lauda",
+        "constructorName": "McLaren",
+        "gridPosition": 9
+      },
+      {
+        "year": 1982,
+        "driverName": "Keke Rosberg",
+        "constructorName": "Williams",
+        "gridPosition": 8
+      },
+      {
+        "year": 1981,
+        "driverName": "Alain Prost",
+        "constructorName": "Renault",
+        "gridPosition": 3
+      },
+      {
+        "year": 1979,
+        "driverName": "Jean-Pierre Jabouille",
+        "constructorName": "Renault",
+        "gridPosition": 1
+      },
+      {
+        "year": 1977,
+        "driverName": "Mario Andretti",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      },
+      {
+        "year": 1974,
+        "driverName": "Ronnie Peterson",
+        "constructorName": "Lotus",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "dijon-2",
+        "lengthKm": 3.801,
+        "turns": 12,
+        "effective": true,
+        "years": "1977–1984",
+        "racesCount": 5
+      },
+      {
+        "layoutId": "dijon-1",
+        "lengthKm": 3.289,
+        "turns": 8,
+        "effective": false,
+        "years": "1974",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         5.32,
@@ -8338,6 +9446,28 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Donington Park is an officially indexed Formula 1 venue located in Leicestershire, United Kingdom.",
+    "totalRaces": 1,
+    "poleToWinRate": 0,
+    "poleToWinCount": 0,
+    "racesWithRecordedPole": 1,
+    "pastWinners": [
+      {
+        "year": 1993,
+        "driverName": "Ayrton Senna",
+        "constructorName": "McLaren",
+        "gridPosition": 4
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "donington-1",
+        "lengthKm": 4.023,
+        "turns": 12,
+        "effective": true,
+        "years": "1993",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         8.448,
@@ -8715,6 +9845,40 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Prince George Circuit is an officially indexed Formula 1 venue located in East London, South Africa.",
+    "totalRaces": 3,
+    "poleToWinRate": 66.7,
+    "poleToWinCount": 2,
+    "racesWithRecordedPole": 3,
+    "pastWinners": [
+      {
+        "year": 1965,
+        "driverName": "Jim Clark",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      },
+      {
+        "year": 1963,
+        "driverName": "Jim Clark",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      },
+      {
+        "year": 1962,
+        "driverName": "Graham Hill",
+        "constructorName": "BRM",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "east-london-1",
+        "lengthKm": 3.92,
+        "turns": 9,
+        "effective": true,
+        "years": "1962–1965",
+        "racesCount": 3
+      }
+    ],
     "trackCoordinates": [
       [
         5.754,
@@ -9002,6 +10166,90 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Autódromo do Estoril is an officially indexed Formula 1 venue located in Estoril, Portugal.",
+    "totalRaces": 13,
+    "poleToWinRate": 46.2,
+    "poleToWinCount": 6,
+    "racesWithRecordedPole": 13,
+    "pastWinners": [
+      {
+        "year": 1996,
+        "driverName": "Jacques Villeneuve",
+        "constructorName": "Williams",
+        "gridPosition": 2
+      },
+      {
+        "year": 1995,
+        "driverName": "David Coulthard",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 1994,
+        "driverName": "Damon Hill",
+        "constructorName": "Williams",
+        "gridPosition": 2
+      },
+      {
+        "year": 1993,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Benetton",
+        "gridPosition": 6
+      },
+      {
+        "year": 1992,
+        "driverName": "Nigel Mansell",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 1991,
+        "driverName": "Riccardo Patrese",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 1990,
+        "driverName": "Nigel Mansell",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 1989,
+        "driverName": "Gerhard Berger",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 1988,
+        "driverName": "Alain Prost",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1987,
+        "driverName": "Alain Prost",
+        "constructorName": "McLaren",
+        "gridPosition": 3
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "estoril-1",
+        "lengthKm": 4.349,
+        "turns": 11,
+        "effective": false,
+        "years": "1984–1993",
+        "racesCount": 10
+      },
+      {
+        "layoutId": "estoril-2",
+        "lengthKm": 4.36,
+        "turns": 13,
+        "effective": true,
+        "years": "1994–1996",
+        "racesCount": 3
+      }
+    ],
     "trackCoordinates": [
       [
         1.342,
@@ -9429,6 +10677,54 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Fuji Speedway is an officially indexed Formula 1 venue located in Oyama, Japan.",
+    "totalRaces": 4,
+    "poleToWinRate": 50,
+    "poleToWinCount": 2,
+    "racesWithRecordedPole": 4,
+    "pastWinners": [
+      {
+        "year": 2008,
+        "driverName": "Fernando Alonso",
+        "constructorName": "Renault",
+        "gridPosition": 4
+      },
+      {
+        "year": 2007,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1977,
+        "driverName": "James Hunt",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 1976,
+        "driverName": "Mario Andretti",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "fuji-1",
+        "lengthKm": 4.359,
+        "turns": 8,
+        "effective": false,
+        "years": "1976–1977",
+        "racesCount": 2
+      },
+      {
+        "layoutId": "fuji-2",
+        "lengthKm": 4.563,
+        "turns": 16,
+        "effective": true,
+        "years": "2007–2008",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         7.598,
@@ -9926,6 +11222,106 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Hockenheimring is an officially indexed Formula 1 venue located in Hockenheim, Germany.",
+    "totalRaces": 37,
+    "poleToWinRate": 48.6,
+    "poleToWinCount": 18,
+    "racesWithRecordedPole": 37,
+    "pastWinners": [
+      {
+        "year": 2019,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2018,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 14
+      },
+      {
+        "year": 2016,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2014,
+        "driverName": "Nico Rosberg",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2012,
+        "driverName": "Fernando Alonso",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2010,
+        "driverName": "Fernando Alonso",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2008,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2006,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2005,
+        "driverName": "Fernando Alonso",
+        "constructorName": "Renault",
+        "gridPosition": 3
+      },
+      {
+        "year": 2004,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "hockenheimring-4",
+        "lengthKm": 4.574,
+        "turns": 17,
+        "effective": true,
+        "years": "2002–2019",
+        "racesCount": 12
+      },
+      {
+        "layoutId": "hockenheimring-3",
+        "lengthKm": 6.815,
+        "turns": 16,
+        "effective": false,
+        "years": "1992–2001",
+        "racesCount": 10
+      },
+      {
+        "layoutId": "hockenheimring-2",
+        "lengthKm": 6.802,
+        "turns": 16,
+        "effective": false,
+        "years": "1982–1991",
+        "racesCount": 9
+      },
+      {
+        "layoutId": "hockenheimring-1",
+        "lengthKm": 6.79,
+        "turns": 14,
+        "effective": false,
+        "years": "1970–1981",
+        "racesCount": 6
+      }
+    ],
     "trackCoordinates": [
       [
         -3.512,
@@ -10533,6 +11929,98 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Hungaroring is an officially indexed Formula 1 venue located in Budapest, Hungary.",
+    "totalRaces": 41,
+    "poleToWinRate": 41.5,
+    "poleToWinCount": 17,
+    "racesWithRecordedPole": 41,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 3
+      },
+      {
+        "year": 2024,
+        "driverName": "Oscar Piastri",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 10
+      },
+      {
+        "year": 2021,
+        "driverName": "Esteban Ocon",
+        "constructorName": "Alpine",
+        "gridPosition": 8
+      },
+      {
+        "year": 2020,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2019,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 3
+      },
+      {
+        "year": 2018,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2017,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "hungaroring-3",
+        "lengthKm": 4.381,
+        "turns": 14,
+        "effective": true,
+        "years": "2003–2026",
+        "racesCount": 24
+      },
+      {
+        "layoutId": "hungaroring-2",
+        "lengthKm": 3.975,
+        "turns": 13,
+        "effective": false,
+        "years": "1989–2002",
+        "racesCount": 14
+      },
+      {
+        "layoutId": "hungaroring-1",
+        "lengthKm": 4.014,
+        "turns": 16,
+        "effective": false,
+        "years": "1986–1988",
+        "racesCount": 3
+      }
+    ],
     "trackCoordinates": [
       [
         -4.643,
@@ -11250,6 +12738,98 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Autodromo Internazionale Enzo e Dino Ferrari is an officially indexed Formula 1 venue located in Imola, Italy.",
+    "totalRaces": 32,
+    "poleToWinRate": 34.4,
+    "poleToWinCount": 11,
+    "racesWithRecordedPole": 32,
+    "pastWinners": [
+      {
+        "year": 2025,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2024,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2021,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 3
+      },
+      {
+        "year": 2020,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2006,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2005,
+        "driverName": "Fernando Alonso",
+        "constructorName": "Renault",
+        "gridPosition": 2
+      },
+      {
+        "year": 2004,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2003,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2002,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "imola-1",
+        "lengthKm": 5.04,
+        "turns": 22,
+        "effective": false,
+        "years": "1980–1994",
+        "racesCount": 15
+      },
+      {
+        "layoutId": "imola-2",
+        "lengthKm": 4.959,
+        "turns": 22,
+        "effective": false,
+        "years": "1995–2006",
+        "racesCount": 12
+      },
+      {
+        "layoutId": "imola-3",
+        "lengthKm": 4.909,
+        "turns": 19,
+        "effective": true,
+        "years": "2020–2025",
+        "racesCount": 5
+      }
+    ],
     "trackCoordinates": [
       [
         2.451,
@@ -11682,6 +13262,90 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Indianapolis Motor Speedway is an officially indexed Formula 1 venue located in Indianapolis, United States of America.",
+    "totalRaces": 19,
+    "poleToWinRate": 26.3,
+    "poleToWinCount": 5,
+    "racesWithRecordedPole": 19,
+    "pastWinners": [
+      {
+        "year": 2007,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2006,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2005,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 5
+      },
+      {
+        "year": 2004,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2003,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 7
+      },
+      {
+        "year": 2002,
+        "driverName": "Rubens Barrichello",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2001,
+        "driverName": "Mika Häkkinen",
+        "constructorName": "McLaren",
+        "gridPosition": 4
+      },
+      {
+        "year": 2000,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 1960,
+        "driverName": "Jim Rathmann",
+        "constructorName": "Watson",
+        "gridPosition": 2
+      },
+      {
+        "year": 1959,
+        "driverName": "Rodger Ward",
+        "constructorName": "Watson",
+        "gridPosition": 6
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "indianapolis-1",
+        "lengthKm": 4.023,
+        "turns": 4,
+        "effective": false,
+        "years": "1950–1960",
+        "racesCount": 11
+      },
+      {
+        "layoutId": "indianapolis-2",
+        "lengthKm": 4.192,
+        "turns": 13,
+        "effective": true,
+        "years": "2000–2007",
+        "racesCount": 8
+      }
+    ],
     "trackCoordinates": [
       [
         -3.201,
@@ -12324,6 +13988,90 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Autódromo José Carlos Pace is an officially indexed Formula 1 venue located in São Paulo, Brazil.",
+    "totalRaces": 43,
+    "poleToWinRate": 46.5,
+    "poleToWinCount": 20,
+    "racesWithRecordedPole": 43,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 17
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "George Russell",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2021,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 10
+      },
+      {
+        "year": 2019,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2018,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2017,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2016,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "interlagos-2",
+        "lengthKm": 4.309,
+        "turns": 15,
+        "effective": true,
+        "years": "1990–2026",
+        "racesCount": 36
+      },
+      {
+        "layoutId": "interlagos-1",
+        "lengthKm": 7.873,
+        "turns": 26,
+        "effective": false,
+        "years": "1973–1980",
+        "racesCount": 7
+      }
+    ],
     "trackCoordinates": [
       [
         0,
@@ -12401,6 +14149,76 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "TOSFED İstanbul Park is an officially indexed Formula 1 venue located in Istanbul, Turkey.",
+    "totalRaces": 9,
+    "poleToWinRate": 66.7,
+    "poleToWinCount": 6,
+    "racesWithRecordedPole": 9,
+    "pastWinners": [
+      {
+        "year": 2021,
+        "driverName": "Valtteri Bottas",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2020,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 6
+      },
+      {
+        "year": 2011,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2010,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 2009,
+        "driverName": "Jenson Button",
+        "constructorName": "Brawn",
+        "gridPosition": 2
+      },
+      {
+        "year": 2008,
+        "driverName": "Felipe Massa",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2007,
+        "driverName": "Felipe Massa",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2006,
+        "driverName": "Felipe Massa",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2005,
+        "driverName": "Kimi Räikkönen",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "istanbul-1",
+        "lengthKm": 5.338,
+        "turns": 14,
+        "effective": true,
+        "years": "2005–2021",
+        "racesCount": 9
+      }
+    ],
     "trackCoordinates": [
       [
         -3.019,
@@ -12838,6 +14656,82 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Autódromo Internacional Nelson Piquet is an officially indexed Formula 1 venue located in Rio de Janeiro, Brazil.",
+    "totalRaces": 10,
+    "poleToWinRate": 10,
+    "poleToWinCount": 1,
+    "racesWithRecordedPole": 10,
+    "pastWinners": [
+      {
+        "year": 1989,
+        "driverName": "Nigel Mansell",
+        "constructorName": "Ferrari",
+        "gridPosition": 6
+      },
+      {
+        "year": 1988,
+        "driverName": "Alain Prost",
+        "constructorName": "McLaren",
+        "gridPosition": 3
+      },
+      {
+        "year": 1987,
+        "driverName": "Alain Prost",
+        "constructorName": "McLaren",
+        "gridPosition": 5
+      },
+      {
+        "year": 1986,
+        "driverName": "Nelson Piquet",
+        "constructorName": "Williams",
+        "gridPosition": 2
+      },
+      {
+        "year": 1985,
+        "driverName": "Alain Prost",
+        "constructorName": "McLaren",
+        "gridPosition": 6
+      },
+      {
+        "year": 1984,
+        "driverName": "Alain Prost",
+        "constructorName": "McLaren",
+        "gridPosition": 4
+      },
+      {
+        "year": 1983,
+        "driverName": "Nelson Piquet",
+        "constructorName": "Brabham",
+        "gridPosition": 4
+      },
+      {
+        "year": 1982,
+        "driverName": "Alain Prost",
+        "constructorName": "Renault",
+        "gridPosition": 1
+      },
+      {
+        "year": 1981,
+        "driverName": "Carlos Reutemann",
+        "constructorName": "Williams",
+        "gridPosition": 2
+      },
+      {
+        "year": 1978,
+        "driverName": "Carlos Reutemann",
+        "constructorName": "Ferrari",
+        "gridPosition": 4
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "jacarepagua-1",
+        "lengthKm": 5.031,
+        "turns": 11,
+        "effective": true,
+        "years": "1978–1989",
+        "racesCount": 10
+      }
+    ],
     "trackCoordinates": [
       [
         7.598,
@@ -13185,6 +15079,84 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Circuito de Madrid Jarama - RACE is an officially indexed Formula 1 venue located in Madrid, Spain.",
+    "totalRaces": 9,
+    "poleToWinRate": 44.4,
+    "poleToWinCount": 4,
+    "racesWithRecordedPole": 9,
+    "pastWinners": [
+      {
+        "year": 1981,
+        "driverName": "Gilles Villeneuve",
+        "constructorName": "Ferrari",
+        "gridPosition": 7
+      },
+      {
+        "year": 1979,
+        "driverName": "Patrick Depailler",
+        "constructorName": "Ligier",
+        "gridPosition": 2
+      },
+      {
+        "year": 1978,
+        "driverName": "Mario Andretti",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      },
+      {
+        "year": 1977,
+        "driverName": "Mario Andretti",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      },
+      {
+        "year": 1976,
+        "driverName": "James Hunt",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1974,
+        "driverName": "Niki Lauda",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 1972,
+        "driverName": "Emerson Fittipaldi",
+        "constructorName": "Lotus",
+        "gridPosition": 3
+      },
+      {
+        "year": 1970,
+        "driverName": "Jackie Stewart",
+        "constructorName": "March",
+        "gridPosition": 3
+      },
+      {
+        "year": 1968,
+        "driverName": "Graham Hill",
+        "constructorName": "Lotus",
+        "gridPosition": 6
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "jarama-1",
+        "lengthKm": 3.404,
+        "turns": 15,
+        "effective": false,
+        "years": "1968–1979",
+        "racesCount": 8
+      },
+      {
+        "layoutId": "jarama-2",
+        "lengthKm": 3.314,
+        "turns": 14,
+        "effective": true,
+        "years": "1981",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         2.802,
@@ -13777,6 +15749,52 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Jeddah Corniche Circuit is an officially indexed Formula 1 venue located in Jeddah, Saudi Arabia.",
+    "totalRaces": 5,
+    "poleToWinRate": 60,
+    "poleToWinCount": 3,
+    "racesWithRecordedPole": 5,
+    "pastWinners": [
+      {
+        "year": 2025,
+        "driverName": "Oscar Piastri",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 2024,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2023,
+        "driverName": "Sergio Pérez",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 4
+      },
+      {
+        "year": 2021,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "jeddah-1",
+        "lengthKm": 6.174,
+        "turns": 27,
+        "effective": true,
+        "years": "2021–2025",
+        "racesCount": 5
+      }
+    ],
     "trackCoordinates": [
       [
         1.252,
@@ -14549,6 +16567,72 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Circuito de Jerez is an officially indexed Formula 1 venue located in Jerez de la Frontera, Spain.",
+    "totalRaces": 7,
+    "poleToWinRate": 42.9,
+    "poleToWinCount": 3,
+    "racesWithRecordedPole": 7,
+    "pastWinners": [
+      {
+        "year": 1997,
+        "driverName": "Mika Häkkinen",
+        "constructorName": "McLaren",
+        "gridPosition": 5
+      },
+      {
+        "year": 1994,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Benetton",
+        "gridPosition": 1
+      },
+      {
+        "year": 1990,
+        "driverName": "Alain Prost",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 1989,
+        "driverName": "Ayrton Senna",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1988,
+        "driverName": "Alain Prost",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 1987,
+        "driverName": "Nigel Mansell",
+        "constructorName": "Williams",
+        "gridPosition": 2
+      },
+      {
+        "year": 1986,
+        "driverName": "Ayrton Senna",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "jerez-1",
+        "lengthKm": 4.218,
+        "turns": 16,
+        "effective": false,
+        "years": "1986–1990",
+        "racesCount": 5
+      },
+      {
+        "layoutId": "jerez-2",
+        "lengthKm": 4.428,
+        "turns": 15,
+        "effective": true,
+        "years": "1994–1997",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         6.03,
@@ -15016,6 +17100,90 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Kyalami Racing Circuit is an officially indexed Formula 1 venue located in Midrand, South Africa.",
+    "totalRaces": 20,
+    "poleToWinRate": 20,
+    "poleToWinCount": 4,
+    "racesWithRecordedPole": 20,
+    "pastWinners": [
+      {
+        "year": 1993,
+        "driverName": "Alain Prost",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 1992,
+        "driverName": "Nigel Mansell",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 1985,
+        "driverName": "Nigel Mansell",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 1984,
+        "driverName": "Niki Lauda",
+        "constructorName": "McLaren",
+        "gridPosition": 8
+      },
+      {
+        "year": 1983,
+        "driverName": "Riccardo Patrese",
+        "constructorName": "Brabham",
+        "gridPosition": 3
+      },
+      {
+        "year": 1982,
+        "driverName": "Alain Prost",
+        "constructorName": "Renault",
+        "gridPosition": 5
+      },
+      {
+        "year": 1980,
+        "driverName": "René Arnoux",
+        "constructorName": "Renault",
+        "gridPosition": 2
+      },
+      {
+        "year": 1979,
+        "driverName": "Gilles Villeneuve",
+        "constructorName": "Ferrari",
+        "gridPosition": 3
+      },
+      {
+        "year": 1978,
+        "driverName": "Ronnie Peterson",
+        "constructorName": "Lotus",
+        "gridPosition": 11
+      },
+      {
+        "year": 1977,
+        "driverName": "Niki Lauda",
+        "constructorName": "Ferrari",
+        "gridPosition": 3
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "kyalami-1",
+        "lengthKm": 4.094,
+        "turns": 9,
+        "effective": false,
+        "years": "1967–1985",
+        "racesCount": 18
+      },
+      {
+        "layoutId": "kyalami-2",
+        "lengthKm": 4.261,
+        "turns": 13,
+        "effective": true,
+        "years": "1992–1993",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         7.852,
@@ -15423,6 +17591,46 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Las Vegas Street Circuit is an officially indexed Formula 1 venue located in Las Vegas, United States of America.",
+    "totalRaces": 4,
+    "poleToWinRate": 50,
+    "poleToWinCount": 2,
+    "racesWithRecordedPole": 4,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2024,
+        "driverName": "George Russell",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "las-vegas-1",
+        "lengthKm": 6.201,
+        "turns": 17,
+        "effective": true,
+        "years": "2023–2026",
+        "racesCount": 4
+      }
+    ],
     "trackCoordinates": [
       [
         2.955,
@@ -15935,6 +18143,86 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Long Beach is an officially indexed Formula 1 venue located in Long Beach, United States of America.",
+    "totalRaces": 8,
+    "poleToWinRate": 50,
+    "poleToWinCount": 4,
+    "racesWithRecordedPole": 8,
+    "pastWinners": [
+      {
+        "year": 1983,
+        "driverName": "John Watson",
+        "constructorName": "McLaren",
+        "gridPosition": 22
+      },
+      {
+        "year": 1982,
+        "driverName": "Niki Lauda",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 1981,
+        "driverName": "Alan Jones",
+        "constructorName": "Williams",
+        "gridPosition": 2
+      },
+      {
+        "year": 1980,
+        "driverName": "Nelson Piquet",
+        "constructorName": "Brabham",
+        "gridPosition": 1
+      },
+      {
+        "year": 1979,
+        "driverName": "Gilles Villeneuve",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 1978,
+        "driverName": "Carlos Reutemann",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 1977,
+        "driverName": "Mario Andretti",
+        "constructorName": "Lotus",
+        "gridPosition": 2
+      },
+      {
+        "year": 1976,
+        "driverName": "Clay Regazzoni",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "long-beach-1",
+        "lengthKm": 3.251,
+        "turns": 13,
+        "effective": false,
+        "years": "1976–1981",
+        "racesCount": 6
+      },
+      {
+        "layoutId": "long-beach-2",
+        "lengthKm": 3.428,
+        "turns": 18,
+        "effective": false,
+        "years": "1982",
+        "racesCount": 1
+      },
+      {
+        "layoutId": "long-beach-3",
+        "lengthKm": 3.275,
+        "turns": 18,
+        "effective": true,
+        "years": "1983",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         8.448,
@@ -16432,6 +18720,46 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Lusail International Circuit is an officially indexed Formula 1 venue located in Lusail, Qatar.",
+    "totalRaces": 5,
+    "poleToWinRate": 50,
+    "poleToWinCount": 2,
+    "racesWithRecordedPole": 4,
+    "pastWinners": [
+      {
+        "year": 2025,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 3
+      },
+      {
+        "year": 2024,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2021,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "lusail-1",
+        "lengthKm": 5.419,
+        "turns": 16,
+        "effective": true,
+        "years": "2021–2026",
+        "racesCount": 5
+      }
+    ],
     "trackCoordinates": [
       [
         -4.169,
@@ -16979,6 +19307,28 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Circuito de Madring is an officially indexed Formula 1 venue located in Madrid, Spain.",
+    "totalRaces": 1,
+    "poleToWinRate": 0,
+    "poleToWinCount": 0,
+    "racesWithRecordedPole": 1,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Kimi Antonelli",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "madring-1",
+        "lengthKm": 5.416,
+        "turns": 22,
+        "effective": true,
+        "years": "2026",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         2.802,
@@ -17571,6 +19921,98 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Circuit de Nevers Magny-Cours is an officially indexed Formula 1 venue located in Nevers, France.",
+    "totalRaces": 18,
+    "poleToWinRate": 27.8,
+    "poleToWinCount": 5,
+    "racesWithRecordedPole": 18,
+    "pastWinners": [
+      {
+        "year": 2008,
+        "driverName": "Felipe Massa",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2007,
+        "driverName": "Kimi Räikkönen",
+        "constructorName": "Ferrari",
+        "gridPosition": 3
+      },
+      {
+        "year": 2006,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2005,
+        "driverName": "Fernando Alonso",
+        "constructorName": "Renault",
+        "gridPosition": 1
+      },
+      {
+        "year": 2004,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2003,
+        "driverName": "Ralf Schumacher",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 2002,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2001,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2000,
+        "driverName": "David Coulthard",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 1999,
+        "driverName": "Heinz-Harald Frentzen",
+        "constructorName": "Jordan",
+        "gridPosition": 5
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "magny-cours-2",
+        "lengthKm": 4.25,
+        "turns": 15,
+        "effective": false,
+        "years": "1992–2002",
+        "racesCount": 11
+      },
+      {
+        "layoutId": "magny-cours-3",
+        "lengthKm": 4.411,
+        "turns": 17,
+        "effective": true,
+        "years": "2003–2008",
+        "racesCount": 6
+      },
+      {
+        "layoutId": "magny-cours-1",
+        "lengthKm": 4.271,
+        "turns": 17,
+        "effective": false,
+        "years": "1991",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         -2.674,
@@ -18058,6 +20500,106 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Marina Bay Street Circuit is an officially indexed Formula 1 venue located in Singapore, Singapore.",
+    "totalRaces": 17,
+    "poleToWinRate": 70.6,
+    "poleToWinCount": 12,
+    "racesWithRecordedPole": 17,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "George Russell",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2023,
+        "driverName": "Carlos Sainz Jr.",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "Sergio Pérez",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2019,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Ferrari",
+        "gridPosition": 3
+      },
+      {
+        "year": 2018,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2017,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 5
+      },
+      {
+        "year": 2016,
+        "driverName": "Nico Rosberg",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2015,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "marina-bay-3",
+        "lengthKm": 5.065,
+        "turns": 23,
+        "effective": false,
+        "years": "2015–2022",
+        "racesCount": 6
+      },
+      {
+        "layoutId": "marina-bay-1",
+        "lengthKm": 5.073,
+        "turns": 23,
+        "effective": false,
+        "years": "2008–2012",
+        "racesCount": 5
+      },
+      {
+        "layoutId": "marina-bay-4",
+        "lengthKm": 4.927,
+        "turns": 19,
+        "effective": true,
+        "years": "2023–2026",
+        "racesCount": 4
+      },
+      {
+        "layoutId": "marina-bay-2",
+        "lengthKm": 5.065,
+        "turns": 23,
+        "effective": false,
+        "years": "2013–2014",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         7.169,
@@ -18650,6 +21192,90 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Albert Park Circuit is an officially indexed Formula 1 venue located in Melbourne, Australia.",
+    "totalRaces": 29,
+    "poleToWinRate": 44.8,
+    "poleToWinCount": 13,
+    "racesWithRecordedPole": 29,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "George Russell",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Carlos Sainz Jr.",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "Charles Leclerc",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2019,
+        "driverName": "Valtteri Bottas",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2018,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Ferrari",
+        "gridPosition": 3
+      },
+      {
+        "year": 2017,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2016,
+        "driverName": "Nico Rosberg",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2015,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "melbourne-1",
+        "lengthKm": 5.303,
+        "turns": 16,
+        "effective": false,
+        "years": "1996–2019",
+        "racesCount": 24
+      },
+      {
+        "layoutId": "melbourne-2",
+        "lengthKm": 5.278,
+        "turns": 14,
+        "effective": true,
+        "years": "2022–2026",
+        "racesCount": 5
+      }
+    ],
     "trackCoordinates": [
       [
         -1.124,
@@ -19392,6 +22018,98 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Autódromo Hermanos Rodríguez is an officially indexed Formula 1 venue located in Mexico City, Mexico.",
+    "totalRaces": 26,
+    "poleToWinRate": 46.2,
+    "poleToWinCount": 12,
+    "racesWithRecordedPole": 26,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 5
+      },
+      {
+        "year": 2025,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Carlos Sainz Jr.",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 3
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2021,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 3
+      },
+      {
+        "year": 2019,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 3
+      },
+      {
+        "year": 2018,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2017,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2016,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "mexico-city-3",
+        "lengthKm": 4.304,
+        "turns": 17,
+        "effective": true,
+        "years": "2015–2026",
+        "racesCount": 11
+      },
+      {
+        "layoutId": "mexico-city-1",
+        "lengthKm": 5,
+        "turns": 14,
+        "effective": false,
+        "years": "1963–1970",
+        "racesCount": 8
+      },
+      {
+        "layoutId": "mexico-city-2",
+        "lengthKm": 4.421,
+        "turns": 14,
+        "effective": false,
+        "years": "1986–1992",
+        "racesCount": 7
+      }
+    ],
     "trackCoordinates": [
       [
         -4.783,
@@ -19909,6 +22627,52 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Miami International Autodrome is an officially indexed Formula 1 venue located in Miami Gardens, United States of America.",
+    "totalRaces": 5,
+    "poleToWinRate": 20,
+    "poleToWinCount": 1,
+    "racesWithRecordedPole": 5,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Kimi Antonelli",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "Oscar Piastri",
+        "constructorName": "McLaren",
+        "gridPosition": 4
+      },
+      {
+        "year": 2024,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 5
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 9
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 3
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "miami-1",
+        "lengthKm": 5.412,
+        "turns": 19,
+        "effective": true,
+        "years": "2022–2026",
+        "racesCount": 5
+      }
+    ],
     "trackCoordinates": [
       [
         0.363,
@@ -20436,6 +23200,122 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Circuit de Monaco is an officially indexed Formula 1 venue located in Monte Carlo, Monaco.",
+    "totalRaces": 72,
+    "poleToWinRate": 47.2,
+    "poleToWinCount": 34,
+    "racesWithRecordedPole": 72,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Kimi Antonelli",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Charles Leclerc",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "Sergio Pérez",
+        "constructorName": "Red Bull",
+        "gridPosition": 3
+      },
+      {
+        "year": 2021,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2019,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2018,
+        "driverName": "Daniel Ricciardo",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2017,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2016,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 3
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "monaco-6",
+        "lengthKm": 3.337,
+        "turns": 19,
+        "effective": true,
+        "years": "2003–2026",
+        "racesCount": 23
+      },
+      {
+        "layoutId": "monaco-2",
+        "lengthKm": 3.145,
+        "turns": 13,
+        "effective": false,
+        "years": "1955–1972",
+        "racesCount": 18
+      },
+      {
+        "layoutId": "monaco-5",
+        "lengthKm": 3.328,
+        "turns": 20,
+        "effective": false,
+        "years": "1986–2002",
+        "racesCount": 17
+      },
+      {
+        "layoutId": "monaco-4",
+        "lengthKm": 3.312,
+        "turns": 20,
+        "effective": false,
+        "years": "1976–1985",
+        "racesCount": 10
+      },
+      {
+        "layoutId": "monaco-3",
+        "lengthKm": 3.278,
+        "turns": 17,
+        "effective": false,
+        "years": "1973–1975",
+        "racesCount": 3
+      },
+      {
+        "layoutId": "monaco-1",
+        "lengthKm": 3.18,
+        "turns": 14,
+        "effective": false,
+        "years": "1950",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         0,
@@ -20503,6 +23383,28 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Circuito de Monsanto is an officially indexed Formula 1 venue located in Lisbon, Portugal.",
+    "totalRaces": 1,
+    "poleToWinRate": 100,
+    "poleToWinCount": 1,
+    "racesWithRecordedPole": 1,
+    "pastWinners": [
+      {
+        "year": 1959,
+        "driverName": "Stirling Moss",
+        "constructorName": "Cooper",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "monsanto-1",
+        "lengthKm": 5.44,
+        "turns": 9,
+        "effective": true,
+        "years": "1959",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         5.816,
@@ -20790,6 +23692,34 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Circuit Mont-Tremblant is an officially indexed Formula 1 venue located in Mont-Tremblant, Canada.",
+    "totalRaces": 2,
+    "poleToWinRate": 0,
+    "poleToWinCount": 0,
+    "racesWithRecordedPole": 2,
+    "pastWinners": [
+      {
+        "year": 1970,
+        "driverName": "Jacky Ickx",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 1968,
+        "driverName": "Denny Hulme",
+        "constructorName": "McLaren",
+        "gridPosition": 6
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "mont-tremblant-1",
+        "lengthKm": 4.265,
+        "turns": 15,
+        "effective": true,
+        "years": "1968–1970",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         8.241,
@@ -21257,6 +24187,46 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Circuito de Montjuïc is an officially indexed Formula 1 venue located in Barcelona, Spain.",
+    "totalRaces": 4,
+    "poleToWinRate": 0,
+    "poleToWinCount": 0,
+    "racesWithRecordedPole": 4,
+    "pastWinners": [
+      {
+        "year": 1975,
+        "driverName": "Jochen Mass",
+        "constructorName": "McLaren",
+        "gridPosition": 11
+      },
+      {
+        "year": 1973,
+        "driverName": "Emerson Fittipaldi",
+        "constructorName": "Lotus",
+        "gridPosition": 7
+      },
+      {
+        "year": 1971,
+        "driverName": "Jackie Stewart",
+        "constructorName": "Tyrrell",
+        "gridPosition": 4
+      },
+      {
+        "year": 1969,
+        "driverName": "Jackie Stewart",
+        "constructorName": "Matra",
+        "gridPosition": 4
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "montjuic-1",
+        "lengthKm": 3.791,
+        "turns": 12,
+        "effective": true,
+        "years": "1969–1975",
+        "racesCount": 4
+      }
+    ],
     "trackCoordinates": [
       [
         3.538,
@@ -22019,6 +24989,122 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Circuit Gilles Villeneuve is an officially indexed Formula 1 venue located in Montreal, Canada.",
+    "totalRaces": 45,
+    "poleToWinRate": 48.9,
+    "poleToWinCount": 22,
+    "racesWithRecordedPole": 45,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Kimi Antonelli",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2025,
+        "driverName": "George Russell",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2019,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2018,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2017,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2016,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2015,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "montreal-6",
+        "lengthKm": 4.361,
+        "turns": 14,
+        "effective": true,
+        "years": "2002–2026",
+        "racesCount": 22
+      },
+      {
+        "layoutId": "montreal-2",
+        "lengthKm": 4.41,
+        "turns": 19,
+        "effective": false,
+        "years": "1979–1986",
+        "racesCount": 8
+      },
+      {
+        "layoutId": "montreal-3",
+        "lengthKm": 4.39,
+        "turns": 17,
+        "effective": false,
+        "years": "1988–1993",
+        "racesCount": 6
+      },
+      {
+        "layoutId": "montreal-5",
+        "lengthKm": 4.421,
+        "turns": 13,
+        "effective": false,
+        "years": "1996–2001",
+        "racesCount": 6
+      },
+      {
+        "layoutId": "montreal-4",
+        "lengthKm": 4.45,
+        "turns": 20,
+        "effective": false,
+        "years": "1994–1995",
+        "racesCount": 2
+      },
+      {
+        "layoutId": "montreal-1",
+        "lengthKm": 4.41,
+        "turns": 19,
+        "effective": false,
+        "years": "1978",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         1.814,
@@ -22541,6 +25627,130 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Autodromo Nazionale Monza is an officially indexed Formula 1 venue located in Monza, Italy.",
+    "totalRaces": 76,
+    "poleToWinRate": 34.2,
+    "poleToWinCount": 26,
+    "racesWithRecordedPole": 76,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Kimi Antonelli",
+        "constructorName": "Mercedes",
+        "gridPosition": 19
+      },
+      {
+        "year": 2025,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Charles Leclerc",
+        "constructorName": "Ferrari",
+        "gridPosition": 4
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 7
+      },
+      {
+        "year": 2021,
+        "driverName": "Daniel Ricciardo",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 2020,
+        "driverName": "Pierre Gasly",
+        "constructorName": "AlphaTauri",
+        "gridPosition": 10
+      },
+      {
+        "year": 2019,
+        "driverName": "Charles Leclerc",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2018,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 3
+      },
+      {
+        "year": 2017,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "monza-7",
+        "lengthKm": 5.793,
+        "turns": 11,
+        "effective": true,
+        "years": "2000–2026",
+        "racesCount": 27
+      },
+      {
+        "layoutId": "monza-6",
+        "lengthKm": 5.8,
+        "turns": 10,
+        "effective": false,
+        "years": "1976–1999",
+        "racesCount": 23
+      },
+      {
+        "layoutId": "monza-3",
+        "lengthKm": 5.75,
+        "turns": 5,
+        "effective": false,
+        "years": "1957–1971",
+        "racesCount": 13
+      },
+      {
+        "layoutId": "monza-1",
+        "lengthKm": 6.3,
+        "turns": 5,
+        "effective": false,
+        "years": "1950–1954",
+        "racesCount": 5
+      },
+      {
+        "layoutId": "monza-2",
+        "lengthKm": 10,
+        "turns": 7,
+        "effective": false,
+        "years": "1955–1961",
+        "racesCount": 4
+      },
+      {
+        "layoutId": "monza-4",
+        "lengthKm": 5.775,
+        "turns": 7,
+        "effective": false,
+        "years": "1972–1973",
+        "racesCount": 2
+      },
+      {
+        "layoutId": "monza-5",
+        "lengthKm": 5.78,
+        "turns": 10,
+        "effective": false,
+        "years": "1974–1975",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         0,
@@ -22618,6 +25828,70 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Canadian Tire Motorsport Park is an officially indexed Formula 1 venue located in Bowmanville, Canada.",
+    "totalRaces": 8,
+    "poleToWinRate": 50,
+    "poleToWinCount": 4,
+    "racesWithRecordedPole": 8,
+    "pastWinners": [
+      {
+        "year": 1977,
+        "driverName": "Jody Scheckter",
+        "constructorName": "Wolf",
+        "gridPosition": 9
+      },
+      {
+        "year": 1976,
+        "driverName": "James Hunt",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1974,
+        "driverName": "Emerson Fittipaldi",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1973,
+        "driverName": "Peter Revson",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 1972,
+        "driverName": "Jackie Stewart",
+        "constructorName": "Tyrrell",
+        "gridPosition": 5
+      },
+      {
+        "year": 1971,
+        "driverName": "Jackie Stewart",
+        "constructorName": "Tyrrell",
+        "gridPosition": 1
+      },
+      {
+        "year": 1969,
+        "driverName": "Jacky Ickx",
+        "constructorName": "Brabham",
+        "gridPosition": 1
+      },
+      {
+        "year": 1967,
+        "driverName": "Jack Brabham",
+        "constructorName": "Brabham",
+        "gridPosition": 7
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "mosport-1",
+        "lengthKm": 3.957,
+        "turns": 10,
+        "effective": true,
+        "years": "1967–1977",
+        "racesCount": 8
+      }
+    ],
     "trackCoordinates": [
       [
         7.825,
@@ -22935,6 +26209,28 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Autodromo Internazionale del Mugello is an officially indexed Formula 1 venue located in Scarperia e San Piero, Italy.",
+    "totalRaces": 1,
+    "poleToWinRate": 100,
+    "poleToWinCount": 1,
+    "racesWithRecordedPole": 1,
+    "pastWinners": [
+      {
+        "year": 2020,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "mugello-1",
+        "lengthKm": 5.245,
+        "turns": 15,
+        "effective": true,
+        "years": "2020",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         0.328,
@@ -23592,6 +26888,34 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Nivelles-Baulers is an officially indexed Formula 1 venue located in Nivelles, Belgium.",
+    "totalRaces": 2,
+    "poleToWinRate": 50,
+    "poleToWinCount": 1,
+    "racesWithRecordedPole": 2,
+    "pastWinners": [
+      {
+        "year": 1974,
+        "driverName": "Emerson Fittipaldi",
+        "constructorName": "McLaren",
+        "gridPosition": 4
+      },
+      {
+        "year": 1972,
+        "driverName": "Emerson Fittipaldi",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "nivelles-1",
+        "lengthKm": 3.724,
+        "turns": 7,
+        "effective": true,
+        "years": "1972–1974",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         5.313,
@@ -23819,6 +27143,106 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Nürburgring is an officially indexed Formula 1 venue located in Nürburg, Germany.",
+    "totalRaces": 41,
+    "poleToWinRate": 36.6,
+    "poleToWinCount": 15,
+    "racesWithRecordedPole": 41,
+    "pastWinners": [
+      {
+        "year": 2020,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2013,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2011,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 2009,
+        "driverName": "Mark Webber",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2007,
+        "driverName": "Fernando Alonso",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 2006,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2005,
+        "driverName": "Fernando Alonso",
+        "constructorName": "Renault",
+        "gridPosition": 6
+      },
+      {
+        "year": 2004,
+        "driverName": "Michael Schumacher",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2003,
+        "driverName": "Ralf Schumacher",
+        "constructorName": "Williams",
+        "gridPosition": 3
+      },
+      {
+        "year": 2002,
+        "driverName": "Rubens Barrichello",
+        "constructorName": "Ferrari",
+        "gridPosition": 4
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "nurburgring-1",
+        "lengthKm": 22.81,
+        "turns": 160,
+        "effective": false,
+        "years": "1951–1976",
+        "racesCount": 22
+      },
+      {
+        "layoutId": "nurburgring-4",
+        "lengthKm": 5.148,
+        "turns": 15,
+        "effective": true,
+        "years": "2002–2020",
+        "racesCount": 10
+      },
+      {
+        "layoutId": "nurburgring-3",
+        "lengthKm": 4.556,
+        "turns": 12,
+        "effective": false,
+        "years": "1995–2001",
+        "racesCount": 7
+      },
+      {
+        "layoutId": "nurburgring-2",
+        "lengthKm": 4.542,
+        "turns": 12,
+        "effective": false,
+        "years": "1984–1985",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         4.265,
@@ -24496,6 +27920,98 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Circuit Paul Ricard is an officially indexed Formula 1 venue located in Le Castellet, France.",
+    "totalRaces": 18,
+    "poleToWinRate": 61.1,
+    "poleToWinCount": 11,
+    "racesWithRecordedPole": 18,
+    "pastWinners": [
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2021,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2019,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2018,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 1990,
+        "driverName": "Alain Prost",
+        "constructorName": "Ferrari",
+        "gridPosition": 4
+      },
+      {
+        "year": 1989,
+        "driverName": "Alain Prost",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1988,
+        "driverName": "Alain Prost",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1987,
+        "driverName": "Nigel Mansell",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 1986,
+        "driverName": "Nigel Mansell",
+        "constructorName": "Williams",
+        "gridPosition": 2
+      },
+      {
+        "year": 1985,
+        "driverName": "Nelson Piquet",
+        "constructorName": "Brabham",
+        "gridPosition": 5
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "paul-ricard-1",
+        "lengthKm": 5.809,
+        "turns": 14,
+        "effective": false,
+        "years": "1971–1985",
+        "racesCount": 9
+      },
+      {
+        "layoutId": "paul-ricard-2",
+        "lengthKm": 3.813,
+        "turns": 9,
+        "effective": false,
+        "years": "1986–1990",
+        "racesCount": 5
+      },
+      {
+        "layoutId": "paul-ricard-3",
+        "lengthKm": 5.842,
+        "turns": 15,
+        "effective": true,
+        "years": "2018–2022",
+        "racesCount": 4
+      }
+    ],
     "trackCoordinates": [
       [
         -0.327,
@@ -25018,6 +28534,34 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Pedralbes Circuit is an officially indexed Formula 1 venue located in Barcelona, Spain.",
+    "totalRaces": 2,
+    "poleToWinRate": 0,
+    "poleToWinCount": 0,
+    "racesWithRecordedPole": 2,
+    "pastWinners": [
+      {
+        "year": 1954,
+        "driverName": "Mike Hawthorn",
+        "constructorName": "Ferrari",
+        "gridPosition": 3
+      },
+      {
+        "year": 1951,
+        "driverName": "Juan Manuel Fangio",
+        "constructorName": "Alfa Romeo",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "pedralbes-1",
+        "lengthKm": 6.316,
+        "turns": 6,
+        "effective": true,
+        "years": "1951–1954",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         3.538,
@@ -25780,6 +29324,28 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Pescara Circuit is an officially indexed Formula 1 venue located in Pescara, Italy.",
+    "totalRaces": 1,
+    "poleToWinRate": 0,
+    "poleToWinCount": 0,
+    "racesWithRecordedPole": 1,
+    "pastWinners": [
+      {
+        "year": 1957,
+        "driverName": "Stirling Moss",
+        "constructorName": "Vanwall",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "pescara-1",
+        "lengthKm": 25.579,
+        "turns": 24,
+        "effective": true,
+        "years": "1957",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         6.662,
@@ -26277,6 +29843,48 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Phoenix Street Circuit is an officially indexed Formula 1 venue located in Phoenix, United States of America.",
+    "totalRaces": 3,
+    "poleToWinRate": 33.3,
+    "poleToWinCount": 1,
+    "racesWithRecordedPole": 3,
+    "pastWinners": [
+      {
+        "year": 1991,
+        "driverName": "Ayrton Senna",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1990,
+        "driverName": "Ayrton Senna",
+        "constructorName": "McLaren",
+        "gridPosition": 5
+      },
+      {
+        "year": 1989,
+        "driverName": "Alain Prost",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "phoenix-1",
+        "lengthKm": 3.8,
+        "turns": 15,
+        "effective": false,
+        "years": "1989–1990",
+        "racesCount": 2
+      },
+      {
+        "layoutId": "phoenix-2",
+        "lengthKm": 3.721,
+        "turns": 15,
+        "effective": true,
+        "years": "1991",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         7.613,
@@ -26744,6 +30352,34 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Algarve International Circuit is an officially indexed Formula 1 venue located in Portimão, Portugal.",
+    "totalRaces": 2,
+    "poleToWinRate": 50,
+    "poleToWinCount": 1,
+    "racesWithRecordedPole": 2,
+    "pastWinners": [
+      {
+        "year": 2021,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2020,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "portimao-1",
+        "lengthKm": 4.653,
+        "turns": 15,
+        "effective": true,
+        "years": "2020–2021",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         -3.495,
@@ -27261,6 +30897,34 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Circuito da Boavista is an officially indexed Formula 1 venue located in Porto, Portugal.",
+    "totalRaces": 2,
+    "poleToWinRate": 50,
+    "poleToWinCount": 1,
+    "racesWithRecordedPole": 2,
+    "pastWinners": [
+      {
+        "year": 1960,
+        "driverName": "Jack Brabham",
+        "constructorName": "Cooper",
+        "gridPosition": 3
+      },
+      {
+        "year": 1958,
+        "driverName": "Stirling Moss",
+        "constructorName": "Vanwall",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "porto-1",
+        "lengthKm": 7.406,
+        "turns": 19,
+        "effective": true,
+        "years": "1958–1960",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         5.106,
@@ -27758,6 +31422,90 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Reims-Gueux is an officially indexed Formula 1 venue located in Reims, France.",
+    "totalRaces": 11,
+    "poleToWinRate": 54.5,
+    "poleToWinCount": 6,
+    "racesWithRecordedPole": 11,
+    "pastWinners": [
+      {
+        "year": 1966,
+        "driverName": "Jack Brabham",
+        "constructorName": "Brabham",
+        "gridPosition": 4
+      },
+      {
+        "year": 1963,
+        "driverName": "Jim Clark",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      },
+      {
+        "year": 1961,
+        "driverName": "Giancarlo Baghetti",
+        "constructorName": "Ferrari",
+        "gridPosition": 12
+      },
+      {
+        "year": 1960,
+        "driverName": "Jack Brabham",
+        "constructorName": "Cooper",
+        "gridPosition": 1
+      },
+      {
+        "year": 1959,
+        "driverName": "Tony Brooks",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 1958,
+        "driverName": "Mike Hawthorn",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 1956,
+        "driverName": "Peter Collins",
+        "constructorName": "Ferrari",
+        "gridPosition": 3
+      },
+      {
+        "year": 1954,
+        "driverName": "Juan Manuel Fangio",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 1953,
+        "driverName": "Mike Hawthorn",
+        "constructorName": "Ferrari",
+        "gridPosition": 7
+      },
+      {
+        "year": 1951,
+        "driverName": "Luigi Fagioli",
+        "constructorName": "Alfa Romeo",
+        "gridPosition": 7
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "reims-2",
+        "lengthKm": 8.302,
+        "turns": 7,
+        "effective": true,
+        "years": "1953–1966",
+        "racesCount": 9
+      },
+      {
+        "layoutId": "reims-1",
+        "lengthKm": 7.815,
+        "turns": 5,
+        "effective": false,
+        "years": "1950–1951",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         6.03,
@@ -27985,6 +31733,28 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Riverside International Raceway is an officially indexed Formula 1 venue located in Riverside, United States of America.",
+    "totalRaces": 1,
+    "poleToWinRate": 100,
+    "poleToWinCount": 1,
+    "racesWithRecordedPole": 1,
+    "pastWinners": [
+      {
+        "year": 1960,
+        "driverName": "Stirling Moss",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "riverside-1",
+        "lengthKm": 5.271,
+        "turns": 9,
+        "effective": true,
+        "years": "1960",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         5.497,
@@ -28272,6 +32042,60 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Rouen-Les-Essarts is an officially indexed Formula 1 venue located in Rouen, France.",
+    "totalRaces": 5,
+    "poleToWinRate": 40,
+    "poleToWinCount": 2,
+    "racesWithRecordedPole": 5,
+    "pastWinners": [
+      {
+        "year": 1968,
+        "driverName": "Jacky Ickx",
+        "constructorName": "Ferrari",
+        "gridPosition": 3
+      },
+      {
+        "year": 1964,
+        "driverName": "Dan Gurney",
+        "constructorName": "Brabham",
+        "gridPosition": 2
+      },
+      {
+        "year": 1962,
+        "driverName": "Dan Gurney",
+        "constructorName": "Porsche",
+        "gridPosition": 6
+      },
+      {
+        "year": 1957,
+        "driverName": "Juan Manuel Fangio",
+        "constructorName": "Maserati",
+        "gridPosition": 1
+      },
+      {
+        "year": 1952,
+        "driverName": "Alberto Ascari",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "rouen-2",
+        "lengthKm": 6.542,
+        "turns": 12,
+        "effective": true,
+        "years": "1957–1968",
+        "racesCount": 4
+      },
+      {
+        "layoutId": "rouen-1",
+        "lengthKm": 5.1,
+        "turns": 10,
+        "effective": false,
+        "years": "1952",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         7.043,
@@ -28649,6 +32473,28 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Sebring International Raceway is an officially indexed Formula 1 venue located in Sebring, United States of America.",
+    "totalRaces": 1,
+    "poleToWinRate": 0,
+    "poleToWinCount": 0,
+    "racesWithRecordedPole": 1,
+    "pastWinners": [
+      {
+        "year": 1959,
+        "driverName": "Bruce McLaren",
+        "constructorName": "Cooper",
+        "gridPosition": 10
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "sebring-1",
+        "lengthKm": 8.36,
+        "turns": 17,
+        "effective": true,
+        "years": "1959",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         5.115,
@@ -29146,6 +32992,82 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Sepang International Circuit is an officially indexed Formula 1 venue located in Sepang, Malaysia.",
+    "totalRaces": 20,
+    "poleToWinRate": 50,
+    "poleToWinCount": 10,
+    "racesWithRecordedPole": 20,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2017,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 3
+      },
+      {
+        "year": 2016,
+        "driverName": "Daniel Ricciardo",
+        "constructorName": "Red Bull",
+        "gridPosition": 4
+      },
+      {
+        "year": 2015,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2014,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2013,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2012,
+        "driverName": "Fernando Alonso",
+        "constructorName": "Ferrari",
+        "gridPosition": 8
+      },
+      {
+        "year": 2011,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2010,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Red Bull",
+        "gridPosition": 3
+      },
+      {
+        "year": 2009,
+        "driverName": "Jenson Button",
+        "constructorName": "Brawn",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "sepang-1",
+        "lengthKm": 5.543,
+        "turns": 15,
+        "effective": true,
+        "years": "1999–2026",
+        "racesCount": 20
+      }
+    ],
     "trackCoordinates": [
       [
         -1.766,
@@ -29678,6 +33600,82 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Shanghai International Circuit is an officially indexed Formula 1 venue located in Shanghai, China.",
+    "totalRaces": 19,
+    "poleToWinRate": 63.2,
+    "poleToWinCount": 12,
+    "racesWithRecordedPole": 19,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Kimi Antonelli",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "Oscar Piastri",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2019,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2018,
+        "driverName": "Daniel Ricciardo",
+        "constructorName": "Red Bull",
+        "gridPosition": 6
+      },
+      {
+        "year": 2017,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2016,
+        "driverName": "Nico Rosberg",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2015,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2014,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2013,
+        "driverName": "Fernando Alonso",
+        "constructorName": "Ferrari",
+        "gridPosition": 3
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "shanghai-1",
+        "lengthKm": 5.451,
+        "turns": 16,
+        "effective": true,
+        "years": "2004–2026",
+        "racesCount": 19
+      }
+    ],
     "trackCoordinates": [
       [
         -0.74,
@@ -30395,6 +34393,138 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Silverstone Circuit is an officially indexed Formula 1 venue located in Silverstone, United Kingdom.",
+    "totalRaces": 61,
+    "poleToWinRate": 36.1,
+    "poleToWinCount": 22,
+    "racesWithRecordedPole": 61,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Charles Leclerc",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2025,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 3
+      },
+      {
+        "year": 2024,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "Carlos Sainz Jr.",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2021,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2020,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 4
+      },
+      {
+        "year": 2020,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2019,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2018,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "silverstone-8",
+        "lengthKm": 5.891,
+        "turns": 18,
+        "effective": true,
+        "years": "2010–2026",
+        "racesCount": 18
+      },
+      {
+        "layoutId": "silverstone-1",
+        "lengthKm": 4.649,
+        "turns": 8,
+        "effective": false,
+        "years": "1950–1973",
+        "racesCount": 14
+      },
+      {
+        "layoutId": "silverstone-7",
+        "lengthKm": 5.141,
+        "turns": 17,
+        "effective": false,
+        "years": "1997–2009",
+        "racesCount": 13
+      },
+      {
+        "layoutId": "silverstone-2",
+        "lengthKm": 4.719,
+        "turns": 9,
+        "effective": false,
+        "years": "1975–1985",
+        "racesCount": 6
+      },
+      {
+        "layoutId": "silverstone-3",
+        "lengthKm": 4.778,
+        "turns": 9,
+        "effective": false,
+        "years": "1987–1990",
+        "racesCount": 4
+      },
+      {
+        "layoutId": "silverstone-4",
+        "lengthKm": 5.226,
+        "turns": 14,
+        "effective": false,
+        "years": "1991–1993",
+        "racesCount": 3
+      },
+      {
+        "layoutId": "silverstone-5",
+        "lengthKm": 5.057,
+        "turns": 17,
+        "effective": false,
+        "years": "1994–1995",
+        "racesCount": 2
+      },
+      {
+        "layoutId": "silverstone-6",
+        "lengthKm": 5.072,
+        "turns": 17,
+        "effective": false,
+        "years": "1996",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         0,
@@ -30477,6 +34607,70 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Sirius Autodrom is an officially indexed Formula 1 venue located in Sirius, Russia.",
+    "totalRaces": 8,
+    "poleToWinRate": 25,
+    "poleToWinCount": 2,
+    "racesWithRecordedPole": 8,
+    "pastWinners": [
+      {
+        "year": 2021,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 4
+      },
+      {
+        "year": 2020,
+        "driverName": "Valtteri Bottas",
+        "constructorName": "Mercedes",
+        "gridPosition": 3
+      },
+      {
+        "year": 2019,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2018,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2017,
+        "driverName": "Valtteri Bottas",
+        "constructorName": "Mercedes",
+        "gridPosition": 3
+      },
+      {
+        "year": 2016,
+        "driverName": "Nico Rosberg",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2015,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      },
+      {
+        "year": 2014,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "sirius-1",
+        "lengthKm": 5.848,
+        "turns": 18,
+        "effective": true,
+        "years": "2014–2021",
+        "racesCount": 8
+      }
+    ],
     "trackCoordinates": [
       [
         5.165,
@@ -30974,6 +35168,106 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Circuit de Spa-Francorchamps is an officially indexed Formula 1 venue located in Spa, Belgium.",
+    "totalRaces": 59,
+    "poleToWinRate": 37.3,
+    "poleToWinCount": 22,
+    "racesWithRecordedPole": 59,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Kimi Antonelli",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "Oscar Piastri",
+        "constructorName": "McLaren",
+        "gridPosition": 2
+      },
+      {
+        "year": 2024,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 3
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 6
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 14
+      },
+      {
+        "year": 2021,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2020,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2019,
+        "driverName": "Charles Leclerc",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 2018,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2017,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "spa-francorchamps-4",
+        "lengthKm": 7.004,
+        "turns": 19,
+        "effective": true,
+        "years": "2007–2026",
+        "racesCount": 20
+      },
+      {
+        "layoutId": "spa-francorchamps-2",
+        "lengthKm": 6.94,
+        "turns": 19,
+        "effective": false,
+        "years": "1983–2002",
+        "racesCount": 19
+      },
+      {
+        "layoutId": "spa-francorchamps-1",
+        "lengthKm": 14.12,
+        "turns": 21,
+        "effective": false,
+        "years": "1950–1970",
+        "racesCount": 18
+      },
+      {
+        "layoutId": "spa-francorchamps-3",
+        "lengthKm": 6.976,
+        "turns": 19,
+        "effective": false,
+        "years": "2004–2005",
+        "racesCount": 2
+      }
+    ],
     "trackCoordinates": [
       [
         -1.55,
@@ -31751,6 +36045,98 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Red Bull Ring is an officially indexed Formula 1 venue located in Spielberg, Austria.",
+    "totalRaces": 40,
+    "poleToWinRate": 40,
+    "poleToWinCount": 16,
+    "racesWithRecordedPole": 40,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "George Russell",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "George Russell",
+        "constructorName": "Mercedes",
+        "gridPosition": 3
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "Charles Leclerc",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 2021,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2021,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2020,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2020,
+        "driverName": "Valtteri Bottas",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2019,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "spielberg-3",
+        "lengthKm": 4.326,
+        "turns": 10,
+        "effective": true,
+        "years": "1997–2026",
+        "racesCount": 22
+      },
+      {
+        "layoutId": "spielberg-2",
+        "lengthKm": 5.942,
+        "turns": 18,
+        "effective": false,
+        "years": "1977–1987",
+        "racesCount": 11
+      },
+      {
+        "layoutId": "spielberg-1",
+        "lengthKm": 5.911,
+        "turns": 16,
+        "effective": false,
+        "years": "1970–1976",
+        "racesCount": 7
+      }
+    ],
     "trackCoordinates": [
       [
         2.725,
@@ -32168,6 +36554,90 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Suzuka Circuit is an officially indexed Formula 1 venue located in Suzuka, Japan.",
+    "totalRaces": 36,
+    "poleToWinRate": 55.6,
+    "poleToWinCount": 20,
+    "racesWithRecordedPole": 36,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Kimi Antonelli",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2019,
+        "driverName": "Valtteri Bottas",
+        "constructorName": "Mercedes",
+        "gridPosition": 3
+      },
+      {
+        "year": 2018,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2017,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2016,
+        "driverName": "Nico Rosberg",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2015,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 2
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "suzuka-2",
+        "lengthKm": 5.807,
+        "turns": 18,
+        "effective": true,
+        "years": "2003–2026",
+        "racesCount": 20
+      },
+      {
+        "layoutId": "suzuka-1",
+        "lengthKm": 5.86,
+        "turns": 18,
+        "effective": false,
+        "years": "1987–2002",
+        "racesCount": 16
+      }
+    ],
     "trackCoordinates": [
       [
         0,
@@ -32245,6 +36715,52 @@
     "elevation": "+25m",
     "type": "Street",
     "description": "Valencia Street Circuit is an officially indexed Formula 1 venue located in Valencia, Spain.",
+    "totalRaces": 5,
+    "poleToWinRate": 60,
+    "poleToWinCount": 3,
+    "racesWithRecordedPole": 5,
+    "pastWinners": [
+      {
+        "year": 2012,
+        "driverName": "Fernando Alonso",
+        "constructorName": "Ferrari",
+        "gridPosition": 11
+      },
+      {
+        "year": 2011,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2010,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2009,
+        "driverName": "Rubens Barrichello",
+        "constructorName": "Brawn",
+        "gridPosition": 3
+      },
+      {
+        "year": 2008,
+        "driverName": "Felipe Massa",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "valencia-1",
+        "lengthKm": 5.419,
+        "turns": 25,
+        "effective": true,
+        "years": "2008–2012",
+        "racesCount": 5
+      }
+    ],
     "trackCoordinates": [
       [
         5.791,
@@ -32742,6 +37258,98 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Watkins Glen International is an officially indexed Formula 1 venue located in Watkins Glen, United States of America.",
+    "totalRaces": 20,
+    "poleToWinRate": 50,
+    "poleToWinCount": 10,
+    "racesWithRecordedPole": 20,
+    "pastWinners": [
+      {
+        "year": 1980,
+        "driverName": "Alan Jones",
+        "constructorName": "Williams",
+        "gridPosition": 5
+      },
+      {
+        "year": 1979,
+        "driverName": "Gilles Villeneuve",
+        "constructorName": "Ferrari",
+        "gridPosition": 3
+      },
+      {
+        "year": 1978,
+        "driverName": "Carlos Reutemann",
+        "constructorName": "Ferrari",
+        "gridPosition": 2
+      },
+      {
+        "year": 1977,
+        "driverName": "James Hunt",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1976,
+        "driverName": "James Hunt",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1975,
+        "driverName": "Niki Lauda",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 1974,
+        "driverName": "Carlos Reutemann",
+        "constructorName": "Brabham",
+        "gridPosition": 1
+      },
+      {
+        "year": 1973,
+        "driverName": "Ronnie Peterson",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      },
+      {
+        "year": 1972,
+        "driverName": "Jackie Stewart",
+        "constructorName": "Tyrrell",
+        "gridPosition": 1
+      },
+      {
+        "year": 1971,
+        "driverName": "François Cevert",
+        "constructorName": "Tyrrell",
+        "gridPosition": 5
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "watkins-glen-1",
+        "lengthKm": 3.78,
+        "turns": 8,
+        "effective": false,
+        "years": "1961–1970",
+        "racesCount": 10
+      },
+      {
+        "layoutId": "watkins-glen-3",
+        "lengthKm": 5.435,
+        "turns": 11,
+        "effective": true,
+        "years": "1975–1980",
+        "racesCount": 6
+      },
+      {
+        "layoutId": "watkins-glen-2",
+        "lengthKm": 5.435,
+        "turns": 11,
+        "effective": false,
+        "years": "1971–1974",
+        "racesCount": 4
+      }
+    ],
     "trackCoordinates": [
       [
         5.142,
@@ -33089,6 +37697,90 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Yas Marina Circuit is an officially indexed Formula 1 venue located in Abu Dhabi, United Arab Emirates.",
+    "totalRaces": 18,
+    "poleToWinRate": 70.6,
+    "poleToWinCount": 12,
+    "racesWithRecordedPole": 17,
+    "pastWinners": [
+      {
+        "year": 2025,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2021,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2020,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2019,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2018,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2017,
+        "driverName": "Valtteri Bottas",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      },
+      {
+        "year": 2016,
+        "driverName": "Lewis Hamilton",
+        "constructorName": "Mercedes",
+        "gridPosition": 1
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "yas-marina-1",
+        "lengthKm": 5.554,
+        "turns": 21,
+        "effective": false,
+        "years": "2009–2020",
+        "racesCount": 12
+      },
+      {
+        "layoutId": "yas-marina-2",
+        "lengthKm": 5.281,
+        "turns": 16,
+        "effective": true,
+        "years": "2021–2026",
+        "racesCount": 6
+      }
+    ],
     "trackCoordinates": [
       [
         -0.1,
@@ -33766,6 +38458,46 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Korea International Circuit is an officially indexed Formula 1 venue located in Yeongam, South Korea.",
+    "totalRaces": 4,
+    "poleToWinRate": 25,
+    "poleToWinCount": 1,
+    "racesWithRecordedPole": 4,
+    "pastWinners": [
+      {
+        "year": 2013,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2012,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2011,
+        "driverName": "Sebastian Vettel",
+        "constructorName": "Red Bull",
+        "gridPosition": 2
+      },
+      {
+        "year": 2010,
+        "driverName": "Fernando Alonso",
+        "constructorName": "Ferrari",
+        "gridPosition": 3
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "yeongam-1",
+        "lengthKm": 5.615,
+        "turns": 18,
+        "effective": true,
+        "years": "2010–2013",
+        "racesCount": 4
+      }
+    ],
     "trackCoordinates": [
       [
         5.25,
@@ -34263,6 +38995,114 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Circuit Zandvoort is an officially indexed Formula 1 venue located in Zandvoort, Netherlands.",
+    "totalRaces": 36,
+    "poleToWinRate": 50,
+    "poleToWinCount": 18,
+    "racesWithRecordedPole": 36,
+    "pastWinners": [
+      {
+        "year": 2026,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2025,
+        "driverName": "Oscar Piastri",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2024,
+        "driverName": "Lando Norris",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 2023,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2022,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 2021,
+        "driverName": "Max Verstappen",
+        "constructorName": "Red Bull",
+        "gridPosition": 1
+      },
+      {
+        "year": 1985,
+        "driverName": "Niki Lauda",
+        "constructorName": "McLaren",
+        "gridPosition": 10
+      },
+      {
+        "year": 1984,
+        "driverName": "Alain Prost",
+        "constructorName": "McLaren",
+        "gridPosition": 1
+      },
+      {
+        "year": 1983,
+        "driverName": "René Arnoux",
+        "constructorName": "Ferrari",
+        "gridPosition": 10
+      },
+      {
+        "year": 1982,
+        "driverName": "Didier Pironi",
+        "constructorName": "Ferrari",
+        "gridPosition": 4
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "zandvoort-1",
+        "lengthKm": 4.193,
+        "turns": 19,
+        "effective": false,
+        "years": "1952–1971",
+        "racesCount": 17
+      },
+      {
+        "layoutId": "zandvoort-2",
+        "lengthKm": 4.226,
+        "turns": 19,
+        "effective": false,
+        "years": "1973–1978",
+        "racesCount": 6
+      },
+      {
+        "layoutId": "zandvoort-4",
+        "lengthKm": 4.252,
+        "turns": 19,
+        "effective": false,
+        "years": "1980–1985",
+        "racesCount": 6
+      },
+      {
+        "layoutId": "zandvoort-5",
+        "lengthKm": 4.259,
+        "turns": 14,
+        "effective": true,
+        "years": "2021–2026",
+        "racesCount": 6
+      },
+      {
+        "layoutId": "zandvoort-3",
+        "lengthKm": 4.226,
+        "turns": 19,
+        "effective": false,
+        "years": "1979",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         -5.1,
@@ -34870,6 +39710,28 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Zeltweg is an officially indexed Formula 1 venue located in Zeltweg, Austria.",
+    "totalRaces": 1,
+    "poleToWinRate": 0,
+    "poleToWinCount": 0,
+    "racesWithRecordedPole": 1,
+    "pastWinners": [
+      {
+        "year": 1964,
+        "driverName": "Lorenzo Bandini",
+        "constructorName": "Ferrari",
+        "gridPosition": 7
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "zeltweg-1",
+        "lengthKm": 3.186,
+        "turns": 4,
+        "effective": true,
+        "years": "1964",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         6.351,
@@ -35007,6 +39869,90 @@
     "elevation": "+25m",
     "type": "Permanent",
     "description": "Circuit Zolder is an officially indexed Formula 1 venue located in Heusden-Zolder, Belgium.",
+    "totalRaces": 10,
+    "poleToWinRate": 50,
+    "poleToWinCount": 5,
+    "racesWithRecordedPole": 10,
+    "pastWinners": [
+      {
+        "year": 1984,
+        "driverName": "Michele Alboreto",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 1982,
+        "driverName": "John Watson",
+        "constructorName": "McLaren",
+        "gridPosition": 10
+      },
+      {
+        "year": 1981,
+        "driverName": "Carlos Reutemann",
+        "constructorName": "Williams",
+        "gridPosition": 1
+      },
+      {
+        "year": 1980,
+        "driverName": "Didier Pironi",
+        "constructorName": "Ligier",
+        "gridPosition": 2
+      },
+      {
+        "year": 1979,
+        "driverName": "Jody Scheckter",
+        "constructorName": "Ferrari",
+        "gridPosition": 7
+      },
+      {
+        "year": 1978,
+        "driverName": "Mario Andretti",
+        "constructorName": "Lotus",
+        "gridPosition": 1
+      },
+      {
+        "year": 1977,
+        "driverName": "Gunnar Nilsson",
+        "constructorName": "Lotus",
+        "gridPosition": 3
+      },
+      {
+        "year": 1976,
+        "driverName": "Niki Lauda",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 1975,
+        "driverName": "Niki Lauda",
+        "constructorName": "Ferrari",
+        "gridPosition": 1
+      },
+      {
+        "year": 1973,
+        "driverName": "Jackie Stewart",
+        "constructorName": "Tyrrell",
+        "gridPosition": 6
+      }
+    ],
+    "layoutEras": [
+      {
+        "layoutId": "zolder-2",
+        "lengthKm": 4.262,
+        "turns": 15,
+        "effective": true,
+        "years": "1975–1984",
+        "racesCount": 9
+      },
+      {
+        "layoutId": "zolder-1",
+        "lengthKm": 4.22,
+        "turns": 14,
+        "effective": false,
+        "years": "1973",
+        "racesCount": 1
+      }
+    ],
     "trackCoordinates": [
       [
         7.906,

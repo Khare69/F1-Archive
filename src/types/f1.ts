@@ -47,9 +47,11 @@ export interface Driver {
   podiumRate?: number;
   country: string;
   dateOfBirth?: string | null;
+  birthDate?: string | null;
   imageUrl?: string;
   isLegend?: boolean;
   isActive2026?: boolean;
+  pointsSharePct?: number;
   raceFinishes: RaceFinish[];
 }
 
@@ -79,8 +81,90 @@ export interface Circuit {
   elevation: string;
   type: 'Street' | 'Permanent' | 'Semi-Permanent';
   description: string;
+  totalRaces?: number;
   poleToWinRate?: number | null;
+  poleToWinCount?: number;
+  racesWithRecordedPole?: number;
+  pastWinners?: Array<{
+    year: number;
+    driverName: string;
+    constructorName: string;
+    gridPosition: number | null;
+  }>;
+  layoutEras?: Array<{
+    layoutId: string;
+    lengthKm: number;
+    turns: number;
+    effective: boolean;
+    years: string;
+    racesCount: number;
+  }>;
   trackCoordinates?: [number, number, number][];
+}
+
+export interface RaceFinisherResult {
+  driverId: string;
+  driverCode?: string;
+  driverName: string;
+  constructorId: string;
+  constructorName?: string;
+  gridPosition: number | null;
+  finishPosition: number | null;
+  positionText: string;
+  points: number;
+  status: 'FINISHED' | 'DNF' | 'DNS' | 'DSQ' | 'NC';
+  fastestLap: boolean;
+  sharedCar?: boolean;
+}
+
+export interface SeasonRoundClassification {
+  round: number;
+  date: string;
+  name: string;
+  circuitId: string;
+  circuitLayoutId?: string | null;
+  laps: number;
+  distanceKm: number;
+  isCancelled: boolean;
+  isHalfPoints?: boolean;
+  hasSprint?: boolean;
+  results: RaceFinisherResult[];
+  sprintResults?: RaceFinisherResult[];
+}
+
+export interface DriverProgressionPoint {
+  driverId: string;
+  driverCode: string;
+  driverName: string;
+  constructorId: string;
+  points: number;
+  position: number;
+}
+
+export interface RoundStandingsProgression {
+  round: number;
+  standings: DriverProgressionPoint[];
+}
+
+export interface SeasonClassificationFile {
+  year: number;
+  racesCount: number;
+  championDriver: string;
+  championTeam: string;
+  rounds: SeasonRoundClassification[];
+  standingsProgression: RoundStandingsProgression[];
+}
+
+export interface TeammateH2HRecord {
+  racesTogether: number;
+  driverAWins: number;
+  driverBWins: number;
+  driverAOutqualified: number;
+  driverBOutqualified: number;
+  driverAPoints: number;
+  driverBPoints: number;
+  years: number[];
+  constructors: string[];
 }
 
 export interface F1DBMetadata {

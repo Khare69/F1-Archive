@@ -9,7 +9,7 @@ import {
 } from '../../data/dataService';
 import { FallbackImage } from '../../components/FallbackImage/FallbackImage';
 import { StatCard } from '../../components/StatCard/StatCard';
-import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { usePageMeta } from '../../hooks/usePageMeta';
 import './DriversArchive.css';
 
 type DriverCategory = 'active' | 'champions' | 'all';
@@ -26,7 +26,27 @@ export const DriversArchive: React.FC = () => {
 
   // Validate driverId or default to the first driver
   const selectedDriver = getDriverById(driverId) || allDrivers[0];
-  useDocumentTitle(selectedDriver ? selectedDriver.name : 'Drivers Roster');
+
+  usePageMeta({
+    title: selectedDriver
+      ? `${selectedDriver.name} (${selectedDriver.code}) — Driver Profile & Career Telemetry`
+      : 'Drivers Roster — Formula 1 History',
+    description: selectedDriver
+      ? `${selectedDriver.name} (${selectedDriver.country}) career statistics. ${selectedDriver.championships} World Drivers' Championships, ${selectedDriver.wins} Grand Prix wins, ${selectedDriver.podiums} podiums, and ${selectedDriver.starts} starts.`
+      : 'Complete Formula 1 drivers registry from 1950 to 2026. Explore World Champions, race wins, podium conversion rates, and career telemetry.',
+    canonicalPath: `/drivers${selectedDriver ? `/${selectedDriver.id}` : ''}`,
+    jsonLd: selectedDriver
+      ? {
+          '@context': 'https://schema.org',
+          '@type': 'Person',
+          name: selectedDriver.name,
+          nationality: selectedDriver.country,
+          birthDate: selectedDriver.birthDate || undefined,
+          jobTitle: 'Formula 1 Racing Driver',
+          description: `${selectedDriver.name} is a Formula 1 racing driver with ${selectedDriver.championships} World Championships and ${selectedDriver.wins} Grand Prix victories.`
+        }
+      : undefined
+  });
 
   const driverTeam = getTeamById(selectedDriver.teamId);
   const teamColor = driverTeam?.color || '#00D2FF';

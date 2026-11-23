@@ -44,13 +44,25 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
       pageErrors.push(error.message);
     });
 
-    // 1. Home View
+    // 1. Home View with On This Day & Favorites Widgets
     await page.goto('/');
     await expect(page.locator('h1').first()).toBeVisible();
+    await expect(page.locator('.on-this-day-panel, .otd-header').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('.favorites-widget, .fav-widget-header').first()).toBeVisible({ timeout: 10000 });
 
-    // 2. Seasons Archive
-    await page.goto('/seasons');
+    // 2. Seasons Archive with Progression & What-If Simulator Tabs
+    await page.goto('/seasons/2021');
     await expect(page.locator('.seasons-archive-page, .archive-layout').first()).toBeVisible();
+    const whatIfTab = page.locator('.season-tab-btn', { hasText: 'WHAT-IF' });
+    if (await whatIfTab.count() > 0) {
+      await whatIfTab.first().click();
+      await expect(page.locator('.what-if-simulator, .what-if-controls').first()).toBeVisible({ timeout: 10000 });
+    }
+
+    // 2b. Driver Comparison & Mutual Teammate H2H
+    await page.goto('/drivers/compare?a=HAM&b=VER');
+    await expect(page.locator('.driver-comparison-page, h1').first()).toBeVisible();
+    await expect(page.locator('.comparison-matrix-panel')).toBeVisible();
 
     // 3. Teams Archive
     await page.goto('/teams');
@@ -93,6 +105,14 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     const aeroBtn = page.locator('.aero-toggle-btn');
     await expect(aeroBtn).toBeVisible();
     await aeroBtn.click();
+
+    // Test 2026 Regulation Inspector toggle
+    const regBtn = page.locator('.reg-2026-toggle-btn');
+    if (await regBtn.count() > 0) {
+      await expect(regBtn).toBeVisible();
+      await regBtn.click();
+      await expect(page.locator('.reg-2026-panel, .aero-mode-btn').first()).toBeVisible({ timeout: 10000 });
+    }
 
     // Assert zero uncaught exceptions across all pages
     expect(pageErrors).toEqual([]);

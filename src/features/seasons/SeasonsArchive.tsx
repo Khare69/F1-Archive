@@ -1,9 +1,16 @@
-import React, { useMemo, useRef, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
+import React, { useMemo, useRef, useEffect, lazy, Suspense } from 'react';
+import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { getAllSeasons, getSeasonByYear, getTeamById, getF1DBMetadata } from '../../data/dataService';
 import { StatCard } from '../../components/StatCard/StatCard';
-import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { usePageMeta } from '../../hooks/usePageMeta';
 import './SeasonsArchive.css';
+
+const SeasonProgressionChart = lazy(() =>
+  import('./components/SeasonProgressionChart').then(m => ({ default: m.SeasonProgressionChart }))
+);
+const WhatIfSimulator = lazy(() =>
+  import('../analytics/WhatIfSimulator').then(m => ({ default: m.WhatIfSimulator }))
+);
 
 const DECADES = [
   { label: '2020s', startYear: 2020, targetYear: 2026 },
@@ -18,6 +25,7 @@ const DECADES = [
 
 export const SeasonsArchive: React.FC = () => {
   const { year: yearParam } = useParams<{ year?: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
   const seasons = getAllSeasons();
   const meta = getF1DBMetadata();
@@ -25,7 +33,21 @@ export const SeasonsArchive: React.FC = () => {
 
   // Validate year parameter or default to latest season
   const selectedSeason = getSeasonByYear(yearParam) || seasons[0];
-  useDocumentTitle(selectedSeason ? `${selectedSeason.year} Season` : 'Seasons Vault');
+  const viewMode = (searchParams.get('view') as 'overview' | 'chart' | 'whatif') || 'overview';
+
+  usePageMeta({
+    title: `${selectedSeason.year} Season — Formula 1 World Championship`,
+    description: `Inspect ${selectedSeason.year} Formula 1 championship standings, race progression, defining milestones, and cross-era points simulation.`,
+    canonicalPath: `/seasons/${selectedSeason.year}`,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'SportsEvent',
+      name: `${selectedSeason.year} FIA Formula One World Championship`,
+      startDate: `${selectedSeason.year}-01-01`,
+      endDate: `${selectedSeason.year}-12-31`,
+      sport: 'Formula 1 Motor Racing'
+    }
+  });
 
   const chronologicalSeasons = useMemo(() => {
     return [...seasons].sort((a, b) => a.year - b.year);
@@ -47,11 +69,20 @@ export const SeasonsArchive: React.FC = () => {
   }, [selectedSeason.year]);
 
   const handleSelectSeason = (year: number) => {
-    navigate(`/seasons/${year}`);
+    navigate(`/seasons/${year}${viewMode !== 'overview' ? `?view=${viewMode}` : ''}`);
   };
 
   const handleJumpDecade = (targetYear: number) => {
     handleSelectSeason(targetYear);
+  };
+
+  const handleSetView = (newView: 'overview' | 'chart' | 'whatif') => {
+    if (newView === 'overview') {
+      searchParams.delete('view');
+      setSearchParams(searchParams, { replace: true });
+    } else {
+      setSearchParams({ view: newView }, { replace: true });
+    }
   };
 
   return (
@@ -159,95 +190,151 @@ export const SeasonsArchive: React.FC = () => {
             </div>
           </div>
 
-          {/* Championship Podium Summary */}
-          <div className="champions-grid">
-            <div className="champion-card champion-driver">
-              <div className="champ-label telemetry">WORLD DRIVERS' CHAMPION</div>
-              <div className="champ-name headline">{selectedSeason.championDriver}</div>
-              {selectedSeason.championDriverId ? (
-                <Link to={`/drivers/${selectedSeason.championDriverId}`} className="champ-link telemetry">
-                  VIEW DRIVER PROFILE →
-                </Link>
-              ) : (
-                <span className="champ-link-disabled telemetry">LEGACY RECORD</span>
-              )}
-            </div>
-
-            <div className="champion-card champion-team">
-              <div className="champ-label telemetry">CONSTRUCTORS' CHAMPION</div>
-              <div className="champ-name headline">{selectedSeason.championTeam}</div>
-              {selectedSeason.championTeamId ? (
-                <Link to={`/teams/${selectedSeason.championTeamId}`} className="champ-link telemetry">
-                  VIEW CONSTRUCTOR PROFILE →
-                </Link>
-              ) : (
-                <span className="champ-link-disabled telemetry">PRE-1958 INAUGURAL ERA</span>
-              )}
-            </div>
+          {/* View Mode Navigation Tabs */}
+          <div className="season-view-tabs telemetry">
+            <button
+              type="button"
+              className={`view-tab-btn ${viewMode === 'overview' ? 'active' : ''}`}
+              onClick={() => handleSetView('overview')}
+            >
+              [ OVERVIEW & RECORDS ]
+            </button>
+            <button
+              type="button"
+              className={`view-tab-btn ${viewMode === 'chart' ? 'active' : ''}`}
+              onClick={() => handleSetView('chart')}
+            >
+              📈 [ PROGRESSION CHART ]
+            </button>
+            <button
+              type="button"
+              className={`view-tab-btn ${viewMode === 'whatif' ? 'active' : ''}`}
+              onClick={() => handleSetView('whatif')}
+            >
+              ⚡ [ 'WHAT-IF' SIMULATOR ]
+            </button>
           </div>
         </div>
 
-        {/* Notable Events & Milestones */}
-        <div className="season-details-grid">
-          <section className="season-detail-panel telemetry-panel">
-            <div className="section-title-bar">
-              <span className="section-dot" style={{ backgroundColor: '#00D2FF' }}></span>
-              <h2 className="headline">ERA MILESTONES & DEFINING EVENTS</h2>
-            </div>
-            <ul className="events-list">
-              {selectedSeason.notableEvents.map((event, idx) => (
-                <li key={idx} className="event-item">
-                  <span className="event-marker telemetry">// 0{idx + 1}</span>
-                  <span className="event-text">{event}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
+        {/* Conditional View Rendering */}
+        {viewMode === 'chart' && (
+          <Suspense
+            fallback={
+              <div className="telemetry-panel chart-loading-panel">
+                <div className="loading-spinner"></div>
+                <span className="telemetry">// LOADING 100% VECTOR SVG PROGRESSION...</span>
+              </div>
+            }
+          >
+            <SeasonProgressionChart year={selectedSeason.year} />
+          </Suspense>
+        )}
 
-          <section className="season-detail-panel telemetry-panel">
-            <div className="section-title-bar">
-              <span className="section-dot" style={{ backgroundColor: '#FF1E1E' }}></span>
-              <h2 className="headline">HISTORICAL RECORDS & BENCHMARKS</h2>
-            </div>
-            <ul className="events-list">
-              {selectedSeason.recordsBroken.map((record, idx) => (
-                <li key={idx} className="event-item">
-                  <span className="event-marker telemetry" style={{ color: '#FF1E1E' }}>// REC</span>
-                  <span className="event-text">{record}</span>
-                </li>
-              ))}
-            </ul>
-          </section>
-        </div>
+        {viewMode === 'whatif' && (
+          <Suspense
+            fallback={
+              <div className="telemetry-panel chart-loading-panel">
+                <div className="loading-spinner"></div>
+                <span className="telemetry">// INITIALIZING WHAT-IF ENGINE...</span>
+              </div>
+            }
+          >
+            <WhatIfSimulator year={selectedSeason.year} />
+          </Suspense>
+        )}
 
-        {/* Summary Stats Row */}
-        <div className="season-stats-row">
-          <StatCard
-            label="CHAMPION PILOT"
-            value={selectedSeason.championDriver.split(' ').pop() || 'TBD'}
-            subtext={selectedSeason.championDriver}
-            accentColor="#FFD700"
-            isPrimary
-          />
-          <StatCard
-            label="CHAMPION CONSTRUCTOR"
-            value={selectedSeason.championTeam.split(' ')[0] || 'TBD'}
-            subtext={selectedSeason.championTeam}
-            accentColor="#00D2FF"
-          />
-          <StatCard
-            label="ROUNDS CONTESTED"
-            value={selectedSeason.races}
-            subtext="Championship Grands Prix"
-            accentColor="#00E701"
-          />
-          <StatCard
-            label="ERA CHRONOLOGY"
-            value={`${selectedSeason.year}`}
-            subtext={`Season #${selectedSeason.year - 1949} of ${seasons.length}`}
-            accentColor="#FFFFFF"
-          />
-        </div>
+        {viewMode === 'overview' && (
+          <>
+            {/* Championship Podium Summary */}
+            <div className="champions-grid">
+              <div className="champion-card champion-driver">
+                <div className="champ-label telemetry">WORLD DRIVERS' CHAMPION</div>
+                <div className="champ-name headline">{selectedSeason.championDriver}</div>
+                {selectedSeason.championDriverId ? (
+                  <Link to={`/drivers/${selectedSeason.championDriverId}`} className="champ-link telemetry">
+                    VIEW DRIVER PROFILE →
+                  </Link>
+                ) : (
+                  <span className="champ-link-disabled telemetry">LEGACY RECORD</span>
+                )}
+              </div>
+
+              <div className="champion-card champion-team">
+                <div className="champ-label telemetry">CONSTRUCTORS' CHAMPION</div>
+                <div className="champ-name headline">{selectedSeason.championTeam}</div>
+                {selectedSeason.championTeamId ? (
+                  <Link to={`/teams/${selectedSeason.championTeamId}`} className="champ-link telemetry">
+                    VIEW CONSTRUCTOR PROFILE →
+                  </Link>
+                ) : (
+                  <span className="champ-link-disabled telemetry">PRE-1958 INAUGURAL ERA</span>
+                )}
+              </div>
+            </div>
+
+            {/* Notable Events & Milestones */}
+            <div className="season-details-grid">
+              <section className="season-detail-panel telemetry-panel">
+                <div className="section-title-bar">
+                  <span className="section-dot" style={{ backgroundColor: '#00D2FF' }}></span>
+                  <h2 className="headline">ERA MILESTONES & DEFINING EVENTS</h2>
+                </div>
+                <ul className="events-list">
+                  {selectedSeason.notableEvents.map((event, idx) => (
+                    <li key={idx} className="event-item">
+                      <span className="event-marker telemetry">// 0{idx + 1}</span>
+                      <span className="event-text">{event}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+
+              <section className="season-detail-panel telemetry-panel">
+                <div className="section-title-bar">
+                  <span className="section-dot" style={{ backgroundColor: '#FF1E1E' }}></span>
+                  <h2 className="headline">HISTORICAL RECORDS & BENCHMARKS</h2>
+                </div>
+                <ul className="events-list">
+                  {selectedSeason.recordsBroken.map((record, idx) => (
+                    <li key={idx} className="event-item">
+                      <span className="event-marker telemetry" style={{ color: '#FF1E1E' }}>// REC</span>
+                      <span className="event-text">{record}</span>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            </div>
+
+            {/* Summary Stats Row */}
+            <div className="season-stats-row">
+              <StatCard
+                label="CHAMPION PILOT"
+                value={selectedSeason.championDriver.split(' ').pop() || 'TBD'}
+                subtext={selectedSeason.championDriver}
+                accentColor="#FFD700"
+                isPrimary
+              />
+              <StatCard
+                label="CHAMPION CONSTRUCTOR"
+                value={selectedSeason.championTeam.split(' ')[0] || 'TBD'}
+                subtext={selectedSeason.championTeam}
+                accentColor="#00D2FF"
+              />
+              <StatCard
+                label="ROUNDS CONTESTED"
+                value={selectedSeason.races}
+                subtext="Championship Grands Prix"
+                accentColor="#00E701"
+              />
+              <StatCard
+                label="ERA CHRONOLOGY"
+                value={`${selectedSeason.year}`}
+                subtext={`Season #${selectedSeason.year - 1949} of ${seasons.length}`}
+                accentColor="#FFFFFF"
+              />
+            </div>
+          </>
+        )}
       </main>
     </div>
   );

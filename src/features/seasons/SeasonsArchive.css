@@ -49,6 +49,43 @@
   display: flex;
   align-items: baseline;
   justify-content: space-between;
+  border-bottom: 1px solid var(--color-border-card);
+  padding-bottom: 1rem;
+}
+
+/* View Mode Navigation Tabs */
+.season-view-tabs {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+.view-tab-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-secondary);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  transition: all 0.2s ease;
+}
+
+.view-tab-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--color-text-primary);
+}
+
+.view-tab-btn.active {
+  background: rgba(0, 210, 255, 0.12);
+  border-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+  font-weight: bold;
+  box-shadow: 0 0 12px var(--color-accent-primary-glow);
+}
+  justify-content: space-between;
   flex-wrap: wrap;
   gap: 1rem;
 }

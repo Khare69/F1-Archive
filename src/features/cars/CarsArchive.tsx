@@ -8,11 +8,12 @@ import { getAllTeams, getTeamById } from '../../data/dataService';
 import { InteractiveCarModel, type PartHoverInfo } from './InteractiveCarModel';
 import { CameraTrackingLight } from './CameraTrackingLight';
 import { FallbackImage } from '../../components/FallbackImage/FallbackImage';
-import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import { usePreferencesContext } from '../../contexts/UserPreferencesContext';
 import { CanvasErrorBoundary } from './components/CanvasErrorBoundary';
 import { TelemetryLoadingProgress } from './components/TelemetryLoadingProgress';
 import { PerfDebugOverlay, PerfDebugCollector } from './components/PerfDebugOverlay';
+import { usePageMeta } from '../../hooks/usePageMeta';
+import type { ActiveAeroMode } from './components/Regulation2026Overlay';
 import './CarsArchive.css';
 
 /**
@@ -65,11 +66,29 @@ export const CarsArchive: React.FC = () => {
   const { hasReducedMotion } = usePreferencesContext();
 
   const selectedTeam = getTeamById(teamId) || teams[0];
-  useDocumentTitle(selectedTeam ? `${selectedTeam.carName} — 3D Lab` : '3D Vehicle Lab');
+
+  usePageMeta({
+    title: selectedTeam
+      ? `${selectedTeam.name} ${selectedTeam.carName} — 3D CAD Lab & 2026 Regulation Inspector`
+      : '3D Vehicle Lab — Formula 1 Technical Regulations',
+    description:
+      'Interactive 3D Formula 1 chassis viewer, aerodynamic CAD flow visualization, and 2026 FIA technical regulation inspector comparing active aero, 50-50 hybrid power units, and nimble car dimensions.',
+    canonicalPath: `/cars${selectedTeam ? `/${selectedTeam.id}` : ''}`,
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'TechArticle',
+      headline: `${selectedTeam.name} ${selectedTeam.carName} 3D Vehicle Lab & 2026 Regulation Inspector`,
+      description: 'Interactive 3D model, aerodynamic CAD flow visualization, and 2026 FIA technical regulations comparison.',
+      proficiencyLevel: 'Expert',
+      dependencies: 'Three.js, WebGL'
+    }
+  });
 
   const [showAero, setShowAero] = useState<boolean>(false);
   const [hoveredPart, setHoveredPart] = useState<PartHoverInfo | null>(null);
   const [isContextLost, setIsContextLost] = useState<boolean>(false);
+  const [is2026Inspector, setIs2026Inspector] = useState<boolean>(false);
+  const [activeAeroMode, setActiveAeroMode] = useState<ActiveAeroMode>('corner');
 
   // Mobile / Coarse Pointer Touch Lock
   const [isTouchDevice, setIsTouchDevice] = useState<boolean>(false);
@@ -193,6 +212,29 @@ export const CarsArchive: React.FC = () => {
                 <span className="aero-pulse-icon"></span>
                 <span>AERO TEST: {showAero ? 'ACTIVE' : 'OFF'}</span>
               </button>
+
+              <button
+                type="button"
+                className={`f1-btn reg-2026-toggle-btn ${is2026Inspector ? 'reg-active' : ''}`}
+                onClick={() => setIs2026Inspector(!is2026Inspector)}
+                aria-pressed={is2026Inspector}
+                title="Toggle 2026 FIA Regulation 3D Wireframe & Innovation Inspector"
+              >
+                <span>{is2026Inspector ? '⚡ 2026 SPECS: ON' : '🔍 2026 REGULATION INSPECTOR'}</span>
+              </button>
+
+              {is2026Inspector && (
+                <button
+                  type="button"
+                  className={`f1-btn aero-mode-btn ${activeAeroMode === 'straight' ? 'mode-straight' : 'mode-corner'}`}
+                  onClick={() => setActiveAeroMode(activeAeroMode === 'corner' ? 'straight' : 'corner')}
+                  title="Toggle Active Aero Mode: Straight (Low Drag) vs Corner (Downforce)"
+                >
+                  <span>
+                    {activeAeroMode === 'straight' ? 'WING: STRAIGHT (LOW DRAG)' : 'WING: CORNER (DOWNFORCE)'}
+                  </span>
+                </button>
+              )}
             </div>
           </div>
 
@@ -246,7 +288,9 @@ export const CarsArchive: React.FC = () => {
                   }}
                 >
                   {/* Invalidates demand loop when team or controls change */}
-                  <CanvasInvalidator trigger={`${selectedTeam.id}_${showAero}_${isTouchUnlocked}`} />
+                  <CanvasInvalidator
+                    trigger={`${selectedTeam.id}_${showAero}_${isTouchUnlocked}_${is2026Inspector}_${activeAeroMode}`}
+                  />
 
                   {/* GPU Performance Profiler Collector for ?debug=perf */}
                   <PerfDebugCollector />
@@ -266,12 +310,14 @@ export const CarsArchive: React.FC = () => {
                   <pointLight position={[0, -2, 4]} intensity={0.3} color="#FFFFFF" />
 
                   <Suspense fallback={null}>
-                    {/* High-Fidelity 3D Car with Component-Specific PBR Shaders */}
+                    {/* High-Fidelity 3D Car with Component-Specific PBR Shaders & 2026 Regulation Overlay */}
                     <InteractiveCarModel
                       team={selectedTeam}
                       showAero={showAero}
                       hasReducedMotion={hasReducedMotion}
                       onHoverPart={setHoveredPart}
+                      is2026Inspector={is2026Inspector}
+                      activeAeroMode={activeAeroMode}
                     />
 
                     {/* Ground Contact Shadow under tyres and floor */}
@@ -389,36 +435,90 @@ export const CarsArchive: React.FC = () => {
               </div>
             </div>
 
-            {/* Specifications Cards */}
-            <div className="spec-card-group">
-              <div className="spec-stat-card telemetry-panel">
-                <span className="spec-label telemetry">POWER UNIT SPECIFICATION</span>
-                <span className="spec-val-primary">{selectedTeam.specs.powerUnit}</span>
-              </div>
-
-              <div className="spec-stat-card telemetry-panel">
-                <span className="spec-label telemetry">MONOCOQUE &amp; CHASSIS</span>
-                <span className="spec-val">{selectedTeam.specs.chassis}</span>
-              </div>
-
-              <div className="spec-stat-subgroup">
-                <div className="spec-stat-card telemetry-panel">
-                  <span className="spec-label telemetry">MINIMUM WEIGHT</span>
-                  <span className="spec-val-highlight headline">{selectedTeam.specs.weight}</span>
+            {/* Specifications Cards: 2026 Regulations vs Current Vehicle */}
+            {is2026Inspector ? (
+              <div className="spec-card-group reg-2026-panel">
+                <div className="reg-2026-header telemetry">
+                  <span className="reg-badge">⚡ FIA 2026 SPEC</span>
+                  <span className="reg-tag">NIMBLE CAR</span>
                 </div>
+
+                <div className="spec-stat-card telemetry-panel reg-highlight">
+                  <span className="spec-label telemetry">POWER UNIT ARCHITECTURE</span>
+                  <span className="spec-val-primary">50% ICE (400 kW) + 50% MGU-K (350 kW)</span>
+                  <span className="spec-sublabel telemetry">MGU-H Removed • 100% Sustainable E-Fuel</span>
+                </div>
+
+                <div className="spec-stat-subgroup">
+                  <div className="spec-stat-card telemetry-panel">
+                    <span className="spec-label telemetry">MINIMUM WEIGHT</span>
+                    <span className="spec-val-highlight headline">768 KG</span>
+                    <span className="spec-sublabel telemetry" style={{ color: '#00ffcc' }}>-32 KG VS 2025</span>
+                  </div>
+                  <div className="spec-stat-card telemetry-panel">
+                    <span className="spec-label telemetry">CHASSIS WIDTH</span>
+                    <span className="spec-val-highlight headline">1,900 MM</span>
+                    <span className="spec-sublabel telemetry" style={{ color: '#00ffcc' }}>-100 MM VS 2025</span>
+                  </div>
+                </div>
+
+                <div className="spec-stat-subgroup">
+                  <div className="spec-stat-card telemetry-panel">
+                    <span className="spec-label telemetry">WHEELBASE</span>
+                    <span className="spec-val-highlight headline">3,400 MM</span>
+                    <span className="spec-sublabel telemetry" style={{ color: '#00ffcc' }}>-200 MM VS 2025</span>
+                  </div>
+                  <div className="spec-stat-card telemetry-panel">
+                    <span className="spec-label telemetry">ACTIVE AERO</span>
+                    <span
+                      className="spec-val-highlight headline"
+                      style={{ color: activeAeroMode === 'straight' ? '#00ffcc' : '#ff9900' }}
+                    >
+                      {activeAeroMode === 'straight' ? 'STRAIGHT' : 'CORNER'}
+                    </span>
+                    <span className="spec-sublabel telemetry">Replaces traditional DRS</span>
+                  </div>
+                </div>
+
                 <div className="spec-stat-card telemetry-panel">
-                  <span className="spec-label telemetry">AERO DOWNFORCE</span>
-                  <span className="spec-val-highlight headline">{selectedTeam.specs.downforce}</span>
+                  <span className="spec-label telemetry">OVERTAKE ASSIST (MOM)</span>
+                  <span className="spec-val-speed headline" style={{ color: '#eab308' }}>
+                    +0.5 MJ MANUAL OVERRIDE
+                  </span>
+                  <span className="spec-sublabel telemetry">Deployable within 1.0s gap at &gt;290 km/h</span>
                 </div>
               </div>
+            ) : (
+              <div className="spec-card-group">
+                <div className="spec-stat-card telemetry-panel">
+                  <span className="spec-label telemetry">POWER UNIT SPECIFICATION</span>
+                  <span className="spec-val-primary">{selectedTeam.specs.powerUnit}</span>
+                </div>
 
-              <div className="spec-stat-card telemetry-panel">
-                <span className="spec-label telemetry">ESTIMATED TOP SPEED</span>
-                <span className="spec-val-speed headline" style={{ color: '#00D2FF' }}>
-                  {selectedTeam.specs.topSpeed}
-                </span>
+                <div className="spec-stat-card telemetry-panel">
+                  <span className="spec-label telemetry">MONOCOQUE &amp; CHASSIS</span>
+                  <span className="spec-val">{selectedTeam.specs.chassis}</span>
+                </div>
+
+                <div className="spec-stat-subgroup">
+                  <div className="spec-stat-card telemetry-panel">
+                    <span className="spec-label telemetry">MINIMUM WEIGHT</span>
+                    <span className="spec-val-highlight headline">{selectedTeam.specs.weight}</span>
+                  </div>
+                  <div className="spec-stat-card telemetry-panel">
+                    <span className="spec-label telemetry">AERO DOWNFORCE</span>
+                    <span className="spec-val-highlight headline">{selectedTeam.specs.downforce}</span>
+                  </div>
+                </div>
+
+                <div className="spec-stat-card telemetry-panel">
+                  <span className="spec-label telemetry">ESTIMATED TOP SPEED</span>
+                  <span className="spec-val-speed headline" style={{ color: '#00D2FF' }}>
+                    {selectedTeam.specs.topSpeed}
+                  </span>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Telemetry Status Box */}
             <div className="telemetry-status-box telemetry-panel">

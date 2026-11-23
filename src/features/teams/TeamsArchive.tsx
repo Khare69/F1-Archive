@@ -11,7 +11,7 @@ import {
 } from '../../data/dataService';
 import { FallbackImage } from '../../components/FallbackImage/FallbackImage';
 import { StatCard } from '../../components/StatCard/StatCard';
-import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { usePageMeta } from '../../hooks/usePageMeta';
 import './TeamsArchive.css';
 
 type TeamFilterCategory = 'active' | 'historic' | 'all';
@@ -26,7 +26,22 @@ export const TeamsArchive: React.FC = () => {
 
   // Validate teamId or default to the first team
   const selectedTeam = getTeamById(teamId) || allTeams[0];
-  useDocumentTitle(selectedTeam ? selectedTeam.name : 'Constructors');
+
+  usePageMeta({
+    title: selectedTeam ? `${selectedTeam.name} — Formula 1 Constructor Profile` : 'Constructors Archive — Formula 1',
+    description: selectedTeam
+      ? `${selectedTeam.name} Formula 1 constructor profile. ${selectedTeam.championships} World Constructors' Championships, ${selectedTeam.base} headquarters, power unit specs, and driver line-up.`
+      : 'Explore Formula 1 constructors from the 1950 inaugural season to the 2026 11-team grid, technical specifications, and championships.',
+    canonicalPath: `/teams${selectedTeam ? `/${selectedTeam.id}` : ''}`,
+    jsonLd: selectedTeam ? {
+      '@context': 'https://schema.org',
+      '@type': 'SportsTeam',
+      name: selectedTeam.name,
+      sport: 'Formula One',
+      location: selectedTeam.base,
+      description: selectedTeam.description
+    } : undefined
+  });
   const teamDrivers = getTeamDrivers(selectedTeam.id);
   const seasonsWon = getSeasonsWonByTeam(selectedTeam.id);
 

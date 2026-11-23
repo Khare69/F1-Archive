@@ -2,7 +2,9 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { getArchiveStats } from '../../data/dataService';
 import { StatCard } from '../../components/StatCard/StatCard';
-import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { usePageMeta } from '../../hooks/usePageMeta';
+import { OnThisDayWidget } from './components/OnThisDayWidget';
+import { FavoritesWidget } from './components/FavoritesWidget';
 import './Home.css';
 
 interface HomeProps {
@@ -10,8 +12,21 @@ interface HomeProps {
 }
 
 export const Home: React.FC<HomeProps> = ({ isVisible = true }) => {
-  useDocumentTitle('The Evolution of Speed');
   const stats = getArchiveStats();
+
+  usePageMeta({
+    title: 'The Evolution of Speed — F1 Historical Telemetry Vault (1950–2026)',
+    description:
+      'Step into 77 unbroken Formula 1 seasons (1950–2026), 900+ drivers, 3D CAD chassis models, aerodynamic simulations, and what-if championship simulators.',
+    canonicalPath: '/',
+    jsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'F1 Archive',
+      url: 'https://f1-archive.pages.dev/',
+      description: 'Historical Formula 1 telemetry vault, 3D vehicle CAD lab, and interactive championship analytics.'
+    }
+  });
 
   return (
     <div className={`f1-home-page ${isVisible ? 'fade-in' : ''}`}>
@@ -141,6 +156,16 @@ export const Home: React.FC<HomeProps> = ({ isVisible = true }) => {
               accentColor="#FFD700"
             />
           </div>
+        </section>
+
+        {/* Historical Chronology: On This Day in F1 */}
+        <section className="historical-chronology-section">
+          <OnThisDayWidget />
+        </section>
+
+        {/* Paddock Favorites (Safely Persisted via SafeStorage) */}
+        <section className="user-favorites-section">
+          <FavoritesWidget />
         </section>
 
         {/* Feature Navigation Modules */}

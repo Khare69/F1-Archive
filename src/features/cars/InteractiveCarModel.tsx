@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import type { Team } from '../../types/f1';
 import { WindTunnel } from './WindTunnel';
 import { getMaterialRole } from './config/carMaterialMap';
+import { Regulation2026Overlay, type ActiveAeroMode } from './components/Regulation2026Overlay';
 
 export interface PartHoverInfo {
   name: string;
@@ -18,6 +19,8 @@ interface InteractiveCarModelProps {
   showAero: boolean;
   hasReducedMotion?: boolean;
   onHoverPart?: (info: PartHoverInfo | null) => void;
+  is2026Inspector?: boolean;
+  activeAeroMode?: ActiveAeroMode;
 }
 
 const ASSETS_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ASSETS_BASE_URL) || '/';
@@ -44,7 +47,9 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
   team,
   showAero,
   hasReducedMotion = false,
-  onHoverPart
+  onHoverPart,
+  is2026Inspector = false,
+  activeAeroMode = 'corner'
 }) => {
   const groupRef = useRef<THREE.Group>(null);
 
@@ -216,71 +221,84 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
         onPointerOut={handlePointerOut}
       />
 
-      {/* Interactive Raycast Telemetry Target Hotspots */}
-      {/* Front Wing Hotspot */}
-      <mesh
-        position={[2.0, 0.25, 0]}
-        visible={false}
-        onPointerOver={(e) =>
-          handlePointerOver(e, `${team.carName} Multi-Element Front Wing`, 'AERO', '4-Tier ground-effect outwash wing cascade', `Downforce: ${team.specs.downforce}`)
-        }
-        onPointerOut={handlePointerOut}
-      >
-        <boxGeometry args={[1.2, 0.4, 2.0]} />
-        <meshBasicMaterial transparent opacity={0} />
-      </mesh>
+      {/* 2026 FIA Regulation 3D Inspector Overlay */}
+      {is2026Inspector && (
+        <Regulation2026Overlay
+          activeAeroMode={activeAeroMode}
+          onHoverPart={onHoverPart}
+          accentColor={teamColor}
+        />
+      )}
 
-      {/* Halo & Cockpit Hotspot */}
-      <mesh
-        position={[0.45, 0.65, 0]}
-        visible={false}
-        onPointerOver={(e) =>
-          handlePointerOver(e, 'Titanium Halo & Cockpit Surround', 'CHASSIS', 'Grade 5 Titanium Safety Cell (125 kN Load)', `Team: ${team.name}`)
-        }
-        onPointerOut={handlePointerOut}
-      >
-        <boxGeometry args={[1.0, 0.5, 0.8]} />
-        <meshBasicMaterial transparent opacity={0} />
-      </mesh>
+      {/* Interactive Raycast Telemetry Target Hotspots (Active in standard view) */}
+      {!is2026Inspector && (
+        <>
+          {/* Front Wing Hotspot */}
+          <mesh
+            position={[2.0, 0.25, 0]}
+            visible={false}
+            onPointerOver={(e) =>
+              handlePointerOver(e, `${team.carName} Multi-Element Front Wing`, 'AERO', '4-Tier ground-effect outwash wing cascade', `Downforce: ${team.specs.downforce}`)
+            }
+            onPointerOut={handlePointerOut}
+          >
+            <boxGeometry args={[1.2, 0.4, 2.0]} />
+            <meshBasicMaterial transparent opacity={0} />
+          </mesh>
 
-      {/* Sidepods Hotspot */}
-      <mesh
-        position={[0.2, 0.4, 0.7]}
-        visible={false}
-        onPointerOver={(e) =>
-          handlePointerOver(e, 'Undercut Venturi Sidepod Channel', 'AERO', 'Downwash sidepod profile directing cooling airflow to floor', `Weight: ${team.specs.weight}`)
-        }
-        onPointerOut={handlePointerOut}
-      >
-        <boxGeometry args={[1.8, 0.45, 0.6]} />
-        <meshBasicMaterial transparent opacity={0} />
-      </mesh>
+          {/* Halo & Cockpit Hotspot */}
+          <mesh
+            position={[0.45, 0.65, 0]}
+            visible={false}
+            onPointerOver={(e) =>
+              handlePointerOver(e, 'Titanium Halo & Cockpit Surround', 'CHASSIS', 'Grade 5 Titanium Safety Cell (125 kN Load)', `Team: ${team.name}`)
+            }
+            onPointerOut={handlePointerOut}
+          >
+            <boxGeometry args={[1.0, 0.5, 0.8]} />
+            <meshBasicMaterial transparent opacity={0} />
+          </mesh>
 
-      {/* Engine & Power Unit Hotspot */}
-      <mesh
-        position={[-0.4, 0.7, 0]}
-        visible={false}
-        onPointerOver={(e) =>
-          handlePointerOver(e, 'Turbo-Hybrid Power Unit & Airbox', 'POWER UNIT', team.specs.powerUnit, `Top Speed: ${team.specs.topSpeed}`)
-        }
-        onPointerOut={handlePointerOut}
-      >
-        <boxGeometry args={[1.6, 0.6, 0.7]} />
-        <meshBasicMaterial transparent opacity={0} />
-      </mesh>
+          {/* Sidepods Hotspot */}
+          <mesh
+            position={[0.2, 0.4, 0.7]}
+            visible={false}
+            onPointerOver={(e) =>
+              handlePointerOver(e, 'Undercut Venturi Sidepod Channel', 'AERO', 'Downwash sidepod profile directing cooling airflow to floor', `Weight: ${team.specs.weight}`)
+            }
+            onPointerOut={handlePointerOut}
+          >
+            <boxGeometry args={[1.8, 0.45, 0.6]} />
+            <meshBasicMaterial transparent opacity={0} />
+          </mesh>
 
-      {/* Rear Wing Hotspot */}
-      <mesh
-        position={[-1.9, 0.8, 0]}
-        visible={false}
-        onPointerOver={(e) =>
-          handlePointerOver(e, 'Rear Wing & DRS Actuator', 'AERO', 'Drag Reduction System (DRS) Slot Actuator & Endplate Vanes', `Top Speed: ${team.specs.topSpeed}`)
-        }
-        onPointerOut={handlePointerOut}
-      >
-        <boxGeometry args={[0.8, 0.6, 1.8]} />
-        <meshBasicMaterial transparent opacity={0} />
-      </mesh>
+          {/* Engine & Power Unit Hotspot */}
+          <mesh
+            position={[-0.4, 0.7, 0]}
+            visible={false}
+            onPointerOver={(e) =>
+              handlePointerOver(e, 'Turbo-Hybrid Power Unit & Airbox', 'POWER UNIT', team.specs.powerUnit, `Top Speed: ${team.specs.topSpeed}`)
+            }
+            onPointerOut={handlePointerOut}
+          >
+            <boxGeometry args={[1.6, 0.6, 0.7]} />
+            <meshBasicMaterial transparent opacity={0} />
+          </mesh>
+
+          {/* Rear Wing Hotspot */}
+          <mesh
+            position={[-1.9, 0.8, 0]}
+            visible={false}
+            onPointerOver={(e) =>
+              handlePointerOver(e, 'Rear Wing & DRS Actuator', 'AERO', 'Drag Reduction System (DRS) Slot Actuator & Endplate Vanes', `Top Speed: ${team.specs.topSpeed}`)
+            }
+            onPointerOut={handlePointerOut}
+          >
+            <boxGeometry args={[0.8, 0.6, 1.8]} />
+            <meshBasicMaterial transparent opacity={0} />
+          </mesh>
+        </>
+      )}
     </group>
   );
 };
