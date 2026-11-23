@@ -225,7 +225,12 @@ export const App: React.FC = () => {
       client={queryClient}
       persistOptions={{ persister: queryPersister, buster: QUERY_PERSIST_BUSTER }}
     >
-      <BrowserRouter>
+      <BrowserRouter
+        future={{
+          v7_startTransition: true,
+          v7_relativeSplatPath: true
+        }}
+      >
         <UserPreferencesProvider>
           <AppContent />
         </UserPreferencesProvider>

@@ -43,5 +43,8 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 
+# 3D Raw Master Assets (Local only, compressed .glb committed)
+*.raw.glb
+
 # Agent & internal configuration
 .agents/

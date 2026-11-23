@@ -4,13 +4,17 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { DriverComparison } from './DriverComparison';
 
+const renderWithRouter = (ui: React.ReactElement) => {
+  return render(
+    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      {ui}
+    </BrowserRouter>
+  );
+};
+
 describe('DriverComparison Component', () => {
   it('renders head-to-head comparison title and driver selectors', () => {
-    render(
-      <BrowserRouter>
-        <DriverComparison />
-      </BrowserRouter>
-    );
+    renderWithRouter(<DriverComparison />);
 
     expect(screen.getByRole('heading', { level: 1, name: /HEAD-TO-HEAD/i })).toBeInTheDocument();
     expect(screen.getByLabelText(/PRIMARY PILOT/i)).toBeInTheDocument();
@@ -18,11 +22,7 @@ describe('DriverComparison Component', () => {
   });
 
   it('allows changing compared drivers and updates telemetry metrics', () => {
-    render(
-      <BrowserRouter>
-        <DriverComparison />
-      </BrowserRouter>
-    );
+    renderWithRouter(<DriverComparison />);
 
     const driverASelect = screen.getByLabelText(/PRIMARY PILOT/i);
     fireEvent.change(driverASelect, { target: { value: 'HAM' } });
