@@ -16,8 +16,12 @@ export interface PartHoverInfo {
 interface InteractiveCarModelProps {
   team: Team;
   showAero: boolean;
+  hasReducedMotion?: boolean;
   onHoverPart?: (info: PartHoverInfo | null) => void;
 }
+
+const ASSETS_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ASSETS_BASE_URL) || '/';
+const MODEL_URL = `${ASSETS_BASE_URL.replace(/\/$/, '')}/models/f1_chassis.glb`;
 
 // Authentic team-specific dual-tone color schemes
 const TEAM_COLOR_SCHEMES: Record<string, { primary: string; secondary: string; accent: string; carbon: string }> = {
@@ -39,12 +43,13 @@ const TEAM_COLOR_SCHEMES: Record<string, { primary: string; secondary: string; a
 export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
   team,
   showAero,
+  hasReducedMotion = false,
   onHoverPart
 }) => {
   const groupRef = useRef<THREE.Group>(null);
 
-  // Load the authentic CAD F1 Chassis GLB model
-  const { scene } = useGLTF('/models/f1_chassis.glb');
+  // Load the authentic CAD F1 Chassis GLB model with self-hosted Draco decoder
+  const { scene } = useGLTF(MODEL_URL, '/draco/');
 
   // Clone the scene and apply component-specific high-gloss PBR materials
   const clonedScene = useMemo(() => {
@@ -161,10 +166,10 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
     return clone;
   }, [scene, team]);
 
-  // Subtle chassis idle vibration
+  // Subtle chassis idle vibration (disabled under prefers-reduced-motion)
   useFrame(({ clock }) => {
     if (!groupRef.current) return;
-    if (!showAero) {
+    if (!showAero && !hasReducedMotion) {
       groupRef.current.position.y = Math.sin(clock.getElapsedTime() * 1.5) * 0.015;
     } else {
       groupRef.current.position.y = 0;
@@ -280,5 +285,5 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
   );
 };
 
-// Preload the GLB model for instantaneous rendering
-useGLTF.preload('/models/f1_chassis.glb');
+// Preload the GLB model with self-hosted Draco decoder for instantaneous rendering
+useGLTF.preload(MODEL_URL, '/draco/');

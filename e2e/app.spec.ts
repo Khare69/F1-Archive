@@ -75,11 +75,24 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     await expect(page.locator('.standings-container, .live-standings-page').first()).toBeVisible();
 
     // 8. 3D Cars Lab (SwiftShader WebGL rendering verification)
-    await page.goto('/cars');
-    await expect(page.locator('.cars-page, h1').first()).toBeVisible();
+    await page.goto('/cars?debug=perf');
+    await expect(page.locator('.cars-archive-container, h1').first()).toBeVisible();
     // Allow canvas initialization time under software rasterization
     const canvas = page.locator('canvas');
     await expect(canvas.first()).toBeVisible({ timeout: 15000 });
+
+    // Verify GPU Profiler overlay in ?debug=perf mode
+    await expect(page.locator('.perf-debug-box')).toBeVisible({ timeout: 10000 });
+
+    // Test camera recenter button
+    const recenterBtn = page.locator('.camera-reset-btn');
+    await expect(recenterBtn).toBeVisible();
+    await recenterBtn.click();
+
+    // Test aero toggle
+    const aeroBtn = page.locator('.aero-toggle-btn');
+    await expect(aeroBtn).toBeVisible();
+    await aeroBtn.click();
 
     // Assert zero uncaught exceptions across all pages
     expect(pageErrors).toEqual([]);
