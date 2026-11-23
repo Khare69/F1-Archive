@@ -11,7 +11,7 @@ interface SearchPaletteProps {
 interface SearchItem {
   id: string;
   name: string;
-  category: 'driver' | 'team' | 'season' | 'circuit';
+  category: 'driver' | 'team' | 'season' | 'circuit' | 'telemetry';
   stat: string;
   path: string;
   code?: string;
@@ -75,13 +75,57 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
       extra: `${c.city} ${c.country} ${c.type}`
     }));
 
-    return [...drivers, ...teams, ...seasons, ...circuits];
+    const telemetries: SearchItem[] = [
+      {
+        id: 'telemetry-hub',
+        name: '3D Telemetry Ghost-Lap & Strategy Lab',
+        category: 'telemetry' as const,
+        stat: 'Multi-Channel Ghost Replay • 25 Mini-Sectors',
+        path: '/telemetry',
+        extra: 'ghost lap replay telemetry trace speed throttle brake delta strategy'
+      },
+      {
+        id: 'silverstone-2024-ham-vs-ver',
+        name: 'Silverstone 2024: Hamilton vs. Verstappen',
+        category: 'telemetry' as const,
+        stat: '3D Ghost Lap • British GP Victory Duel',
+        path: '/telemetry/silverstone-2024-ham-vs-ver',
+        extra: 'hamilton verstappen silverstone 2024 ghost replay'
+      },
+      {
+        id: 'monaco-2024-lec-vs-pia',
+        name: 'Monaco 2024: Leclerc vs. Piastri',
+        category: 'telemetry' as const,
+        stat: '3D Ghost Lap • Q3 Pole Position Shootout',
+        path: '/telemetry/monaco-2024-lec-vs-pia',
+        extra: 'leclerc piastri monaco 2024 pole ghost replay'
+      },
+      {
+        id: 'spa-2024-ver-vs-nor',
+        name: 'Spa 2024: Verstappen vs. Norris',
+        category: 'telemetry' as const,
+        stat: '3D Ghost Lap • Eau Rouge & Kemmel Shootout',
+        path: '/telemetry/spa-2024-ver-vs-nor',
+        extra: 'verstappen norris spa 2024 ghost replay'
+      },
+      {
+        id: 'madrid-2026-sim-alo-vs-sai',
+        name: 'Madrid 2026: Alonso vs. Sainz',
+        category: 'telemetry' as const,
+        stat: '3D Ghost Lap • 2026 Active Aero & MOM Duel',
+        path: '/telemetry/madrid-2026-sim-alo-vs-sai',
+        extra: 'alonso sainz madrid 2026 active aero ghost replay'
+      }
+    ];
+
+    return [...drivers, ...teams, ...seasons, ...circuits, ...telemetries];
   }, []);
 
   // Filter items based on query
   const filteredResults = useMemo(() => {
     if (!query.trim()) {
       return {
+        telemetries: allItems.filter(i => i.category === 'telemetry').slice(0, 3),
         drivers: allItems.filter(i => i.category === 'driver').slice(0, 4),
         teams: allItems.filter(i => i.category === 'team').slice(0, 4),
         seasons: allItems.filter(i => i.category === 'season').slice(0, 4),
@@ -99,6 +143,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
     );
 
     return {
+      telemetries: matches.filter(i => i.category === 'telemetry').slice(0, 4),
       drivers: matches.filter(i => i.category === 'driver').slice(0, 5),
       teams: matches.filter(i => i.category === 'team').slice(0, 5),
       seasons: matches.filter(i => i.category === 'season').slice(0, 5),
@@ -108,6 +153,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
 
   const flatResults = useMemo(() => {
     return [
+      ...filteredResults.telemetries,
       ...filteredResults.drivers,
       ...filteredResults.teams,
       ...filteredResults.seasons,
@@ -187,6 +233,32 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
             </div>
           ) : (
             <>
+              {filteredResults.telemetries.length > 0 && (
+                <div className="search-category-group">
+                  <div className="search-category-header telemetry">// 3D GHOST TELEMETRY</div>
+                  {filteredResults.telemetries.map(item => {
+                    const currentIndex = globalIndexCounter++;
+                    return (
+                      <div
+                        key={item.id}
+                        className={`search-result-item ${selectedIndex === currentIndex ? 'selected' : ''}`}
+                        onClick={() => handleSelect(item.path)}
+                      >
+                        <div className="search-item-left">
+                          <span className="search-type-badge" style={{ background: 'rgba(0, 210, 255, 0.2)', color: '#00D2FF', border: '1px solid #00D2FF' }}>
+                            GHOST
+                          </span>
+                          <span className="search-item-name">{item.name}</span>
+                        </div>
+                        <div className="search-item-right">
+                          <span className="search-item-stat telemetry">{item.stat}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
               {filteredResults.drivers.length > 0 && (
                 <div className="search-category-group">
                   <div className="search-category-header telemetry">// DRIVERS ROSTER</div>

@@ -22,6 +22,9 @@ import './App.css';
 
 // Code-split / lazy-load the heavy 3D Cars module for optimal initial performance
 const CarsArchive = lazy(() => import('./features/cars/CarsArchive'));
+const TelemetryHub = lazy(() =>
+  import('./features/telemetry/TelemetryHub').then((m) => ({ default: m.TelemetryHub }))
+);
 
 const AppContent: React.FC = () => {
   const {
@@ -146,6 +149,28 @@ const AppContent: React.FC = () => {
                     >
                       <PageTransition>
                         <CarsArchive />
+                      </PageTransition>
+                    </Suspense>
+                  </ErrorBoundary>
+                }
+              />
+
+              {/* Lazy-loaded 3D Telemetry Ghost-Lap Replay & Strategy */}
+              <Route
+                path="/telemetry/:slug?"
+                element={
+                  <ErrorBoundary fallbackTitle="Telemetry Ghost Replay Fault">
+                    <Suspense
+                      fallback={
+                        <div className="lazy-3d-loading telemetry-panel">
+                          <div className="loading-spinner"></div>
+                          <div className="headline">STREAMING 3D GHOST LAP REPLAY...</div>
+                          <div className="telemetry">[ SECTOR-ANCHORED MULTI-CHANNEL TELEMETRY ]</div>
+                        </div>
+                      }
+                    >
+                      <PageTransition>
+                        <TelemetryHub />
                       </PageTransition>
                     </Suspense>
                   </ErrorBoundary>

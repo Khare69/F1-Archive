@@ -70,6 +70,10 @@ export const Home: React.FC<HomeProps> = ({ isVisible = true }) => {
               <Link to="/drivers/compare" className="f1-btn f1-btn-secondary" style={{ borderColor: 'rgba(0, 210, 255, 0.4)' }}>
                 <span>VS DRIVER COMPARATOR</span>
               </Link>
+
+              <Link to="/telemetry" className="f1-btn f1-btn-secondary" style={{ borderColor: 'rgba(0, 231, 1, 0.4)' }}>
+                <span>🎮 3D GHOST TELEMETRY</span>
+              </Link>
             </div>
           </div>
 
@@ -210,6 +214,15 @@ export const Home: React.FC<HomeProps> = ({ isVisible = true }) => {
                 Track profiles, technical turn data, elevation metrics, and all-time Grand Prix lap records.
               </p>
               <span className="module-link-label telemetry">EXPLORE CIRCUITS →</span>
+            </Link>
+
+            <Link to="/telemetry" className="module-card corner-bracket">
+              <div className="module-icon">🎮</div>
+              <h3 className="module-title headline">GHOST LAP TELEMETRY</h3>
+              <p className="module-desc">
+                Multi-channel 3D ghost car replay, 25 vertex-colored mini-sectors, and fuel-corrected tyre degradation analytics.
+              </p>
+              <span className="module-link-label telemetry">LAUNCH TELEMETRY →</span>
             </Link>
 
             <Link to="/drivers" className="module-card corner-bracket">

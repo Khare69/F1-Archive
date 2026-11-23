@@ -25,7 +25,15 @@ See LICENSE for full text.
 | **F1 Circuits GeoJSON** | [bacinger/f1-circuits](https://github.com/bacinger/f1-circuits) | **MIT License** | Geospatial track geometries, elevation data, and turn coordinates. |
 | **Racetrack Database** | [TUMFTM/racetrack-database](https://github.com/TUMFTM/racetrack-database) | Open Academic Data License | Track width reference for 3D ribbon extrusion. |
 | **Jolpica / Ergast API** | [api.jolpi.ca](https://api.jolpi.ca) | Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (**CC BY-NC-SA 4.0**) | Live current-season championship standings and race schedule feeds. |
-| **OpenF1** | [openf1.org](https://openf1.org) | Open Community Data Terms | Sample telemetry data for lap analysis and educational simulation. |
+| **OpenF1** | [openf1.org](https://openf1.org) | Creative Commons Attribution-NonCommercial-ShareAlike 4.0 (**CC BY-NC-SA 4.0**) | Downsampled sample telemetry (speed, throttle, brake, RPM) and ghost-lap comparison data. |
+
+---
+
+## 2.1. Telemetry License Firewall (CC BY-NC-SA 4.0 Isolation)
+
+- **Non-Commercial Boundary**: Telemetry data sourced or derived from OpenF1 APIs is strictly distributed for **educational, personal, and non-commercial analytical use** under **CC BY-NC-SA 4.0**.
+- **Codebase Isolation**: The underlying web application engine, 3D rendering pipeline, Three.js shaders, calculation utilities, and user interface components remain licensed under the **MIT License**.
+- **ShareAlike Compliance**: Any derivative modifications or transformations to the telemetry datasets themselves must be shared under terms compatible with CC BY-NC-SA 4.0, preserving upstream attribution without imposing ShareAlike restrictions on independent frontend components.
 
 ---
 

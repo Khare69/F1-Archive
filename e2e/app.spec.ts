@@ -114,6 +114,26 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
       await expect(page.locator('.reg-2026-panel, .aero-mode-btn').first()).toBeVisible({ timeout: 10000 });
     }
 
+    // 9. 3D Telemetry Ghost-Lap Replay & Strategy Analytics
+    await page.goto('/telemetry');
+    await expect(page.locator('.telemetry-hub-page, h1').first()).toBeVisible();
+    await expect(page.locator('.ghost-canvas-container canvas').first()).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.transport-play-btn')).toBeVisible();
+
+    // Test Play/Pause transport toggle
+    const playBtn = page.locator('.transport-play-btn');
+    await playBtn.click();
+    await expect(playBtn).toHaveClass(/playing/);
+    await playBtn.click();
+
+    // Test Strategy & Stint Degradation Tab
+    const strategyTabBtn = page.locator('.tab-btn', { hasText: 'STRATEGY' });
+    await strategyTabBtn.click();
+    await expect(page.locator('.strategy-analytics-card')).toBeVisible({ timeout: 10000 });
+    const fuelBtn = page.locator('.fuel-toggle-btn');
+    await expect(fuelBtn).toBeVisible();
+    await fuelBtn.click();
+
     // Assert zero uncaught exceptions across all pages
     expect(pageErrors).toEqual([]);
   });

@@ -85,10 +85,6 @@
   font-weight: bold;
   box-shadow: 0 0 12px var(--color-accent-primary-glow);
 }
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
 
 .season-year-hero {
   font-size: 5rem;

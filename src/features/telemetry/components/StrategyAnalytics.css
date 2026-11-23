@@ -1,0 +1,266 @@
+.strategy-analytics-card {
+  background: rgba(13, 19, 34, 0.8);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(0, 210, 255, 0.25);
+  border-radius: 8px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+.strategy-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+@media (max-width: 900px) {
+  .strategy-header {
+    flex-direction: column;
+  }
+}
+
+.strategy-badge {
+  font-size: 0.72rem;
+  color: #00d2ff;
+  letter-spacing: 0.08em;
+}
+
+.strategy-title {
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0.2rem 0;
+}
+
+.strategy-subtitle {
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.strategy-controls-group {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+@media (max-width: 600px) {
+  .strategy-controls-group {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+}
+
+.strategy-filter-box {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.strategy-select {
+  background: #080c14;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  color: #ffffff;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.72rem;
+  outline: none;
+}
+
+.strategy-select:focus {
+  border-color: #00d2ff;
+}
+
+.fuel-toggle-btn {
+  font-size: 0.72rem;
+  letter-spacing: 0.05em;
+  padding: 0.4rem 0.8rem;
+  transition: all 0.2s ease;
+}
+
+.fuel-toggle-btn.fuel-active {
+  background: rgba(0, 210, 255, 0.2);
+  border-color: #00d2ff;
+  color: #00d2ff;
+  box-shadow: 0 0 12px rgba(0, 210, 255, 0.3);
+}
+
+/* Stints Summary Grid */
+.stints-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+.stint-metric-card {
+  background: rgba(5, 7, 12, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid #00d2ff;
+  border-radius: 6px;
+  padding: 0.85rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.stint-card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.stint-driver {
+  font-weight: 800;
+}
+
+.stint-compound-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.compound-soft {
+  background: rgba(255, 30, 30, 0.2);
+  color: #ff1e1e;
+  border: 1px solid #ff1e1e;
+}
+
+.compound-medium {
+  background: rgba(255, 215, 0, 0.2);
+  color: #ffd700;
+  border: 1px solid #ffd700;
+}
+
+.compound-hard {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+  border: 1px solid #ffffff;
+}
+
+.stint-laps-span {
+  margin-left: auto;
+  color: var(--color-text-muted);
+  font-size: 0.68rem;
+}
+
+.stint-values-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 0.5rem;
+}
+
+.stint-val-box {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+
+.stint-val-label {
+  font-size: 0.62rem;
+  color: var(--color-text-muted);
+}
+
+.stint-val-headline {
+  font-size: 1rem;
+  font-weight: 900;
+  color: #ffffff;
+}
+
+/* Multi-Stint Progression Chart */
+.stint-chart-container {
+  width: 100%;
+  height: 240px;
+  background: rgba(5, 7, 12, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  position: relative;
+  overflow: hidden;
+}
+
+.stint-pace-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.stint-chart-legend {
+  position: absolute;
+  bottom: 8px;
+  left: 10px;
+  display: flex;
+  gap: 1.25rem;
+  font-size: 0.68rem;
+  color: var(--color-text-muted);
+  background: rgba(5, 7, 12, 0.85);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* Undercut Calculator Box */
+.undercut-calculator-box {
+  background: rgba(5, 7, 12, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 6px;
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.undercut-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.75rem;
+  color: #00d2ff;
+  font-weight: 700;
+}
+
+.pit-loss-tag {
+  background: rgba(0, 210, 255, 0.15);
+  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+}
+
+.undercut-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.undercut-desc {
+  font-size: 0.78rem;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.pit-loss-slider-box {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-size: 0.72rem;
+  color: var(--color-text-muted);
+}
+
+.pit-loss-slider {
+  flex: 1;
+  max-width: 250px;
+  height: 6px;
+  accent-color: #00d2ff;
+}
+
+.pit-loss-val {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #00d2ff;
+}
