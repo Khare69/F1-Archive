@@ -2,6 +2,7 @@ import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
 import { AnimatePresence } from 'framer-motion';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
+import { defaultShouldDehydrateQuery } from '@tanstack/react-query';
 import { queryClient, queryPersister, QUERY_PERSIST_BUSTER } from './lib/queryClient';
 import { UserPreferencesProvider, usePreferencesContext } from './contexts/UserPreferencesContext';
 import { Navigation } from './components/Navigation/Navigation';
@@ -248,7 +249,19 @@ export const App: React.FC = () => {
   return (
     <PersistQueryClientProvider
       client={queryClient}
-      persistOptions={{ persister: queryPersister, buster: QUERY_PERSIST_BUSTER }}
+      persistOptions={{
+        persister: queryPersister,
+        buster: QUERY_PERSIST_BUSTER,
+        dehydrateOptions: {
+          shouldDehydrateQuery: (query) => {
+            const key = String(query.queryKey[0] || '');
+            if (key.includes('telemetry') || key.includes('strategy') || key.includes('openf1')) {
+              return false;
+            }
+            return defaultShouldDehydrateQuery(query);
+          }
+        }
+      }}
     >
       <BrowserRouter
         future={{

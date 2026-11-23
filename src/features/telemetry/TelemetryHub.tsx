@@ -119,6 +119,9 @@ export const TelemetryHub: React.FC = () => {
     if (nextState && playbackRef.current.time >= maxDuration) {
       playbackRef.current.time = 0;
       setPlaybackTime(0);
+    } else if (!nextState) {
+      // Flush UI sync immediately on pause
+      setPlaybackTime(playbackRef.current.time);
     }
     setIsPlaying(nextState);
   }, [maxDuration]);
@@ -261,6 +264,8 @@ export const TelemetryHub: React.FC = () => {
                   showdown={showdown}
                   trackCoordinates={trackCoords}
                   playbackRef={playbackRef}
+                  currentTime={playbackTime}
+                  isPlaying={isPlaying}
                   onTimeUpdate={handleTimeUpdateFromCanvas}
                 />
 

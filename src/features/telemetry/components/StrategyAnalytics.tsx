@@ -46,10 +46,43 @@ export const StrategyAnalytics: React.FC<StrategyAnalyticsProps> = ({
     });
   }, [visibleStints, isFuelCorrected, strategyData.sessionFastestLap]);
 
-  // Chart bounds for SVG rendering
+  // Dynamic Y-axis pace bounds computed from finite values for active mode
+  const { activeMinPace, activeMaxPace } = useMemo(() => {
+    const values: number[] = [];
+    visibleStints.forEach((s) => {
+      s.laps.forEach((l) => {
+        const val = isFuelCorrected ? l.correctedLapTimeSeconds : l.rawLapTimeSeconds;
+        if (Number.isFinite(val) && !l.isOutlier) {
+          values.push(val);
+        }
+      });
+    });
+
+    if (values.length === 0) {
+      // Fallback if no clean laps
+      const base = strategyData.sessionFastestLap;
+      return { activeMinPace: base - 0.5, activeMaxPace: base + 4.5 };
+    }
+
+    const min = Math.min(...values) - 0.6;
+    let max = Math.max(...values) + 0.6;
+
+    // Guard against zero/near-zero range
+    if (max - min < 1.0) {
+      max = min + 2.0;
+    }
+
+    return {
+      activeMinPace: Number(min.toFixed(2)),
+      activeMaxPace: Number(max.toFixed(2))
+    };
+  }, [visibleStints, isFuelCorrected, strategyData.sessionFastestLap]);
+
+  const midPace = Number(((activeMinPace + activeMaxPace) / 2).toFixed(2));
+  const paceRange = Math.max(0.5, activeMaxPace - activeMinPace);
+
+  // Chart dimensions for SVG rendering
   const maxLaps = strategyData.totalLaps;
-  const minPace = Math.min(...strategyData.stints.map((s) => s.avgFuelCorrectedPace)) - 1.0;
-  const maxPace = minPace + 4.5;
   const chartWidth = 900;
   const chartHeight = 240;
 
@@ -151,17 +184,29 @@ export const StrategyAnalytics: React.FC<StrategyAnalyticsProps> = ({
           className="stint-pace-svg"
           preserveAspectRatio="none"
         >
-          {/* Grid lines */}
-          <line x1="0" y1={chartHeight - 30} x2={chartWidth} y2={chartHeight - 30} stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
-          <line x1="0" y1={(chartHeight - 30) / 2} x2={chartWidth} y2={(chartHeight - 30) / 2} stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
+          {/* Dynamic Grid lines & Y-axis labels */}
+          <line x1="0" y1="20" x2={chartWidth} y2="20" stroke="rgba(255,255,255,0.08)" strokeDasharray="2 4" />
+          <text x="10" y="16" fill="#8899aa" fontSize="10" fontFamily="monospace">
+            {activeMinPace.toFixed(1)}s (FASTEST)
+          </text>
+
+          <line x1="0" y1={chartHeight / 2} x2={chartWidth} y2={chartHeight / 2} stroke="rgba(255,255,255,0.05)" strokeDasharray="4 4" />
+          <text x="10" y={chartHeight / 2 - 4} fill="#667788" fontSize="10" fontFamily="monospace">
+            {midPace.toFixed(1)}s
+          </text>
+
+          <line x1="0" y1={chartHeight - 35} x2={chartWidth} y2={chartHeight - 35} stroke="rgba(255,255,255,0.15)" strokeWidth="1" />
+          <text x="10" y={chartHeight - 40} fill="#8899aa" fontSize="10" fontFamily="monospace">
+            {activeMaxPace.toFixed(1)}s (SLOWEST)
+          </text>
 
           {/* Stint Lap Data Points and Regression Lines */}
           {stintMetrics.map((stint, sIdx) => {
             const points = stint.laps.map((lap) => {
               const x = (lap.lapNumber / maxLaps) * chartWidth;
               const time = isFuelCorrected ? lap.correctedLapTimeSeconds : lap.rawLapTimeSeconds;
-              const clamped = Math.max(minPace, Math.min(maxPace, time));
-              const y = (chartHeight - 40) - ((clamped - minPace) / (maxPace - minPace)) * (chartHeight - 60);
+              const clamped = Math.max(activeMinPace, Math.min(activeMaxPace, time));
+              const y = (chartHeight - 40) - ((clamped - activeMinPace) / paceRange) * (chartHeight - 65);
               return { x, y, isOutlier: lap.isOutlier, lapNumber: lap.lapNumber, time };
             });
 

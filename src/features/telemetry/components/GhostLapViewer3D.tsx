@@ -19,6 +19,8 @@ interface GhostLapViewer3DProps {
   showdown: TelemetryShowdown;
   trackCoordinates: [number, number, number][];
   playbackRef: React.MutableRefObject<PlaybackHandle>;
+  currentTime: number;
+  isPlaying: boolean;
   onTimeUpdate?: (time: number) => void;
 }
 
@@ -95,27 +97,38 @@ const GhostCars: React.FC<{
   const ghostARef = useRef<THREE.Group>(null);
   const ghostBRef = useRef<THREE.Group>(null);
   const deltaBadgeRef = useRef<HTMLDivElement>(null);
+  const lastUiSyncMsRef = useRef<number>(0);
 
-  const forwardVec = useMemo(() => new THREE.Vector3(0, 0, 1), []);
   const tempPos = useMemo(() => new THREE.Vector3(), []);
   const tempTangent = useMemo(() => new THREE.Vector3(), []);
-  const tempQuat = useMemo(() => new THREE.Quaternion(), []);
+  const tempLookPos = useMemo(() => new THREE.Vector3(), []);
 
   const totalLapA = showdown.driverA.lapTimeSeconds;
   const totalLapB = showdown.driverB.lapTimeSeconds;
   const maxLapTime = Math.max(totalLapA, totalLapB);
 
-  // 60 FPS animation loop with ZERO React useState calls (Trap 4)
-  useFrame((_, delta) => {
+  // 60 FPS animation loop with ZERO React useState calls & wall-clock UI sync throttling
+  useFrame((_, rawDelta) => {
+    const delta = Math.min(rawDelta, 0.1); // Clamp delta so background-tab resumes don't teleport the cars
     const pb = playbackRef.current;
+    const now = performance.now();
+
     if (pb.isPlaying) {
       pb.time += delta * pb.speed;
-      if (pb.time > maxLapTime) {
+      let shouldFlush = false;
+
+      if (pb.time >= maxLapTime) {
         pb.time = maxLapTime;
         pb.isPlaying = false;
+        shouldFlush = true;
       }
+
+      // Wall-clock throttling: update UI at ~12.5 Hz (every 80ms) regardless of playback speed
       if (onTimeUpdate) {
-        onTimeUpdate(pb.time);
+        if (shouldFlush || now - lastUiSyncMsRef.current >= 80) {
+          lastUiSyncMsRef.current = now;
+          onTimeUpdate(pb.time);
+        }
       }
     }
 
@@ -138,24 +151,26 @@ const GhostCars: React.FC<{
       showdown.sectorBoundaries
     );
 
-    // Update Ghost Car A position & orientation
+    // Update Ghost Car A position & orientation (lookAt with world +Y up)
     if (ghostARef.current) {
       catmull.getPointAt(dA, tempPos);
       ghostARef.current.position.copy(tempPos);
 
       catmull.getTangentAt(dA, tempTangent);
-      tempQuat.setFromUnitVectors(forwardVec, tempTangent.normalize());
-      ghostARef.current.quaternion.copy(tempQuat);
+      tempLookPos.copy(tempPos).add(tempTangent);
+      ghostARef.current.up.set(0, 1, 0);
+      ghostARef.current.lookAt(tempLookPos);
     }
 
-    // Update Ghost Car B position & orientation
+    // Update Ghost Car B position & orientation (lookAt with world +Y up)
     if (ghostBRef.current) {
       catmull.getPointAt(dB, tempPos);
       ghostBRef.current.position.copy(tempPos);
 
       catmull.getTangentAt(dB, tempTangent);
-      tempQuat.setFromUnitVectors(forwardVec, tempTangent.normalize());
-      ghostBRef.current.quaternion.copy(tempQuat);
+      tempLookPos.copy(tempPos).add(tempTangent);
+      ghostBRef.current.up.set(0, 1, 0);
+      ghostBRef.current.lookAt(tempLookPos);
     }
 
     // Direct DOM badge update without React reconciliation
@@ -179,8 +194,8 @@ const GhostCars: React.FC<{
     <>
       {/* Ghost Car A */}
       <group ref={ghostARef}>
-        {/* Sleek aerodynamic arrow/chevron body */}
-        <mesh position={[0, 0.15, 0]}>
+        {/* Sleek aerodynamic arrow/chevron body pointing forward (+Z) */}
+        <mesh position={[0, 0.15, 0]} rotation={[Math.PI / 2, 0, 0]}>
           <coneGeometry args={[0.35, 1.2, 8]} />
           <meshStandardMaterial
             color={showdown.driverA.teamColor}
@@ -210,7 +225,7 @@ const GhostCars: React.FC<{
 
       {/* Ghost Car B */}
       <group ref={ghostBRef}>
-        <mesh position={[0, 0.15, 0]}>
+        <mesh position={[0, 0.15, 0]} rotation={[Math.PI / 2, 0, 0]}>
           <coneGeometry args={[0.35, 1.2, 8]} />
           <meshStandardMaterial
             color={showdown.driverB.teamColor}
@@ -250,6 +265,8 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
   showdown,
   trackCoordinates,
   playbackRef,
+  currentTime,
+  isPlaying,
   onTimeUpdate
 }) => {
   const orbitRef = useRef<OrbitControlsImpl>(null);
@@ -306,12 +323,12 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
         <CanvasErrorBoundary fallbackTitle="Ghost Lap 3D Viewport Fault" onReset={handleResetCamera}>
           <Canvas
             dpr={[1, 2]}
-            frameloop={playbackRef.current.isPlaying ? 'always' : 'demand'}
+            frameloop={isPlaying ? 'always' : 'demand'}
             camera={{ position: [0, 22, 26], fov: 42 }}
             gl={{ antialias: true, alpha: true }}
           >
             <SceneInvalidator
-              trigger={`${showdown.slug}_${is3DMode}_${playbackRef.current.isPlaying}_${playbackRef.current.time}`}
+              trigger={`${showdown.slug}_${is3DMode}_${isPlaying}_${currentTime}`}
             />
 
             <ambientLight intensity={0.9} />
