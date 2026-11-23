@@ -327,3 +327,45 @@
   }
 }
 
+
+/* Decade Jump Pills */
+.decade-jump-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 0;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.decade-jump-label {
+  font-size: 0.65rem;
+  color: var(--color-text-muted);
+  letter-spacing: 0.08em;
+  margin-right: 0.25rem;
+}
+
+.decade-pill {
+  padding: 0.25rem 0.55rem;
+  background: rgba(13, 19, 34, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: var(--color-text-muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.decade-pill:hover {
+  background: rgba(0, 210, 255, 0.12);
+  color: #00D2FF;
+  border-color: rgba(0, 210, 255, 0.4);
+}
+
+.decade-pill.active {
+  background: rgba(0, 210, 255, 0.2);
+  color: #00D2FF;
+  border-color: #00D2FF;
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.25);
+}

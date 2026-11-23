@@ -5,6 +5,7 @@ import {
   getAllCircuits,
   getAllSeasons,
   getArchiveStats,
+  getF1DBMetadata,
   getTeamById,
   getDriverById,
   getCircuitById,
@@ -64,9 +65,19 @@ export function useArchiveStats() {
   return { data, isLoading: false, isError: false };
 }
 
+/**
+ * useF1DBMetadata
+ * Wrapper hook providing ETL sync metadata and F1DB version.
+ */
+export function useF1DBMetadata() {
+  const data = useMemo(() => getF1DBMetadata(), []);
+  return { data, isLoading: false, isError: false };
+}
+
 export {
   getTeamById,
   getDriverById,
   getCircuitById,
-  getSeasonByYear
+  getSeasonByYear,
+  getF1DBMetadata
 };

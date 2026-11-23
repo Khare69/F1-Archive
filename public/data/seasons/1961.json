@@ -1,0 +1,80 @@
+{
+  "year": 1961,
+  "racesCount": 8,
+  "championDriver": "Phil Hill",
+  "championTeam": "Ferrari",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1961-05-14",
+      "name": "Grand Prix de Monaco 1961",
+      "circuitId": "monaco",
+      "laps": 100,
+      "distanceKm": 314.5,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1961-05-22",
+      "name": "Grote Prijs van Nederland 1961",
+      "circuitId": "zandvoort",
+      "laps": 75,
+      "distanceKm": 314.475,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1961-06-18",
+      "name": "1961 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 30,
+      "distanceKm": 423,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1961-07-02",
+      "name": "Grand Prix de France 1961",
+      "circuitId": "reims",
+      "laps": 52,
+      "distanceKm": 431.704,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1961-07-15",
+      "name": "1961 RAC British Grand Prix",
+      "circuitId": "aintree",
+      "laps": 75,
+      "distanceKm": 362.1,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1961-08-06",
+      "name": "Grosser Preis von Deutschland 1961",
+      "circuitId": "nurburgring",
+      "laps": 15,
+      "distanceKm": 342.15,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1961-09-10",
+      "name": "Gran Premio d'Italia 1961",
+      "circuitId": "monza",
+      "laps": 43,
+      "distanceKm": 430,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1961-10-08",
+      "name": "1961 United States Grand Prix",
+      "circuitId": "watkins-glen",
+      "laps": 100,
+      "distanceKm": 378,
+      "isCancelled": false
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "year": 1967,
+  "racesCount": 11,
+  "championDriver": "Denny Hulme",
+  "championTeam": "Brabham",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1967-01-02",
+      "name": "South African Grand Prix 1967",
+      "circuitId": "kyalami",
+      "laps": 80,
+      "distanceKm": 327.52,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1967-05-07",
+      "name": "Grand Prix de Monaco 1967",
+      "circuitId": "monaco",
+      "laps": 100,
+      "distanceKm": 314.5,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1967-06-04",
+      "name": "Grote Prijs van Nederland 1967",
+      "circuitId": "zandvoort",
+      "laps": 90,
+      "distanceKm": 377.37,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1967-06-18",
+      "name": "1967 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 28,
+      "distanceKm": 394.8,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1967-07-02",
+      "name": "Grand Prix de France 1967",
+      "circuitId": "bugatti",
+      "laps": 80,
+      "distanceKm": 353.76,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1967-07-15",
+      "name": "1967 RAC British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 80,
+      "distanceKm": 376.88,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1967-08-06",
+      "name": "Grosser Preis von Deutschland 1967",
+      "circuitId": "nurburgring",
+      "laps": 15,
+      "distanceKm": 342.525,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1967-08-27",
+      "name": "Player's Canadian Grand Prix 1967",
+      "circuitId": "mosport",
+      "laps": 90,
+      "distanceKm": 356.13,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1967-09-10",
+      "name": "Gran Premio d'Italia 1967",
+      "circuitId": "monza",
+      "laps": 68,
+      "distanceKm": 391,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1967-10-01",
+      "name": "1967 United States Grand Prix",
+      "circuitId": "watkins-glen",
+      "laps": 108,
+      "distanceKm": 408.24,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1967-10-22",
+      "name": "Gran Premio de México 1967",
+      "circuitId": "mexico-city",
+      "laps": 65,
+      "distanceKm": 325,
+      "isCancelled": false
+    }
+  ]
+}

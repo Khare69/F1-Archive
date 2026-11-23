@@ -1,0 +1,143 @@
+{
+  "year": 1974,
+  "racesCount": 15,
+  "championDriver": "Emerson Fittipaldi",
+  "championTeam": "Mclaren",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1974-01-13",
+      "name": "Gran Premio de Argentina 1974",
+      "circuitId": "buenos-aires",
+      "laps": 53,
+      "distanceKm": 316.304,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1974-01-27",
+      "name": "Grande Prêmio do Brasil 1974",
+      "circuitId": "interlagos",
+      "laps": 32,
+      "distanceKm": 254.72,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1974-03-30",
+      "name": "Lucky Strike Grand Prix of South Africa 1974",
+      "circuitId": "kyalami",
+      "laps": 78,
+      "distanceKm": 320.112,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1974-04-28",
+      "name": "Gran Premio de España 1974",
+      "circuitId": "jarama",
+      "laps": 84,
+      "distanceKm": 285.936,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1974-05-12",
+      "name": "1974 Belgian Grand Prix",
+      "circuitId": "nivelles",
+      "laps": 85,
+      "distanceKm": 316.54,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1974-05-26",
+      "name": "Grand Prix de Monaco 1974",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 255.684,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1974-06-09",
+      "name": "Texaco Sveriges Grand Prix 1974",
+      "circuitId": "anderstorp",
+      "laps": 80,
+      "distanceKm": 321.44,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1974-06-23",
+      "name": "Grote Prijs van Nederland 1974",
+      "circuitId": "zandvoort",
+      "laps": 75,
+      "distanceKm": 316.95,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1974-07-07",
+      "name": "Grand Prix de France 1974",
+      "circuitId": "dijon",
+      "laps": 80,
+      "distanceKm": 263.12,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1974-07-20",
+      "name": "1974 John Player British Grand Prix",
+      "circuitId": "brands-hatch",
+      "laps": 75,
+      "distanceKm": 319.875,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1974-08-04",
+      "name": "Grosser Preis von Deutschland 1974",
+      "circuitId": "nurburgring",
+      "laps": 14,
+      "distanceKm": 319.69,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "1974-08-18",
+      "name": "Grosser Preis von Österreich 1974",
+      "circuitId": "spielberg",
+      "laps": 54,
+      "distanceKm": 319.194,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "1974-09-08",
+      "name": "Gran Premio d'Italia 1974",
+      "circuitId": "monza",
+      "laps": 52,
+      "distanceKm": 300.56,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "1974-09-22",
+      "name": "Labatt's Canadian Grand Prix 1974",
+      "circuitId": "mosport",
+      "laps": 80,
+      "distanceKm": 316.56,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "1974-10-06",
+      "name": "1974 United States Grand Prix",
+      "circuitId": "watkins-glen",
+      "laps": 59,
+      "distanceKm": 320.665,
+      "isCancelled": false
+    }
+  ]
+}

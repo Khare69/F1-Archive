@@ -1,0 +1,89 @@
+{
+  "year": 1959,
+  "racesCount": 9,
+  "championDriver": "Jack Brabham",
+  "championTeam": "Cooper",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1959-05-10",
+      "name": "Grand Prix de Monaco 1959",
+      "circuitId": "monaco",
+      "laps": 100,
+      "distanceKm": 314.5,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1959-05-30",
+      "name": "1959 Indianapolis 500",
+      "circuitId": "indianapolis",
+      "laps": 200,
+      "distanceKm": 804.672,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1959-05-31",
+      "name": "Grote Prijs van Nederland 1959",
+      "circuitId": "zandvoort",
+      "laps": 75,
+      "distanceKm": 314.475,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1959-07-05",
+      "name": "Grand Prix de France 1959",
+      "circuitId": "reims",
+      "laps": 50,
+      "distanceKm": 415.1,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1959-07-18",
+      "name": "1959 RAC British Grand Prix",
+      "circuitId": "aintree",
+      "laps": 75,
+      "distanceKm": 362.1,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1959-08-02",
+      "name": "Grosser Preis von Deutschland 1959",
+      "circuitId": "avus",
+      "laps": 60,
+      "distanceKm": 498,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1959-08-23",
+      "name": "Grande Prémio de Portugal 1959",
+      "circuitId": "monsanto",
+      "laps": 62,
+      "distanceKm": 337.28,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1959-09-13",
+      "name": "Gran Premio d'Italia 1959",
+      "circuitId": "monza",
+      "laps": 72,
+      "distanceKm": 414,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1959-12-12",
+      "name": "1959 United States Grand Prix",
+      "circuitId": "sebring",
+      "laps": 42,
+      "distanceKm": 351.12,
+      "isCancelled": false
+    }
+  ]
+}

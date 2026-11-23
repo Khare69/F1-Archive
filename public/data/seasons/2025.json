@@ -1,0 +1,224 @@
+{
+  "year": 2025,
+  "racesCount": 24,
+  "championDriver": "Lando Norris",
+  "championTeam": "Mclaren",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "2025-03-16",
+      "name": "Formula 1 Louis Vuitton Australian Grand Prix 2025",
+      "circuitId": "melbourne",
+      "laps": 57,
+      "distanceKm": 300.846,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "2025-03-23",
+      "name": "Formula 1 Heineken Chinese Grand Prix 2025",
+      "circuitId": "shanghai",
+      "laps": 56,
+      "distanceKm": 305.066,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "2025-04-06",
+      "name": "Formula 1 Lenovo Japanese Grand Prix 2025",
+      "circuitId": "suzuka",
+      "laps": 53,
+      "distanceKm": 307.471,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "2025-04-13",
+      "name": "Formula 1 Gulf Air Bahrain Grand Prix 2025",
+      "circuitId": "bahrain",
+      "laps": 57,
+      "distanceKm": 308.238,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "2025-04-20",
+      "name": "Formula 1 stc Saudi Arabian Grand Prix 2025",
+      "circuitId": "jeddah",
+      "laps": 50,
+      "distanceKm": 308.45,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "2025-05-04",
+      "name": "Formula 1 Crypto.com Miami Grand Prix 2025",
+      "circuitId": "miami",
+      "laps": 57,
+      "distanceKm": 308.326,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "2025-05-18",
+      "name": "Formula 1 AWS Gran Premio del Made in Italy e dell'Emilia Romagna 2025",
+      "circuitId": "imola",
+      "laps": 63,
+      "distanceKm": 309.049,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "2025-05-25",
+      "name": "Formula 1 TAG Heuer Grand Prix de Monaco 2025",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 260.286,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "2025-06-01",
+      "name": "Formula 1 Aramco Gran Premio de España 2025",
+      "circuitId": "catalunya",
+      "laps": 66,
+      "distanceKm": 307.236,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "2025-06-15",
+      "name": "Formula 1 Pirelli Grand Prix du Canada 2025",
+      "circuitId": "montreal",
+      "laps": 70,
+      "distanceKm": 305.27,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "2025-06-29",
+      "name": "Formula 1 MSC Cruises Austrian Grand Prix 2025",
+      "circuitId": "spielberg",
+      "laps": 70,
+      "distanceKm": 302.692,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "2025-07-06",
+      "name": "Formula 1 Qatar Airways British Grand Prix 2025",
+      "circuitId": "silverstone",
+      "laps": 52,
+      "distanceKm": 306.198,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "2025-07-27",
+      "name": "Formula 1 Moët & Chandon Belgian Grand Prix 2025",
+      "circuitId": "spa-francorchamps",
+      "laps": 44,
+      "distanceKm": 308.052,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "2025-08-03",
+      "name": "Formula 1 Lenovo Hungarian Grand Prix 2025",
+      "circuitId": "hungaroring",
+      "laps": 70,
+      "distanceKm": 306.63,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "2025-08-31",
+      "name": "Formula 1 Heineken Dutch Grand Prix 2025",
+      "circuitId": "zandvoort",
+      "laps": 72,
+      "distanceKm": 306.587,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "2025-09-07",
+      "name": "Formula 1 Pirelli Gran Premio d'Italia 2025",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 306.72,
+      "isCancelled": false
+    },
+    {
+      "round": 17,
+      "date": "2025-09-21",
+      "name": "Formula 1 Qatar Airways Azerbaijan Grand Prix 2025",
+      "circuitId": "baku",
+      "laps": 51,
+      "distanceKm": 306.049,
+      "isCancelled": false
+    },
+    {
+      "round": 18,
+      "date": "2025-10-05",
+      "name": "Formula 1 Singapore Airlines Singapore Grand Prix 2025",
+      "circuitId": "marina-bay",
+      "laps": 62,
+      "distanceKm": 305.337,
+      "isCancelled": false
+    },
+    {
+      "round": 19,
+      "date": "2025-10-19",
+      "name": "Formula 1 MSC Cruises United States Grand Prix 2025",
+      "circuitId": "austin",
+      "laps": 56,
+      "distanceKm": 308.405,
+      "isCancelled": false
+    },
+    {
+      "round": 20,
+      "date": "2025-10-26",
+      "name": "Formula 1 Gran Premio de la Ciudad de México 2025",
+      "circuitId": "mexico-city",
+      "laps": 71,
+      "distanceKm": 305.354,
+      "isCancelled": false
+    },
+    {
+      "round": 21,
+      "date": "2025-11-09",
+      "name": "Formula 1 MSC Cruises Grande Prêmio de São Paulo 2025",
+      "circuitId": "interlagos",
+      "laps": 71,
+      "distanceKm": 305.879,
+      "isCancelled": false
+    },
+    {
+      "round": 22,
+      "date": "2025-11-23",
+      "name": "Formula 1 Heineken Las Vegas Grand Prix 2025",
+      "circuitId": "las-vegas",
+      "laps": 50,
+      "distanceKm": 309.958,
+      "isCancelled": false
+    },
+    {
+      "round": 23,
+      "date": "2025-11-30",
+      "name": "Formula 1 Qatar Airways Qatar Grand Prix 2025",
+      "circuitId": "lusail",
+      "laps": 57,
+      "distanceKm": 308.611,
+      "isCancelled": false
+    },
+    {
+      "round": 24,
+      "date": "2025-12-07",
+      "name": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2025",
+      "circuitId": "yas-marina",
+      "laps": 58,
+      "distanceKm": 306.183,
+      "isCancelled": false
+    }
+  ]
+}

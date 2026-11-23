@@ -1,0 +1,188 @@
+{
+  "year": 2017,
+  "racesCount": 20,
+  "championDriver": "Lewis Hamilton",
+  "championTeam": "Mercedes",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "2017-03-26",
+      "name": "2017 Formula 1 Rolex Australian Grand Prix",
+      "circuitId": "melbourne",
+      "laps": 57,
+      "distanceKm": 302.271,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "2017-04-09",
+      "name": "2017 Formula 1 Heineken Chinese Grand Prix",
+      "circuitId": "shanghai",
+      "laps": 56,
+      "distanceKm": 305.066,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "2017-04-16",
+      "name": "2017 Formula 1 Gulf Air Bahrain Grand Prix",
+      "circuitId": "bahrain",
+      "laps": 57,
+      "distanceKm": 308.238,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "2017-04-30",
+      "name": "2017 Formula 1 VTB Russian Grand Prix",
+      "circuitId": "sirius",
+      "laps": 52,
+      "distanceKm": 303.897,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "2017-05-14",
+      "name": "Formula 1 Gran Premio de España Pirelli 2017",
+      "circuitId": "catalunya",
+      "laps": 66,
+      "distanceKm": 307.104,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "2017-05-28",
+      "name": "Formula 1 Grand Prix de Monaco 2017",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 260.286,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "2017-06-11",
+      "name": "Formula 1 Grand Prix du Canada 2017",
+      "circuitId": "montreal",
+      "laps": 70,
+      "distanceKm": 305.27,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "2017-06-25",
+      "name": "Formula 1 FlyEmirates Azerbaijan Grand Prix 2017",
+      "circuitId": "baku",
+      "laps": 51,
+      "distanceKm": 306.049,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "2017-07-09",
+      "name": "Formula 1 FlyEmirates Grosser Preis von Österreich 2017",
+      "circuitId": "spielberg",
+      "laps": 71,
+      "distanceKm": 306.452,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "2017-07-16",
+      "name": "2017 Formula 1 Rolex British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 51,
+      "distanceKm": 300.307,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "2017-07-30",
+      "name": "Formula 1 Pirelli Magyar Nagydíj 2017",
+      "circuitId": "hungaroring",
+      "laps": 70,
+      "distanceKm": 306.63,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "2017-08-27",
+      "name": "2017 Formula 1 Pirelli Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 44,
+      "distanceKm": 308.052,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "2017-09-03",
+      "name": "Formula 1 Gran Premio Heineken d'Italia 2017",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 306.72,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "2017-09-17",
+      "name": "2017 Formula 1 Singapore Airlines Singapore Grand Prix",
+      "circuitId": "marina-bay",
+      "laps": 58,
+      "distanceKm": 293.633,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "2017-10-01",
+      "name": "2017 Formula 1 Petronas Malaysia Grand Prix",
+      "circuitId": "sepang",
+      "laps": 56,
+      "distanceKm": 310.408,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "2017-10-08",
+      "name": "2017 Formula 1 Japanese Grand Prix",
+      "circuitId": "suzuka",
+      "laps": 53,
+      "distanceKm": 307.471,
+      "isCancelled": false
+    },
+    {
+      "round": 17,
+      "date": "2017-10-22",
+      "name": "2017 Formula 1 United States Grand Prix",
+      "circuitId": "austin",
+      "laps": 56,
+      "distanceKm": 308.405,
+      "isCancelled": false
+    },
+    {
+      "round": 18,
+      "date": "2017-10-29",
+      "name": "Formula 1 Gran Premio de México 2017",
+      "circuitId": "mexico-city",
+      "laps": 71,
+      "distanceKm": 305.354,
+      "isCancelled": false
+    },
+    {
+      "round": 19,
+      "date": "2017-11-12",
+      "name": "Formula 1 Grande Prêmio Heineken do Brasil 2017",
+      "circuitId": "interlagos",
+      "laps": 71,
+      "distanceKm": 305.909,
+      "isCancelled": false
+    },
+    {
+      "round": 20,
+      "date": "2017-11-26",
+      "name": "2017 Formula 1 Etihad Airways Abu Dhabi Grand Prix",
+      "circuitId": "yas-marina",
+      "laps": 55,
+      "distanceKm": 305.355,
+      "isCancelled": false
+    }
+  ]
+}

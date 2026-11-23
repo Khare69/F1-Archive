@@ -24,7 +24,7 @@ export const Home: React.FC<HomeProps> = ({ isVisible = true }) => {
           <div className="hero-content">
             <div className="hero-badge telemetry">
               <span className="badge-pulse"></span>
-              HISTORICAL TELEMETRY VAULT // 1950 - 2026
+              HISTORICAL TELEMETRY VAULT // 1950 - 2026 • F1DB SYNCED (v{stats.f1dbVersion})
             </div>
             
             <h1 className="hero-title headline">

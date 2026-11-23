@@ -1,0 +1,152 @@
+{
+  "year": 1984,
+  "racesCount": 16,
+  "championDriver": "Niki Lauda",
+  "championTeam": "Mclaren",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1984-03-25",
+      "name": "Grande Prêmio do Brasil 1984",
+      "circuitId": "jacarepagua",
+      "laps": 61,
+      "distanceKm": 306.891,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1984-04-07",
+      "name": "National Panasonic South African Grand Prix 1984",
+      "circuitId": "kyalami",
+      "laps": 75,
+      "distanceKm": 307.8,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1984-04-29",
+      "name": "1984 Belgian Grand Prix",
+      "circuitId": "zolder",
+      "laps": 70,
+      "distanceKm": 298.34,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1984-05-06",
+      "name": "Gran Premio di San Marino 1984",
+      "circuitId": "imola",
+      "laps": 60,
+      "distanceKm": 302.4,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1984-05-20",
+      "name": "Grand Prix de France 1984",
+      "circuitId": "dijon",
+      "laps": 79,
+      "distanceKm": 300.279,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1984-06-03",
+      "name": "Grand Prix de Monaco 1984",
+      "circuitId": "monaco",
+      "laps": 31,
+      "distanceKm": 102.672,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1984-06-17",
+      "name": "Grand Prix Labatt du Canada 1984",
+      "circuitId": "montreal",
+      "laps": 70,
+      "distanceKm": 308.7,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1984-06-24",
+      "name": "1984 Detroit Grand Prix",
+      "circuitId": "detroit",
+      "laps": 63,
+      "distanceKm": 253.449,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1984-07-08",
+      "name": "1984 Dallas Grand Prix",
+      "circuitId": "dallas",
+      "laps": 67,
+      "distanceKm": 261.367,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1984-07-22",
+      "name": "1984 John Player British Grand Prix",
+      "circuitId": "brands-hatch",
+      "laps": 71,
+      "distanceKm": 298.697,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1984-08-05",
+      "name": "Grosser Preis von Deutschland 1984",
+      "circuitId": "hockenheimring",
+      "laps": 44,
+      "distanceKm": 299.288,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "1984-08-19",
+      "name": "Grosser Preis von Österreich 1984",
+      "circuitId": "spielberg",
+      "laps": 51,
+      "distanceKm": 303.042,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "1984-08-26",
+      "name": "Grote Prijs van Nederland 1984",
+      "circuitId": "zandvoort",
+      "laps": 71,
+      "distanceKm": 301.892,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "1984-09-09",
+      "name": "Gran Premio d'Italia 1984",
+      "circuitId": "monza",
+      "laps": 51,
+      "distanceKm": 295.8,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "1984-10-07",
+      "name": "Grosser Preis von Europa 1984",
+      "circuitId": "nurburgring",
+      "laps": 67,
+      "distanceKm": 304.314,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "1984-10-21",
+      "name": "Grande Prémio de Portugal 1984",
+      "circuitId": "estoril",
+      "laps": 70,
+      "distanceKm": 304.43,
+      "isCancelled": false
+    }
+  ]
+}

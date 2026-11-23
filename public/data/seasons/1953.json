@@ -1,0 +1,89 @@
+{
+  "year": 1953,
+  "racesCount": 9,
+  "championDriver": "Alberto Ascari",
+  "championTeam": "Not Awarded (Pre-1958)",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1953-01-18",
+      "name": "Gran Premio de Argentina 1953",
+      "circuitId": "buenos-aires",
+      "laps": 97,
+      "distanceKm": 379.464,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1953-05-30",
+      "name": "1953 Indianapolis 500",
+      "circuitId": "indianapolis",
+      "laps": 200,
+      "distanceKm": 804.672,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1953-06-07",
+      "name": "Grote Prijs van Nederland 1953",
+      "circuitId": "zandvoort",
+      "laps": 90,
+      "distanceKm": 377.37,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1953-06-21",
+      "name": "1953 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 36,
+      "distanceKm": 508.32,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1953-07-05",
+      "name": "Grand Prix de France 1953",
+      "circuitId": "reims",
+      "laps": 60,
+      "distanceKm": 500.82,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1953-07-18",
+      "name": "1953 RAC British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 90,
+      "distanceKm": 423.99,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1953-08-02",
+      "name": "Grosser Preis von Deutschland 1953",
+      "circuitId": "nurburgring",
+      "laps": 18,
+      "distanceKm": 410.58,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1953-08-23",
+      "name": "Grosser Preis der Schweiz 1953",
+      "circuitId": "bremgarten",
+      "laps": 65,
+      "distanceKm": 473.2,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1953-09-13",
+      "name": "Gran Premio d'Italia 1953",
+      "circuitId": "monza",
+      "laps": 80,
+      "distanceKm": 504,
+      "isCancelled": false
+    }
+  ]
+}

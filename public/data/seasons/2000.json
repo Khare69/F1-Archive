@@ -1,0 +1,161 @@
+{
+  "year": 2000,
+  "racesCount": 17,
+  "championDriver": "Michael Schumacher",
+  "championTeam": "Ferrari",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "2000-03-12",
+      "name": "2000 Qantas Australian Grand Prix",
+      "circuitId": "melbourne",
+      "laps": 58,
+      "distanceKm": 307.574,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "2000-03-26",
+      "name": "Grande Prêmio Marlboro do Brasil 2000",
+      "circuitId": "interlagos",
+      "laps": 71,
+      "distanceKm": 305.909,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "2000-04-09",
+      "name": "Gran Premio Warsteiner di San Marino 2000",
+      "circuitId": "imola",
+      "laps": 62,
+      "distanceKm": 305.609,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "2000-04-23",
+      "name": "2000 Foster's British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 60,
+      "distanceKm": 308.355,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "2000-05-07",
+      "name": "Gran Premio Marlboro de España 2000",
+      "circuitId": "catalunya",
+      "laps": 65,
+      "distanceKm": 307.324,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "2000-05-21",
+      "name": "2000 Warsteiner Grand Prix of Europe",
+      "circuitId": "nurburgring",
+      "laps": 67,
+      "distanceKm": 305.252,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "2000-06-04",
+      "name": "Grand Prix de Monaco 2000",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 262.86,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "2000-06-18",
+      "name": "Grand Prix Air Canada 2000",
+      "circuitId": "montreal",
+      "laps": 69,
+      "distanceKm": 305.049,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "2000-07-02",
+      "name": "Mobil 1 Grand Prix de France 2000",
+      "circuitId": "magny-cours",
+      "laps": 72,
+      "distanceKm": 306,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "2000-07-16",
+      "name": "Grosser A1 Preis von Österreich 2000",
+      "circuitId": "spielberg",
+      "laps": 71,
+      "distanceKm": 307.146,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "2000-07-30",
+      "name": "Grosser Mobil 1 Preis von Deutschland 2000",
+      "circuitId": "hockenheimring",
+      "laps": 45,
+      "distanceKm": 307.035,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "2000-08-13",
+      "name": "Marlboro Magyar Nagydíj 2000",
+      "circuitId": "hungaroring",
+      "laps": 77,
+      "distanceKm": 306.075,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "2000-08-27",
+      "name": "2000 Foster's Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 44,
+      "distanceKm": 306.592,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "2000-09-10",
+      "name": "Gran Premio Campari d'Italia 2000",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 306.719,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "2000-09-24",
+      "name": "2000 SAP United States Grand Prix",
+      "circuitId": "indianapolis",
+      "laps": 73,
+      "distanceKm": 306.016,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "2000-10-08",
+      "name": "2000 Fuji Television Japanese Grand Prix",
+      "circuitId": "suzuka",
+      "laps": 53,
+      "distanceKm": 310.58,
+      "isCancelled": false
+    },
+    {
+      "round": 17,
+      "date": "2000-10-22",
+      "name": "2000 Petronas Malaysian Grand Prix",
+      "circuitId": "sepang",
+      "laps": 56,
+      "distanceKm": 310.408,
+      "isCancelled": false
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "year": 1976,
+  "racesCount": 16,
+  "championDriver": "James Hunt",
+  "championTeam": "Ferrari",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1976-01-25",
+      "name": "Grande Prêmio do Brasil 1976",
+      "circuitId": "interlagos",
+      "laps": 40,
+      "distanceKm": 318.4,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1976-03-06",
+      "name": "The Citizen Grand Prix of South Africa 1976",
+      "circuitId": "kyalami",
+      "laps": 78,
+      "distanceKm": 320.112,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1976-03-28",
+      "name": "1976 Long Beach Grand Prix",
+      "circuitId": "long-beach",
+      "laps": 80,
+      "distanceKm": 260.08,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1976-05-02",
+      "name": "Gran Premio de España 1976",
+      "circuitId": "jarama",
+      "laps": 75,
+      "distanceKm": 255.3,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1976-05-16",
+      "name": "1976 Belgian Grand Prix",
+      "circuitId": "zolder",
+      "laps": 70,
+      "distanceKm": 298.34,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1976-05-30",
+      "name": "Grand Prix de Monaco 1976",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 258.336,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1976-06-13",
+      "name": "Gislaved Sveriges Grand Prix 1976",
+      "circuitId": "anderstorp",
+      "laps": 72,
+      "distanceKm": 289.296,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1976-07-04",
+      "name": "Grand Prix de France 1976",
+      "circuitId": "paul-ricard",
+      "laps": 54,
+      "distanceKm": 313.686,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1976-07-18",
+      "name": "1976 John Player British Grand Prix",
+      "circuitId": "brands-hatch",
+      "laps": 76,
+      "distanceKm": 319.732,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1976-08-01",
+      "name": "Grosser Preis von Deutschland 1976",
+      "circuitId": "nurburgring",
+      "laps": 14,
+      "distanceKm": 319.69,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1976-08-15",
+      "name": "Grosser Preis von Österreich 1976",
+      "circuitId": "spielberg",
+      "laps": 54,
+      "distanceKm": 319.194,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "1976-08-29",
+      "name": "Grote Prijs van Nederland 1976",
+      "circuitId": "zandvoort",
+      "laps": 75,
+      "distanceKm": 316.95,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "1976-09-12",
+      "name": "Gran Premio d'Italia 1976",
+      "circuitId": "monza",
+      "laps": 52,
+      "distanceKm": 301.6,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "1976-10-03",
+      "name": "Labatt's Canadian Grand Prix 1976",
+      "circuitId": "mosport",
+      "laps": 80,
+      "distanceKm": 316.56,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "1976-10-10",
+      "name": "1976 United States Grand Prix",
+      "circuitId": "watkins-glen",
+      "laps": 59,
+      "distanceKm": 320.665,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "1976-10-24",
+      "name": "1976 Japanese Grand Prix",
+      "circuitId": "fuji",
+      "laps": 73,
+      "distanceKm": 318.207,
+      "isCancelled": false
+    }
+  ]
+}

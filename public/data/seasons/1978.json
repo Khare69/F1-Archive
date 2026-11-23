@@ -1,0 +1,152 @@
+{
+  "year": 1978,
+  "racesCount": 16,
+  "championDriver": "Mario Andretti",
+  "championTeam": "Lotus",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1978-01-15",
+      "name": "Gran Premio de Argentina 1978",
+      "circuitId": "buenos-aires",
+      "laps": 52,
+      "distanceKm": 310.336,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1978-01-29",
+      "name": "Grande Prêmio do Brasil 1978",
+      "circuitId": "jacarepagua",
+      "laps": 63,
+      "distanceKm": 316.953,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1978-03-04",
+      "name": "The Citizen and Asseng Grand Prix of South Africa 1978",
+      "circuitId": "kyalami",
+      "laps": 78,
+      "distanceKm": 320.112,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1978-04-02",
+      "name": "1978 Long Beach Grand Prix",
+      "circuitId": "long-beach",
+      "laps": 80,
+      "distanceKm": 260.08,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1978-05-07",
+      "name": "Grand Prix de Monaco 1978",
+      "circuitId": "monaco",
+      "laps": 75,
+      "distanceKm": 248.4,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1978-05-21",
+      "name": "1978 Belgian Grand Prix",
+      "circuitId": "zolder",
+      "laps": 70,
+      "distanceKm": 298.34,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1978-06-04",
+      "name": "Gran Premio de España 1978",
+      "circuitId": "jarama",
+      "laps": 75,
+      "distanceKm": 255.3,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1978-06-17",
+      "name": "Sveriges Grand Prix 1978",
+      "circuitId": "anderstorp",
+      "laps": 70,
+      "distanceKm": 282.17,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1978-07-02",
+      "name": "Grand Prix de France 1978",
+      "circuitId": "paul-ricard",
+      "laps": 54,
+      "distanceKm": 313.686,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1978-07-16",
+      "name": "1978 John Player British Grand Prix",
+      "circuitId": "brands-hatch",
+      "laps": 76,
+      "distanceKm": 319.732,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1978-07-30",
+      "name": "Grosser Preis von Deutschland 1978",
+      "circuitId": "hockenheimring",
+      "laps": 45,
+      "distanceKm": 305.505,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "1978-08-13",
+      "name": "Grosser Preis von Österreich 1978",
+      "circuitId": "spielberg",
+      "laps": 54,
+      "distanceKm": 320.868,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "1978-08-27",
+      "name": "Grote Prijs van Nederland 1978",
+      "circuitId": "zandvoort",
+      "laps": 75,
+      "distanceKm": 316.95,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "1978-09-10",
+      "name": "Gran Premio d'Italia 1978",
+      "circuitId": "monza",
+      "laps": 40,
+      "distanceKm": 232,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "1978-10-01",
+      "name": "1978 Toyota United States Grand Prix",
+      "circuitId": "watkins-glen",
+      "laps": 59,
+      "distanceKm": 320.665,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "1978-10-08",
+      "name": "Grand Prix du Canada 1978",
+      "circuitId": "montreal",
+      "laps": 70,
+      "distanceKm": 315,
+      "isCancelled": false
+    }
+  ]
+}

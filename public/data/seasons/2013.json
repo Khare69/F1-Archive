@@ -1,0 +1,179 @@
+{
+  "year": 2013,
+  "racesCount": 19,
+  "championDriver": "Sebastian Vettel",
+  "championTeam": "Red Bull",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "2013-03-17",
+      "name": "2013 Formula 1 Rolex Australian Grand Prix",
+      "circuitId": "melbourne",
+      "laps": 58,
+      "distanceKm": 307.574,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "2013-03-24",
+      "name": "2013 Formula 1 Petronas Malaysia Grand Prix",
+      "circuitId": "sepang",
+      "laps": 56,
+      "distanceKm": 310.408,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "2013-04-14",
+      "name": "2013 Formula 1 UBS Chinese Grand Prix",
+      "circuitId": "shanghai",
+      "laps": 56,
+      "distanceKm": 305.066,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "2013-04-21",
+      "name": "2013 Formula 1 Gulf Air Bahrain Grand Prix",
+      "circuitId": "bahrain",
+      "laps": 57,
+      "distanceKm": 308.238,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "2013-05-12",
+      "name": "Formula 1 Gran Premio de España 2013",
+      "circuitId": "catalunya",
+      "laps": 66,
+      "distanceKm": 307.104,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "2013-05-26",
+      "name": "Formula 1 Grand Prix de Monaco 2013",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 260.52,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "2013-06-09",
+      "name": "Formula 1 Grand Prix du Canada 2013",
+      "circuitId": "montreal",
+      "laps": 70,
+      "distanceKm": 305.27,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "2013-06-30",
+      "name": "2013 Formula 1 Santander British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 52,
+      "distanceKm": 306.198,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "2013-07-07",
+      "name": "Formula 1 Grosser Preis Santander von Deutschland 2013",
+      "circuitId": "nurburgring",
+      "laps": 60,
+      "distanceKm": 308.863,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "2013-07-28",
+      "name": "Formula 1 Magyar Nagydíj 2013",
+      "circuitId": "hungaroring",
+      "laps": 70,
+      "distanceKm": 306.63,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "2013-08-25",
+      "name": "2013 Formula 1 Shell Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 44,
+      "distanceKm": 308.052,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "2013-09-08",
+      "name": "Formula 1 Gran Premio d'Italia 2013",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 306.72,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "2013-09-22",
+      "name": "2013 Formula 1 SingTel Singapore Grand Prix",
+      "circuitId": "marina-bay",
+      "laps": 61,
+      "distanceKm": 308.828,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "2013-10-06",
+      "name": "2013 Formula 1 Korean Grand Prix",
+      "circuitId": "yeongam",
+      "laps": 55,
+      "distanceKm": 308.63,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "2013-10-13",
+      "name": "2013 Formula 1 Japanese Grand Prix",
+      "circuitId": "suzuka",
+      "laps": 53,
+      "distanceKm": 307.471,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "2013-10-27",
+      "name": "2013 Formula 1 Airtel Indian Grand Prix",
+      "circuitId": "buddh",
+      "laps": 60,
+      "distanceKm": 307.249,
+      "isCancelled": false
+    },
+    {
+      "round": 17,
+      "date": "2013-11-03",
+      "name": "2013 Formula 1 Etihad Airways Abu Dhabi Grand Prix",
+      "circuitId": "yas-marina",
+      "laps": 55,
+      "distanceKm": 305.355,
+      "isCancelled": false
+    },
+    {
+      "round": 18,
+      "date": "2013-11-17",
+      "name": "2013 Formula 1 United States Grand Prix",
+      "circuitId": "austin",
+      "laps": 56,
+      "distanceKm": 308.405,
+      "isCancelled": false
+    },
+    {
+      "round": 19,
+      "date": "2013-11-24",
+      "name": "Formula 1 Grande Prêmio Petrobras do Brasil 2013",
+      "circuitId": "interlagos",
+      "laps": 71,
+      "distanceKm": 305.909,
+      "isCancelled": false
+    }
+  ]
+}

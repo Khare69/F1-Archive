@@ -1,0 +1,215 @@
+{
+  "year": 2026,
+  "racesCount": 23,
+  "championDriver": "Kimi Antonelli",
+  "championTeam": "Mercedes",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "2026-03-08",
+      "name": "Formula 1 Qatar Airways Australian Grand Prix 2026",
+      "circuitId": "melbourne",
+      "laps": 58,
+      "distanceKm": 306.124,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "2026-03-15",
+      "name": "Formula 1 Heineken Chinese Grand Prix 2026",
+      "circuitId": "shanghai",
+      "laps": 56,
+      "distanceKm": 305.066,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "2026-03-29",
+      "name": "Formula 1 Aramco Japanese Grand Prix 2026",
+      "circuitId": "suzuka",
+      "laps": 53,
+      "distanceKm": 307.471,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "2026-05-03",
+      "name": "Formula 1 Crypto.com Miami Grand Prix 2026",
+      "circuitId": "miami",
+      "laps": 57,
+      "distanceKm": 308.326,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "2026-05-24",
+      "name": "Formula 1 Lenovo Grand Prix du Canada 2026",
+      "circuitId": "montreal",
+      "laps": 68,
+      "distanceKm": 296.548,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "2026-06-07",
+      "name": "Formula 1 Louis Vuitton Grand Prix de Monaco 2026",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 260.286,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "2026-06-14",
+      "name": "Formula 1 MSC Cruises Gran Premio de Barcelona-Catalunya 2026",
+      "circuitId": "catalunya",
+      "laps": 66,
+      "distanceKm": 307.236,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "2026-06-28",
+      "name": "Formula 1 Lenovo Austrian Grand Prix 2026",
+      "circuitId": "spielberg",
+      "laps": 71,
+      "distanceKm": 307.018,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "2026-07-05",
+      "name": "Formula 1 Pirelli British Grand Prix 2026",
+      "circuitId": "silverstone",
+      "laps": 52,
+      "distanceKm": 306.198,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "2026-07-19",
+      "name": "Formula 1 Moët & Chandon Belgian Grand Prix 2026",
+      "circuitId": "spa-francorchamps",
+      "laps": 44,
+      "distanceKm": 308.052,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "2026-07-26",
+      "name": "Formula 1 AWS Hungarian Grand Prix 2026",
+      "circuitId": "hungaroring",
+      "laps": 70,
+      "distanceKm": 306.63,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "2026-08-23",
+      "name": "Formula 1 Heineken Dutch Grand Prix 2026",
+      "circuitId": "zandvoort",
+      "laps": 72,
+      "distanceKm": 306.587,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "2026-09-06",
+      "name": "Formula 1 Pirelli Gran Premio d'Italia 2026",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 306.72,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "2026-09-13",
+      "name": "Formula 1 TAG Heuer Gran Premio de España 2026",
+      "circuitId": "madring",
+      "laps": 57,
+      "distanceKm": 308.524,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "2026-09-26",
+      "name": "Formula 1 Qatar Airways Azerbaijan Grand Prix 2026",
+      "circuitId": "baku",
+      "laps": 51,
+      "distanceKm": 306.049,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "2026-10-04",
+      "name": "Formula 1 Gulf Air Bahrain Grand Prix in Malaysia 2026",
+      "circuitId": "sepang",
+      "laps": 55,
+      "distanceKm": 304.865,
+      "isCancelled": false
+    },
+    {
+      "round": 17,
+      "date": "2026-10-11",
+      "name": "Formula 1 Singapore Airlines Singapore Grand Prix 2026",
+      "circuitId": "marina-bay",
+      "laps": 62,
+      "distanceKm": 305.337,
+      "isCancelled": false
+    },
+    {
+      "round": 18,
+      "date": "2026-10-25",
+      "name": "Formula 1 MSC Cruises United States Grand Prix 2026",
+      "circuitId": "austin",
+      "laps": 56,
+      "distanceKm": 308.405,
+      "isCancelled": false
+    },
+    {
+      "round": 19,
+      "date": "2026-11-01",
+      "name": "Formula 1 Gran Premio de la Ciudad de México 2026",
+      "circuitId": "mexico-city",
+      "laps": 71,
+      "distanceKm": 305.354,
+      "isCancelled": false
+    },
+    {
+      "round": 20,
+      "date": "2026-11-08",
+      "name": "Formula 1 MSC Cruises Grande Prêmio de São Paulo 2026",
+      "circuitId": "interlagos",
+      "laps": 71,
+      "distanceKm": 305.879,
+      "isCancelled": false
+    },
+    {
+      "round": 21,
+      "date": "2026-11-22",
+      "name": "Formula 1 Heineken Las Vegas Grand Prix 2026",
+      "circuitId": "las-vegas",
+      "laps": 50,
+      "distanceKm": 309.958,
+      "isCancelled": false
+    },
+    {
+      "round": 22,
+      "date": "2026-11-29",
+      "name": "Formula 1 Qatar Airways Qatar Grand Prix 2026",
+      "circuitId": "lusail",
+      "laps": 57,
+      "distanceKm": 308.611,
+      "isCancelled": false
+    },
+    {
+      "round": 23,
+      "date": "2026-12-06",
+      "name": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2026",
+      "circuitId": "yas-marina",
+      "laps": 58,
+      "distanceKm": 306.183,
+      "isCancelled": false
+    }
+  ]
+}

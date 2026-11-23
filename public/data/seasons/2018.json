@@ -1,0 +1,197 @@
+{
+  "year": 2018,
+  "racesCount": 21,
+  "championDriver": "Lewis Hamilton",
+  "championTeam": "Mercedes",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "2018-03-25",
+      "name": "Formula 1 2018 Rolex Australian Grand Prix",
+      "circuitId": "melbourne",
+      "laps": 58,
+      "distanceKm": 307.574,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "2018-04-08",
+      "name": "Formula 1 2018 Gulf Air Bahrain Grand Prix",
+      "circuitId": "bahrain",
+      "laps": 57,
+      "distanceKm": 308.238,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "2018-04-15",
+      "name": "Formula 1 2018 Heineken Chinese Grand Prix",
+      "circuitId": "shanghai",
+      "laps": 56,
+      "distanceKm": 305.066,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "2018-04-29",
+      "name": "Formula 1 2018 Rolex Azerbaijan Grand Prix",
+      "circuitId": "baku",
+      "laps": 51,
+      "distanceKm": 306.049,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "2018-05-13",
+      "name": "Formula 1 Gran Premio de España Emirates 2018",
+      "circuitId": "catalunya",
+      "laps": 66,
+      "distanceKm": 307.104,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "2018-05-27",
+      "name": "Formula 1 Grand Prix de Monaco 2018",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 260.286,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "2018-06-10",
+      "name": "Formula 1 Grand Prix Heineken du Canada 2018",
+      "circuitId": "montreal",
+      "laps": 68,
+      "distanceKm": 296.548,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "2018-06-24",
+      "name": "Formula 1 Pirelli Grand Prix de France 2018",
+      "circuitId": "paul-ricard",
+      "laps": 53,
+      "distanceKm": 309.69,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "2018-07-01",
+      "name": "Formula 1 Eyetime Grosser Preis von Österreich 2018",
+      "circuitId": "spielberg",
+      "laps": 71,
+      "distanceKm": 306.452,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "2018-07-08",
+      "name": "Formula 1 2018 Rolex British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 52,
+      "distanceKm": 306.198,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "2018-07-22",
+      "name": "Formula 1 Emirates Grosser Preis von Deutschland 2018",
+      "circuitId": "hockenheimring",
+      "laps": 67,
+      "distanceKm": 306.458,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "2018-07-29",
+      "name": "Formula 1 Rolex Magyar Nagydíj 2018",
+      "circuitId": "hungaroring",
+      "laps": 70,
+      "distanceKm": 306.63,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "2018-08-26",
+      "name": "Formula 1 2018 Johnnie Walker Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 44,
+      "distanceKm": 308.052,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "2018-09-02",
+      "name": "Formula 1 Gran Premio Heineken d'Italia 2018",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 306.72,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "2018-09-16",
+      "name": "Formula 1 2018 Singapore Airlines Singapore Grand Prix",
+      "circuitId": "marina-bay",
+      "laps": 61,
+      "distanceKm": 308.706,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "2018-09-30",
+      "name": "Formula 1 2018 VTB Russian Grand Prix",
+      "circuitId": "sirius",
+      "laps": 53,
+      "distanceKm": 309.745,
+      "isCancelled": false
+    },
+    {
+      "round": 17,
+      "date": "2018-10-07",
+      "name": "Formula 1 2018 Honda Japanese Grand Prix",
+      "circuitId": "suzuka",
+      "laps": 53,
+      "distanceKm": 307.471,
+      "isCancelled": false
+    },
+    {
+      "round": 18,
+      "date": "2018-10-21",
+      "name": "Formula 1 Pirelli 2018 United States Grand Prix",
+      "circuitId": "austin",
+      "laps": 56,
+      "distanceKm": 308.405,
+      "isCancelled": false
+    },
+    {
+      "round": 19,
+      "date": "2018-10-28",
+      "name": "Formula 1 Gran Premio de México 2018",
+      "circuitId": "mexico-city",
+      "laps": 71,
+      "distanceKm": 305.354,
+      "isCancelled": false
+    },
+    {
+      "round": 20,
+      "date": "2018-11-11",
+      "name": "Formula 1 Grande Prêmio Heineken do Brasil 2018",
+      "circuitId": "interlagos",
+      "laps": 71,
+      "distanceKm": 305.909,
+      "isCancelled": false
+    },
+    {
+      "round": 21,
+      "date": "2018-11-25",
+      "name": "Formula 1 2018 Etihad Airways Abu Dhabi Grand Prix",
+      "circuitId": "yas-marina",
+      "laps": 55,
+      "distanceKm": 305.355,
+      "isCancelled": false
+    }
+  ]
+}

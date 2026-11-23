@@ -48,3 +48,6 @@ pnpm-debug.log*
 
 # Agent & internal configuration
 .agents/
+
+# F1DB ETL Download Cache
+scripts/.cache/

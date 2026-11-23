@@ -13,6 +13,9 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks(id) {
+          if (id.includes('src/data/generated') || id.includes('src\\data\\generated')) {
+            return 'f1db-data';
+          }
           if (id.includes('node_modules/three') || id.includes('node_modules/@react-three')) {
             return 'three-vendor';
           }

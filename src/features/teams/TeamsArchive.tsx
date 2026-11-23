@@ -1,21 +1,40 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getAllTeams, getTeamById, getTeamDrivers, getSeasonsWonByTeam } from '../../data/dataService';
+import {
+  getAllTeams,
+  getActive2026Teams,
+  getHistoricTeams,
+  getTeamById,
+  getTeamDrivers,
+  getSeasonsWonByTeam,
+  getF1DBMetadata
+} from '../../data/dataService';
 import { FallbackImage } from '../../components/FallbackImage/FallbackImage';
 import { StatCard } from '../../components/StatCard/StatCard';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import './TeamsArchive.css';
 
+type TeamFilterCategory = 'active' | 'historic' | 'all';
+
 export const TeamsArchive: React.FC = () => {
   const { teamId } = useParams<{ teamId?: string }>();
   const navigate = useNavigate();
-  const teams = getAllTeams();
+  const allTeams = getAllTeams();
+  const meta = getF1DBMetadata();
+
+  const [filterCategory, setFilterCategory] = useState<TeamFilterCategory>('active');
 
   // Validate teamId or default to the first team
-  const selectedTeam = getTeamById(teamId) || teams[0];
+  const selectedTeam = getTeamById(teamId) || allTeams[0];
   useDocumentTitle(selectedTeam ? selectedTeam.name : 'Constructors');
   const teamDrivers = getTeamDrivers(selectedTeam.id);
   const seasonsWon = getSeasonsWonByTeam(selectedTeam.id);
+
+  const visibleTeams = useMemo(() => {
+    if (filterCategory === 'active') return getActive2026Teams();
+    if (filterCategory === 'historic') return getHistoricTeams();
+    return allTeams;
+  }, [filterCategory, allTeams]);
 
   const handleSelectTeam = (id: string) => {
     navigate(`/teams/${id}`);
@@ -27,9 +46,35 @@ export const TeamsArchive: React.FC = () => {
       <aside className="archive-sidebar" aria-label="Constructors list">
         <div className="sidebar-header telemetry">
           <span>// CONSTRUCTORS</span>
-          <span className="sidebar-count">{teams.length} TEAMS</span>
+          <span className="sidebar-count">{visibleTeams.length} TEAMS</span>
         </div>
-        {teams.map((team) => (
+
+        {/* Filter Tabs: Active 2026 / Historic / All */}
+        <div className="team-filter-tabs">
+          <button
+            type="button"
+            className={`team-tab-pill telemetry ${filterCategory === 'active' ? 'active' : ''}`}
+            onClick={() => setFilterCategory('active')}
+          >
+            ACTIVE 2026 (11)
+          </button>
+          <button
+            type="button"
+            className={`team-tab-pill telemetry ${filterCategory === 'historic' ? 'active' : ''}`}
+            onClick={() => setFilterCategory('historic')}
+          >
+            HISTORIC
+          </button>
+          <button
+            type="button"
+            className={`team-tab-pill telemetry ${filterCategory === 'all' ? 'active' : ''}`}
+            onClick={() => setFilterCategory('all')}
+          >
+            ALL
+          </button>
+        </div>
+
+        {visibleTeams.map((team) => (
           <button
             key={team.id}
             type="button"
@@ -43,9 +88,11 @@ export const TeamsArchive: React.FC = () => {
               />
               <span className="team-name-text">{team.name}</span>
             </div>
-            {team.isLegendary && (
+            {team.isActive2026 ? (
+              <span className="active-2026-badge telemetry">2026</span>
+            ) : team.isLegendary ? (
               <span className="legend-pill telemetry">LEGEND</span>
-            )}
+            ) : null}
           </button>
         ))}
       </aside>
@@ -73,6 +120,10 @@ export const TeamsArchive: React.FC = () => {
               <div className="team-meta-row telemetry">
                 <span>CONSTRUCTOR ID: #{selectedTeam.id.toUpperCase()}</span>
                 <span>ENTRY YEAR: {selectedTeam.firstEntry}</span>
+                {selectedTeam.isActive2026 && <span className="active-2026-badge">ACTIVE 2026 CONSTRUCTOR</span>}
+                <span className="f1db-sync-pill">
+                  <span>●</span> F1DB SYNCED (v{meta.f1dbVersion})
+                </span>
               </div>
               <h1 
                 className="team-title headline"
@@ -98,11 +149,9 @@ export const TeamsArchive: React.FC = () => {
                 }}
               >
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
-                  <polyline points="2 17 12 22 22 17"></polyline>
-                  <polyline points="2 12 12 17 22 12"></polyline>
+                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                 </svg>
-                <span>VIEW 3D MODEL</span>
+                <span>INSPECT 3D CHASSIS</span>
               </Link>
             </div>
           </div>
@@ -110,122 +159,129 @@ export const TeamsArchive: React.FC = () => {
           <p className="team-description">{selectedTeam.description}</p>
         </div>
 
-        {/* Team Statistics Grid */}
+        {/* Team Metric Cards */}
         <div className="team-stats-grid">
           <StatCard
-            label="WORLD CHAMPIONSHIPS"
+            label="CONSTRUCTORS TITLES"
             value={selectedTeam.championships}
-            subtext="Constructors' Titles"
-            accentColor={selectedTeam.color}
-            isPrimary
+            subtext="World Championships"
+            accentColor="#FFD700"
+            isPrimary={selectedTeam.championships > 0}
           />
           <StatCard
             label="POLE POSITIONS"
             value={selectedTeam.polePositions}
-            subtext="Qualifying Benchmark"
-            accentColor="#00D2FF"
+            subtext="Qualifying Pole Positions"
+            accentColor={selectedTeam.color}
           />
           <StatCard
             label="FASTEST LAPS"
             value={selectedTeam.fastestLaps}
-            subtext="Race Pace Benchmark"
-            accentColor="#FF1E1E"
+            subtext="Official Race Fastest Laps"
+            accentColor="#00D2FF"
           />
           <StatCard
-            label="BASE OF OPERATIONS"
-            value={selectedTeam.base}
-            subtext="Technical HQ"
+            label="OPERATIONAL BASE"
+            value={selectedTeam.base.split(',')[0]}
+            subtext={selectedTeam.base}
             accentColor="#C0C0C0"
           />
         </div>
 
-        {/* Technical Specifications */}
-        <section className="team-section telemetry-panel">
-          <div className="section-title-bar">
-            <span className="section-dot" style={{ backgroundColor: selectedTeam.color }}></span>
-            <h2 className="headline">TECHNICAL SPECIFICATIONS // {selectedTeam.carName}</h2>
-          </div>
-
-          <div className="specs-grid">
-            <div className="spec-item">
-              <span className="spec-label telemetry">POWER UNIT</span>
-              <span className="spec-value">{selectedTeam.specs.powerUnit}</span>
-            </div>
-            <div className="spec-item">
-              <span className="spec-label telemetry">CHASSIS CONSTRUCTION</span>
-              <span className="spec-value">{selectedTeam.specs.chassis}</span>
-            </div>
-            <div className="spec-item">
-              <span className="spec-label telemetry">MINIMUM WEIGHT</span>
-              <span className="spec-value headline">{selectedTeam.specs.weight}</span>
-            </div>
-            <div className="spec-item">
-              <span className="spec-label telemetry">DOWNFORCE PROFILE</span>
-              <span className="spec-value headline">{selectedTeam.specs.downforce}</span>
-            </div>
-            <div className="spec-item">
-              <span className="spec-label telemetry">ESTIMATED TOP SPEED</span>
-              <span className="spec-value headline" style={{ color: '#00D2FF' }}>
-                {selectedTeam.specs.topSpeed}
-              </span>
-            </div>
-            <div className="spec-item">
-              <span className="spec-label telemetry">TEAM PRINCIPAL</span>
-              <span className="spec-value">{selectedTeam.principal}</span>
-            </div>
-          </div>
-        </section>
-
-        {/* Championship Winning Seasons */}
-        {seasonsWon.length > 0 && (
-          <section className="team-section telemetry-panel">
-            <div className="section-title-bar">
-              <span className="section-dot" style={{ backgroundColor: '#FFD700' }}></span>
-              <h2 className="headline">CHAMPIONSHIP WINNING SEASONS // {seasonsWon.length} TITLES</h2>
-            </div>
-
-            <div className="seasons-won-grid">
-              {seasonsWon.map((s) => (
-                <Link key={s.year} to={`/seasons/${s.year}`} className="season-won-card">
-                  <span className="season-won-year headline">{s.year}</span>
-                  <span className="season-won-driver telemetry">{s.championDriver}</span>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
-        {/* Current Drivers for Team */}
+        {/* Current Active Pilots */}
         {teamDrivers.length > 0 && (
           <section className="team-section telemetry-panel">
             <div className="section-title-bar">
-              <span className="section-dot"></span>
-              <h2 className="headline">DRIVER LINEUP // ACTIVE SQUAD</h2>
+              <span className="section-dot" style={{ backgroundColor: selectedTeam.color }}></span>
+              <h2 className="headline">// OFFICIAL PILOTS ROSTER</h2>
             </div>
 
             <div className="team-drivers-grid">
               {teamDrivers.map((driver) => (
-                <Link 
-                  key={driver.id} 
-                  to={`/drivers/${driver.id}`} 
+                <Link
+                  key={driver.id}
+                  to={`/drivers/${driver.id}`}
                   className="team-driver-card"
-                  style={{ '--driver-accent': selectedTeam.color } as React.CSSProperties}
+                  style={{ borderLeftColor: selectedTeam.color }}
                 >
-                  <div className="driver-card-number headline">#{driver.number}</div>
-                  <div className="driver-card-info">
-                    <span className="driver-card-name headline">{driver.name}</span>
-                    <span className="driver-card-meta telemetry">
-                      {driver.country} // {driver.wins} WINS // {driver.podiums} PODIUMS
-                    </span>
+                  <div className="team-driver-num headline" style={{ color: selectedTeam.color }}>
+                    {driver.number ? `#${driver.number}` : (driver.code || '—')}
                   </div>
-                  <span className="driver-card-arrow">→</span>
+                  <div className="team-driver-info">
+                    <div className="team-driver-name headline">{driver.name}</div>
+                    <div className="team-driver-meta telemetry">
+                      <span>{driver.country}</span>
+                      <span>•</span>
+                      <span>{driver.wins} WINS</span>
+                      {driver.championships > 0 && (
+                        <>
+                          <span>•</span>
+                          <span style={{ color: '#FFD700' }}>{driver.championships}x WDC</span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+                  <div className="team-driver-arrow">→</div>
                 </Link>
               ))}
             </div>
           </section>
         )}
+
+        {/* Constructors Championship Titles */}
+        {seasonsWon.length > 0 && (
+          <section className="team-section telemetry-panel">
+            <div className="section-title-bar">
+              <span className="section-dot" style={{ backgroundColor: '#FFD700' }}></span>
+              <h2 className="headline">CONSTRUCTORS CHAMPIONSHIP HONOURS // {seasonsWon.length} TITLES</h2>
+            </div>
+
+            <div className="titles-grid">
+              {seasonsWon.map((s) => (
+                <Link key={s.year} to={`/seasons/${s.year}`} className="title-card">
+                  <span className="title-year headline">{s.year}</span>
+                  <span className="title-team telemetry">Champion: {s.championDriver}</span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Technical Specifications */}
+        <section className="team-section telemetry-panel">
+          <div className="section-title-bar">
+            <span className="section-dot" style={{ backgroundColor: '#00D2FF' }}></span>
+            <h2 className="headline">TECHNICAL SPECIFICATIONS & ARCHITECTURE</h2>
+          </div>
+
+          <div className="specs-grid">
+            <div className="spec-card">
+              <div className="spec-label telemetry">POWER UNIT ARCHITECTURE</div>
+              <div className="spec-value headline">{selectedTeam.specs.powerUnit}</div>
+            </div>
+            <div className="spec-card">
+              <div className="spec-label telemetry">CHASSIS CONSTRUCTION</div>
+              <div className="spec-value headline">{selectedTeam.specs.chassis}</div>
+            </div>
+            <div className="spec-card">
+              <div className="spec-label telemetry">HOMOLOGATED MINIMUM WEIGHT</div>
+              <div className="spec-value headline">{selectedTeam.specs.weight}</div>
+            </div>
+            <div className="spec-card">
+              <div className="spec-label telemetry">AERODYNAMIC PROFILE</div>
+              <div className="spec-value headline">{selectedTeam.specs.downforce} Downforce</div>
+            </div>
+            <div className="spec-card">
+              <div className="spec-label telemetry">BENCHMARK TOP SPEED</div>
+              <div className="spec-value headline">{selectedTeam.specs.topSpeed}</div>
+            </div>
+            <div className="spec-card">
+              <div className="spec-label telemetry">TEAM PRINCIPAL</div>
+              <div className="spec-value headline">{selectedTeam.principal}</div>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   );
 };
-

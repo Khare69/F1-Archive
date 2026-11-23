@@ -19,6 +19,7 @@ export function useLapSimulation(
 ): UseLapSimulationResult {
   // Helper to parse lap record string "1:21.046" into seconds
   const recordSeconds = useMemo(() => {
+    if (!currentCircuit.lapRecord) return 80.0;
     const parts = currentCircuit.lapRecord.split(':');
     if (parts.length === 2) {
       return parseFloat(parts[0]) * 60 + parseFloat(parts[1]);

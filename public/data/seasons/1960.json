@@ -1,0 +1,98 @@
+{
+  "year": 1960,
+  "racesCount": 10,
+  "championDriver": "Jack Brabham",
+  "championTeam": "Cooper",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1960-02-07",
+      "name": "Gran Premio de Argentina 1960",
+      "circuitId": "buenos-aires",
+      "laps": 80,
+      "distanceKm": 312.96,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1960-05-29",
+      "name": "Grand Prix de Monaco 1960",
+      "circuitId": "monaco",
+      "laps": 100,
+      "distanceKm": 314.5,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1960-05-30",
+      "name": "1960 Indianapolis 500",
+      "circuitId": "indianapolis",
+      "laps": 200,
+      "distanceKm": 804.672,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1960-06-06",
+      "name": "Grote Prijs van Nederland 1960",
+      "circuitId": "zandvoort",
+      "laps": 75,
+      "distanceKm": 314.475,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1960-06-19",
+      "name": "1960 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 36,
+      "distanceKm": 508.32,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1960-07-03",
+      "name": "Grand Prix de France 1960",
+      "circuitId": "reims",
+      "laps": 50,
+      "distanceKm": 415.1,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1960-07-16",
+      "name": "1960 RAC British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 77,
+      "distanceKm": 362.747,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1960-08-14",
+      "name": "Grande Prémio de Portugal 1960",
+      "circuitId": "porto",
+      "laps": 55,
+      "distanceKm": 407.33,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1960-09-04",
+      "name": "Gran Premio d'Italia 1960",
+      "circuitId": "monza",
+      "laps": 50,
+      "distanceKm": 500,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1960-11-20",
+      "name": "1960 United States Grand Prix",
+      "circuitId": "riverside",
+      "laps": 75,
+      "distanceKm": 395.325,
+      "isCancelled": false
+    }
+  ]
+}

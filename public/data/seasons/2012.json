@@ -1,0 +1,188 @@
+{
+  "year": 2012,
+  "racesCount": 20,
+  "championDriver": "Sebastian Vettel",
+  "championTeam": "Red Bull",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "2012-03-18",
+      "name": "2012 Formula 1 Qantas Australian Grand Prix",
+      "circuitId": "melbourne",
+      "laps": 58,
+      "distanceKm": 307.574,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "2012-03-25",
+      "name": "2012 Formula 1 Petronas Malaysia Grand Prix",
+      "circuitId": "sepang",
+      "laps": 56,
+      "distanceKm": 310.408,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "2012-04-15",
+      "name": "2012 Formula 1 UBS Chinese Grand Prix",
+      "circuitId": "shanghai",
+      "laps": 56,
+      "distanceKm": 305.066,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "2012-04-22",
+      "name": "2012 Formula 1 Gulf Air Bahrain Grand Prix",
+      "circuitId": "bahrain",
+      "laps": 57,
+      "distanceKm": 308.238,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "2012-05-13",
+      "name": "Formula 1 Gran Premio de España Santander 2012",
+      "circuitId": "catalunya",
+      "laps": 66,
+      "distanceKm": 307.104,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "2012-05-27",
+      "name": "Formula 1 Grand Prix de Monaco 2012",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 260.52,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "2012-06-10",
+      "name": "Formula 1 Grand Prix du Canada 2012",
+      "circuitId": "montreal",
+      "laps": 70,
+      "distanceKm": 305.27,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "2012-06-24",
+      "name": "2012 Formula 1 Grand Prix of Europe",
+      "circuitId": "valencia",
+      "laps": 57,
+      "distanceKm": 308.883,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "2012-07-08",
+      "name": "2012 Formula 1 Santander British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 52,
+      "distanceKm": 306.198,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "2012-07-22",
+      "name": "Formula 1 Grosser Preis Santander von Deutschland 2012",
+      "circuitId": "hockenheimring",
+      "laps": 67,
+      "distanceKm": 306.458,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "2012-07-29",
+      "name": "Formula 1 Eni Magyar Nagydij 2012",
+      "circuitId": "hungaroring",
+      "laps": 69,
+      "distanceKm": 302.249,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "2012-09-02",
+      "name": "2012 Formula 1 Shell Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 44,
+      "distanceKm": 308.052,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "2012-09-09",
+      "name": "Formula 1 Gran Premio Santander d'Italia 2012",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 306.72,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "2012-09-23",
+      "name": "2012 Formula 1 SingTel Singapore Grand Prix",
+      "circuitId": "marina-bay",
+      "laps": 59,
+      "distanceKm": 299.17,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "2012-10-07",
+      "name": "2012 Formula 1 Japanese Grand Prix",
+      "circuitId": "suzuka",
+      "laps": 53,
+      "distanceKm": 307.471,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "2012-10-14",
+      "name": "2012 Formula 1 Korean Grand Prix",
+      "circuitId": "yeongam",
+      "laps": 55,
+      "distanceKm": 308.63,
+      "isCancelled": false
+    },
+    {
+      "round": 17,
+      "date": "2012-10-28",
+      "name": "2012 Formula 1 Airtel Indian Grand Prix",
+      "circuitId": "buddh",
+      "laps": 60,
+      "distanceKm": 307.249,
+      "isCancelled": false
+    },
+    {
+      "round": 18,
+      "date": "2012-11-04",
+      "name": "2012 Formula 1 Etihad Airways Abu Dhabi Grand Prix",
+      "circuitId": "yas-marina",
+      "laps": 55,
+      "distanceKm": 305.355,
+      "isCancelled": false
+    },
+    {
+      "round": 19,
+      "date": "2012-11-18",
+      "name": "2012 Formula 1 United States Grand Prix",
+      "circuitId": "austin",
+      "laps": 56,
+      "distanceKm": 308.405,
+      "isCancelled": false
+    },
+    {
+      "round": 20,
+      "date": "2012-11-25",
+      "name": "Formula 1 Grande Prêmio Petrobras do Brasil 2012",
+      "circuitId": "interlagos",
+      "laps": 71,
+      "distanceKm": 305.909,
+      "isCancelled": false
+    }
+  ]
+}

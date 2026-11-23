@@ -1,14 +1,27 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getAllSeasons, getSeasonByYear, getTeamById } from '../../data/dataService';
+import { getAllSeasons, getSeasonByYear, getTeamById, getF1DBMetadata } from '../../data/dataService';
 import { StatCard } from '../../components/StatCard/StatCard';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import './SeasonsArchive.css';
+
+const DECADES = [
+  { label: '2020s', startYear: 2020, targetYear: 2026 },
+  { label: '2010s', startYear: 2010, targetYear: 2019 },
+  { label: '2000s', startYear: 2000, targetYear: 2009 },
+  { label: '1990s', startYear: 1990, targetYear: 1999 },
+  { label: '1980s', startYear: 1980, targetYear: 1989 },
+  { label: '1970s', startYear: 1970, targetYear: 1979 },
+  { label: '1960s', startYear: 1960, targetYear: 1969 },
+  { label: '1950s', startYear: 1950, targetYear: 1959 },
+];
 
 export const SeasonsArchive: React.FC = () => {
   const { year: yearParam } = useParams<{ year?: string }>();
   const navigate = useNavigate();
   const seasons = getAllSeasons();
+  const meta = getF1DBMetadata();
+  const timelineTrackRef = useRef<HTMLDivElement>(null);
 
   // Validate year parameter or default to latest season
   const selectedSeason = getSeasonByYear(yearParam) || seasons[0];
@@ -18,8 +31,27 @@ export const SeasonsArchive: React.FC = () => {
     return [...seasons].sort((a, b) => a.year - b.year);
   }, [seasons]);
 
+  const currentDecade = useMemo(() => {
+    const yr = selectedSeason.year;
+    return `${Math.floor(yr / 10) * 10}s`;
+  }, [selectedSeason.year]);
+
+  // Scroll active timeline node into view
+  useEffect(() => {
+    if (timelineTrackRef.current) {
+      const activeNode = timelineTrackRef.current.querySelector('.timeline-node.active');
+      if (activeNode) {
+        activeNode.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+      }
+    }
+  }, [selectedSeason.year]);
+
   const handleSelectSeason = (year: number) => {
     navigate(`/seasons/${year}`);
+  };
+
+  const handleJumpDecade = (targetYear: number) => {
+    handleSelectSeason(targetYear);
   };
 
   return (
@@ -28,7 +60,7 @@ export const SeasonsArchive: React.FC = () => {
       <aside className="archive-sidebar" aria-label="Seasons list">
         <div className="sidebar-header telemetry">
           <span>// SELECT CAMPAIGN</span>
-          <span className="sidebar-count">{seasons.length} ERAS</span>
+          <span className="sidebar-count">{seasons.length} SEASONS</span>
         </div>
         {seasons.map((season) => (
           <button
@@ -38,7 +70,9 @@ export const SeasonsArchive: React.FC = () => {
             onClick={() => handleSelectSeason(season.year)}
           >
             <span className="season-year-text">{season.year}</span>
-            <span className="season-champ-tag telemetry">{season.championDriver.split(' ').pop()}</span>
+            <span className="season-champ-tag telemetry">
+              {season.championDriver.split(' ').pop()}
+            </span>
           </button>
         ))}
       </aside>
@@ -52,10 +86,25 @@ export const SeasonsArchive: React.FC = () => {
             <span>CLICK NODE TO INSPECT ERA</span>
           </div>
 
+          {/* Decade Jump Selector */}
+          <div className="decade-jump-bar telemetry">
+            <span className="decade-jump-label">// JUMP ERA:</span>
+            {DECADES.map(d => (
+              <button
+                key={d.label}
+                type="button"
+                className={`decade-pill ${currentDecade === d.label ? 'active' : ''}`}
+                onClick={() => handleJumpDecade(d.targetYear)}
+              >
+                {d.label}
+              </button>
+            ))}
+          </div>
+
           <div className="timeline-scroll-wrapper">
-            <div className="timeline-track">
+            <div className="timeline-track" ref={timelineTrackRef}>
               {chronologicalSeasons.map((s) => {
-                const team = getTeamById(s.championTeamId);
+                const team = getTeamById(s.championTeamId || undefined);
                 const nodeColor = team?.color || '#00D2FF';
                 const isSelected = selectedSeason.year === s.year;
 
@@ -92,7 +141,12 @@ export const SeasonsArchive: React.FC = () => {
         <div className="season-hero-panel telemetry-panel corner-bracket">
           <div className="season-header-meta telemetry">
             <span>FIA FORMULA ONE WORLD CHAMPIONSHIP</span>
-            <span className="season-status-tag">OFFICIALLY INDEXED</span>
+            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+              <span className="season-status-tag">OFFICIALLY INDEXED</span>
+              <span className="f1db-sync-pill">
+                <span>●</span> F1DB SYNCED (v{meta.f1dbVersion})
+              </span>
+            </div>
           </div>
 
           <div className="season-title-row">
@@ -120,73 +174,80 @@ export const SeasonsArchive: React.FC = () => {
             </div>
 
             <div className="champion-card champion-team">
-              <div className="champ-label telemetry">WORLD CONSTRUCTORS' CHAMPION</div>
+              <div className="champ-label telemetry">CONSTRUCTORS' CHAMPION</div>
               <div className="champ-name headline">{selectedSeason.championTeam}</div>
               {selectedSeason.championTeamId ? (
                 <Link to={`/teams/${selectedSeason.championTeamId}`} className="champ-link telemetry">
-                  INSPECT CONSTRUCTOR →
+                  VIEW CONSTRUCTOR PROFILE →
                 </Link>
               ) : (
-                <span className="champ-link-disabled telemetry">CONSTRUCTOR RECORD</span>
+                <span className="champ-link-disabled telemetry">PRE-1958 INAUGURAL ERA</span>
               )}
             </div>
           </div>
         </div>
 
-        {/* Season Stats Summary */}
-        <div className="season-stats-grid">
+        {/* Notable Events & Milestones */}
+        <div className="season-details-grid">
+          <section className="season-detail-panel telemetry-panel">
+            <div className="section-title-bar">
+              <span className="section-dot" style={{ backgroundColor: '#00D2FF' }}></span>
+              <h2 className="headline">ERA MILESTONES & DEFINING EVENTS</h2>
+            </div>
+            <ul className="events-list">
+              {selectedSeason.notableEvents.map((event, idx) => (
+                <li key={idx} className="event-item">
+                  <span className="event-marker telemetry">// 0{idx + 1}</span>
+                  <span className="event-text">{event}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="season-detail-panel telemetry-panel">
+            <div className="section-title-bar">
+              <span className="section-dot" style={{ backgroundColor: '#FF1E1E' }}></span>
+              <h2 className="headline">HISTORICAL RECORDS & BENCHMARKS</h2>
+            </div>
+            <ul className="events-list">
+              {selectedSeason.recordsBroken.map((record, idx) => (
+                <li key={idx} className="event-item">
+                  <span className="event-marker telemetry" style={{ color: '#FF1E1E' }}>// REC</span>
+                  <span className="event-text">{record}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        </div>
+
+        {/* Summary Stats Row */}
+        <div className="season-stats-row">
           <StatCard
-            label="CALENDAR LENGTH"
-            value={`${selectedSeason.races} Races`}
-            subtext="Official Championship Rounds"
-            accentColor="#00D2FF"
-          />
-          <StatCard
-            label="CHAMPION DRIVER"
-            value={selectedSeason.championDriver}
-            subtext="World Title Winner"
+            label="CHAMPION PILOT"
+            value={selectedSeason.championDriver.split(' ').pop() || 'TBD'}
+            subtext={selectedSeason.championDriver}
             accentColor="#FFD700"
             isPrimary
           />
           <StatCard
             label="CHAMPION CONSTRUCTOR"
-            value={selectedSeason.championTeam}
-            subtext="Constructors' Cup Holder"
-            accentColor="#FF1E1E"
+            value={selectedSeason.championTeam.split(' ')[0] || 'TBD'}
+            subtext={selectedSeason.championTeam}
+            accentColor="#00D2FF"
+          />
+          <StatCard
+            label="ROUNDS CONTESTED"
+            value={selectedSeason.races}
+            subtext="Championship Grands Prix"
+            accentColor="#00E701"
+          />
+          <StatCard
+            label="ERA CHRONOLOGY"
+            value={`${selectedSeason.year}`}
+            subtext={`Season #${selectedSeason.year - 1949} of ${seasons.length}`}
+            accentColor="#FFFFFF"
           />
         </div>
-
-        {/* Notable Events */}
-        <section className="season-section telemetry-panel">
-          <div className="section-title-bar">
-            <span className="section-dot"></span>
-            <h2 className="headline">DEFINING MOMENTS & NARRATIVE</h2>
-          </div>
-          <ul className="events-list">
-            {selectedSeason.notableEvents.map((event, idx) => (
-              <li key={idx} className="event-item">
-                <span className="event-bullet telemetry">&gt;</span>
-                <span className="event-text">{event}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
-
-        {/* Records Broken */}
-        <section className="season-section telemetry-panel records-panel">
-          <div className="section-title-bar">
-            <span className="section-dot record-dot"></span>
-            <h2 className="headline text-gradient-cyan">HISTORICAL BENCHMARKS & RECORDS BROKEN</h2>
-          </div>
-          <ul className="records-list">
-            {selectedSeason.recordsBroken.map((record, idx) => (
-              <li key={idx} className="record-item">
-                <span className="record-icon">⚡</span>
-                <span className="record-text">{record}</span>
-              </li>
-            ))}
-          </ul>
-        </section>
       </main>
     </div>
   );
