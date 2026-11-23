@@ -1,0 +1,89 @@
+{
+  "year": 1954,
+  "racesCount": 9,
+  "championDriver": "Juan Manuel Fangio",
+  "championTeam": "Not Awarded (Pre-1958)",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1954-01-17",
+      "name": "Gran Premio de Argentina 1954",
+      "circuitId": "buenos-aires",
+      "laps": 87,
+      "distanceKm": 340.344,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1954-05-31",
+      "name": "1954 Indianapolis 500",
+      "circuitId": "indianapolis",
+      "laps": 200,
+      "distanceKm": 804.672,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1954-06-20",
+      "name": "1954 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 36,
+      "distanceKm": 508.32,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1954-07-04",
+      "name": "Grand Prix de France 1954",
+      "circuitId": "reims",
+      "laps": 61,
+      "distanceKm": 506.422,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1954-07-17",
+      "name": "1954 RAC British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 90,
+      "distanceKm": 423.99,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1954-08-01",
+      "name": "Grosser Preis von Deutschland 1954",
+      "circuitId": "nurburgring",
+      "laps": 22,
+      "distanceKm": 501.82,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1954-08-22",
+      "name": "Grosser Preis der Schweiz 1954",
+      "circuitId": "bremgarten",
+      "laps": 66,
+      "distanceKm": 480.48,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1954-09-05",
+      "name": "Gran Premio d'Italia 1954",
+      "circuitId": "monza",
+      "laps": 80,
+      "distanceKm": 504,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1954-10-24",
+      "name": "Gran Premio de España 1954",
+      "circuitId": "pedralbes",
+      "laps": 80,
+      "distanceKm": 505.28,
+      "isCancelled": false
+    }
+  ]
+}

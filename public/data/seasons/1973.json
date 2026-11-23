@@ -1,0 +1,143 @@
+{
+  "year": 1973,
+  "racesCount": 15,
+  "championDriver": "Jackie Stewart",
+  "championTeam": "Lotus",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1973-01-28",
+      "name": "Gran Premio de Argentina 1973",
+      "circuitId": "buenos-aires",
+      "laps": 96,
+      "distanceKm": 321.216,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1973-02-11",
+      "name": "Grande Prêmio do Brasil 1973",
+      "circuitId": "interlagos",
+      "laps": 40,
+      "distanceKm": 318.4,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1973-03-03",
+      "name": "South African Grand Prix 1973",
+      "circuitId": "kyalami",
+      "laps": 79,
+      "distanceKm": 324.216,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1973-04-29",
+      "name": "Gran Premio de España 1973",
+      "circuitId": "montjuic",
+      "laps": 75,
+      "distanceKm": 284.325,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1973-05-20",
+      "name": "1973 Belgian Grand Prix",
+      "circuitId": "zolder",
+      "laps": 70,
+      "distanceKm": 295.4,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1973-06-03",
+      "name": "Grand Prix de Monaco 1973",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 255.684,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1973-06-17",
+      "name": "Hitachi Sveriges Grand Prix 1973",
+      "circuitId": "anderstorp",
+      "laps": 80,
+      "distanceKm": 321.44,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1973-07-01",
+      "name": "Grand Prix de France 1973",
+      "circuitId": "paul-ricard",
+      "laps": 54,
+      "distanceKm": 313.686,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1973-07-14",
+      "name": "1973 John Player British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 67,
+      "distanceKm": 315.637,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1973-07-29",
+      "name": "Grote Prijs van Nederland 1973",
+      "circuitId": "zandvoort",
+      "laps": 72,
+      "distanceKm": 304.272,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1973-08-05",
+      "name": "Grosser Preis von Deutschland 1973",
+      "circuitId": "nurburgring",
+      "laps": 14,
+      "distanceKm": 319.69,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "1973-08-19",
+      "name": "Grosser Preis von Österreich 1973",
+      "circuitId": "spielberg",
+      "laps": 54,
+      "distanceKm": 319.194,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "1973-09-09",
+      "name": "Gran Premio d'Italia 1973",
+      "circuitId": "monza",
+      "laps": 55,
+      "distanceKm": 317.625,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "1973-09-23",
+      "name": "Labatt's Canadian Grand Prix 1973",
+      "circuitId": "mosport",
+      "laps": 80,
+      "distanceKm": 316.56,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "1973-10-07",
+      "name": "1973 United States Grand Prix",
+      "circuitId": "watkins-glen",
+      "laps": 59,
+      "distanceKm": 320.665,
+      "isCancelled": false
+    }
+  ]
+}

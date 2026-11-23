@@ -1,0 +1,152 @@
+{
+  "year": 1986,
+  "racesCount": 16,
+  "championDriver": "Alain Prost",
+  "championTeam": "Williams",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1986-03-23",
+      "name": "Grande Prêmio do Brasil 1986",
+      "circuitId": "jacarepagua",
+      "laps": 61,
+      "distanceKm": 306.891,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1986-04-13",
+      "name": "Gran Premio Tio Pepe de España 1986",
+      "circuitId": "jerez",
+      "laps": 72,
+      "distanceKm": 303.696,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1986-04-27",
+      "name": "Gran Premio di San Marino 1986",
+      "circuitId": "imola",
+      "laps": 60,
+      "distanceKm": 302.4,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1986-05-11",
+      "name": "Grand Prix de Monaco 1986",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 259.584,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1986-05-25",
+      "name": "1986 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 43,
+      "distanceKm": 298.42,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1986-06-15",
+      "name": "Grand Prix Labatt du Canada 1986",
+      "circuitId": "montreal",
+      "laps": 69,
+      "distanceKm": 304.29,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1986-06-22",
+      "name": "1986 Detroit Grand Prix",
+      "circuitId": "detroit",
+      "laps": 63,
+      "distanceKm": 253.449,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1986-07-06",
+      "name": "Grand Prix de France 1986",
+      "circuitId": "paul-ricard",
+      "laps": 80,
+      "distanceKm": 305.04,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1986-07-13",
+      "name": "1986 Shell Oils British Grand Prix",
+      "circuitId": "brands-hatch",
+      "laps": 75,
+      "distanceKm": 315.525,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1986-07-27",
+      "name": "Grosser Preis von Deutschland 1986",
+      "circuitId": "hockenheimring",
+      "laps": 44,
+      "distanceKm": 299.288,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1986-08-10",
+      "name": "Magyar Nagydíj 1986",
+      "circuitId": "hungaroring",
+      "laps": 76,
+      "distanceKm": 305.064,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "1986-08-17",
+      "name": "Grosser Preis von Österreich 1986",
+      "circuitId": "spielberg",
+      "laps": 52,
+      "distanceKm": 308.984,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "1986-09-07",
+      "name": "Gran Premio d'Italia 1986",
+      "circuitId": "monza",
+      "laps": 51,
+      "distanceKm": 295.8,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "1986-09-21",
+      "name": "Grande Prémio de Portugal 1986",
+      "circuitId": "estoril",
+      "laps": 70,
+      "distanceKm": 304.43,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "1986-10-12",
+      "name": "Gran Premio de México 1986",
+      "circuitId": "mexico-city",
+      "laps": 68,
+      "distanceKm": 300.628,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "1986-10-26",
+      "name": "1986 Foster's Australian Grand Prix",
+      "circuitId": "adelaide",
+      "laps": 82,
+      "distanceKm": 309.96,
+      "isCancelled": false
+    }
+  ]
+}

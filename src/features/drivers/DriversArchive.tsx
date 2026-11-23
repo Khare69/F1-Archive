@@ -1,33 +1,82 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { getAllDrivers, getDriverById, getTeamById, getSeasonsWonByDriver } from '../../data/dataService';
+import {
+  getAllDrivers,
+  getDriverById,
+  getTeamById,
+  getSeasonsWonByDriver,
+  getF1DBMetadata
+} from '../../data/dataService';
 import { FallbackImage } from '../../components/FallbackImage/FallbackImage';
 import { StatCard } from '../../components/StatCard/StatCard';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
 import './DriversArchive.css';
 
+type DriverCategory = 'active' | 'champions' | 'all';
+
 export const DriversArchive: React.FC = () => {
   const { driverId } = useParams<{ driverId?: string }>();
   const navigate = useNavigate();
-  const drivers = getAllDrivers();
+  const allDrivers = getAllDrivers();
+  const meta = getF1DBMetadata();
+
+  const [category, setCategory] = useState<DriverCategory>('active');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [displayCount, setDisplayCount] = useState(50);
 
   // Validate driverId or default to the first driver
-  const selectedDriver = getDriverById(driverId) || drivers[0];
+  const selectedDriver = getDriverById(driverId) || allDrivers[0];
   useDocumentTitle(selectedDriver ? selectedDriver.name : 'Drivers Roster');
 
   const driverTeam = getTeamById(selectedDriver.teamId);
   const teamColor = driverTeam?.color || '#00D2FF';
   const titlesWon = getSeasonsWonByDriver(selectedDriver.id);
 
+  // Filter drivers based on category tab & search input
+  const filteredDrivers = useMemo(() => {
+    let list = allDrivers;
+
+    if (category === 'active') {
+      list = allDrivers.filter(d => d.isActive2026);
+    } else if (category === 'champions') {
+      list = allDrivers.filter(d => d.championships > 0).sort((a, b) => b.championships - a.championships);
+    }
+
+    if (!searchQuery.trim()) {
+      return list;
+    }
+
+    const clean = searchQuery.trim().toLowerCase();
+    return list.filter(d =>
+      d.name.toLowerCase().includes(clean) ||
+      d.code?.toLowerCase().includes(clean) ||
+      d.country.toLowerCase().includes(clean) ||
+      String(d.number || '').includes(clean)
+    );
+  }, [allDrivers, category, searchQuery]);
+
+  // Paginated/sliced drivers list for render performance
+  const visibleDrivers = useMemo(() => {
+    if (category !== 'all' && !searchQuery.trim()) {
+      return filteredDrivers;
+    }
+    return filteredDrivers.slice(0, displayCount);
+  }, [filteredDrivers, category, searchQuery, displayCount]);
+
   const handleSelectDriver = (id: string) => {
     navigate(`/drivers/${id}`);
+  };
+
+  const handleCategoryChange = (cat: DriverCategory) => {
+    setCategory(cat);
+    setDisplayCount(50);
   };
 
   const getPositionClass = (pos: number | string) => {
     if (pos === 1 || pos === 'P1') return 'pos-gold';
     if (pos === 2 || pos === 'P2') return 'pos-silver';
     if (pos === 3 || pos === 'P3') return 'pos-bronze';
-    if (pos === 'DNF' || pos === 'DNS') return 'pos-danger';
+    if (pos === 'DNF' || pos === 'DNS' || pos === 'DSQ') return 'pos-danger';
     return 'pos-standard';
   };
 
@@ -42,39 +91,112 @@ export const DriversArchive: React.FC = () => {
       <aside className="archive-sidebar" aria-label="Drivers roster">
         <div className="sidebar-header telemetry">
           <span>// DRIVERS ROSTER</span>
-          <span className="sidebar-count">{drivers.length} PILOTS</span>
+          <span className="sidebar-count">{allDrivers.length} PILOTS</span>
         </div>
 
         {/* Head-to-head Quick Link */}
-        <Link to="/drivers/compare" className="list-button" style={{ borderLeftColor: '#00D2FF', background: 'rgba(0, 210, 255, 0.08)', marginBottom: '0.5rem' }}>
+        <Link 
+          to="/drivers/compare" 
+          className="list-button" 
+          style={{ 
+            borderLeftColor: '#00D2FF', 
+            background: 'rgba(0, 210, 255, 0.08)', 
+            margin: '0.5rem 0.75rem',
+            width: 'calc(100% - 1.5rem)'
+          }}
+        >
           <span style={{ color: '#00D2FF', fontWeight: 'bold' }}>⚔️ VS COMPARATOR</span>
           <span className="telemetry" style={{ fontSize: '0.7rem' }}>HEAD-TO-HEAD</span>
         </Link>
 
-        {drivers.map((driver) => {
-          const team = getTeamById(driver.teamId);
-          return (
+        {/* Category Tabs: Active 2026 / Champions / All */}
+        <div className="driver-filter-tabs">
+          <button
+            type="button"
+            className={`driver-tab-pill telemetry ${category === 'active' ? 'active' : ''}`}
+            onClick={() => handleCategoryChange('active')}
+          >
+            ACTIVE 2026
+          </button>
+          <button
+            type="button"
+            className={`driver-tab-pill telemetry ${category === 'champions' ? 'active' : ''}`}
+            onClick={() => handleCategoryChange('champions')}
+          >
+            CHAMPIONS
+          </button>
+          <button
+            type="button"
+            className={`driver-tab-pill telemetry ${category === 'all' ? 'active' : ''}`}
+            onClick={() => handleCategoryChange('all')}
+          >
+            ALL PILOTS
+          </button>
+        </div>
+
+        {/* Quick Search */}
+        <div className="driver-search-box">
+          <input
+            type="text"
+            className="driver-search-input telemetry"
+            placeholder="Search pilot, #, code..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+          {searchQuery && (
             <button
-              key={driver.id}
               type="button"
-              className={`list-button ${selectedDriver.id === driver.id ? 'active' : ''}`}
-              onClick={() => handleSelectDriver(driver.id)}
+              className="driver-search-clear"
+              onClick={() => setSearchQuery('')}
+              aria-label="Clear search"
             >
-              <div className="driver-btn-left">
-                <span 
-                  className="driver-btn-num telemetry"
-                  style={{ color: team?.color || '#00D2FF' }}
-                >
-                  #{driver.number}
-                </span>
-                <span className="driver-btn-name">{driver.name}</span>
-              </div>
-              {driver.isLegend && (
-                <span className="legend-pill telemetry">LEGEND</span>
-              )}
+              ✕
             </button>
-          );
-        })}
+          )}
+        </div>
+
+        {/* Drivers List */}
+        <div className="drivers-scroll-list">
+          {visibleDrivers.map((driver) => {
+            const team = getTeamById(driver.teamId);
+            const isSelected = selectedDriver.id === driver.id || selectedDriver.slug === driver.slug;
+
+            return (
+              <button
+                key={driver.id}
+                type="button"
+                className={`list-button ${isSelected ? 'active' : ''}`}
+                onClick={() => handleSelectDriver(driver.id)}
+              >
+                <div className="driver-btn-left">
+                  <span 
+                    className="driver-btn-num telemetry"
+                    style={{ color: team?.color || '#00D2FF' }}
+                  >
+                    {driver.number ? `#${driver.number}` : (driver.code || '—')}
+                  </span>
+                  <span className="driver-btn-name">{driver.name}</span>
+                </div>
+                {driver.isLegend && (
+                  <span className="legend-pill telemetry">
+                    {driver.championships > 0 ? `${driver.championships}x WDC` : 'LEGEND'}
+                  </span>
+                )}
+              </button>
+            );
+          })}
+
+          {/* Load More Button for 'all' mode */}
+          {visibleDrivers.length < filteredDrivers.length && (
+            <button
+              type="button"
+              className="load-more-btn telemetry"
+              onClick={() => setDisplayCount(prev => prev + 50)}
+            >
+              + LOAD MORE PILOTS ({filteredDrivers.length - visibleDrivers.length} REMAINING)
+            </button>
+          )}
+        </div>
       </aside>
 
       {/* Main Content Area */}
@@ -89,14 +211,17 @@ export const DriversArchive: React.FC = () => {
           <div className="driver-hero-layout">
             <div className="driver-hero-info">
               <div className="driver-meta-bar telemetry">
-                <span>PILOT ID: {selectedDriver.id}</span>
+                <span>PILOT ID: {selectedDriver.code || selectedDriver.id}</span>
                 <span>NATIONALITY: {selectedDriver.country.toUpperCase()}</span>
                 {selectedDriver.isLegend && <span className="legend-tag">HALL OF FAME</span>}
+                <span className="f1db-sync-pill">
+                  <span>●</span> F1DB SYNCED (v{meta.f1dbVersion})
+                </span>
               </div>
 
               <div className="driver-headline-row">
                 <div className="driver-giant-number headline">
-                  #{selectedDriver.number}
+                  {selectedDriver.number ? `#${selectedDriver.number}` : (selectedDriver.code || '—')}
                 </div>
                 <div className="driver-names-box">
                   <h1 className="driver-full-name headline">{selectedDriver.name}</h1>
@@ -136,9 +261,9 @@ export const DriversArchive: React.FC = () => {
                   accentColor="#00D2FF"
                 />
                 <StatCard
-                  label="COUNTRY"
-                  value={selectedDriver.country}
-                  subtext="Licensing Nation"
+                  label="RACE STARTS"
+                  value={selectedDriver.starts || selectedDriver.wins || 0}
+                  subtext={selectedDriver.winRate ? `${selectedDriver.winRate}% Win Rate` : 'Career Starts'}
                   accentColor="#C0C0C0"
                 />
               </div>
@@ -195,21 +320,32 @@ export const DriversArchive: React.FC = () => {
           </div>
 
           <div className="results-container">
-            {selectedDriver.raceFinishes.map((finish, idx) => (
-              <div key={idx} className="result-row-card">
-                <div className="result-meta">
-                  <span className="result-index telemetry">ROUND #{idx + 1}</span>
-                  <span className="result-event headline">{finish.race}</span>
+            {selectedDriver.raceFinishes.length > 0 ? (
+              selectedDriver.raceFinishes.map((finish, idx) => (
+                <div key={idx} className="result-row-card">
+                  <div className="result-meta">
+                    <span className="result-index telemetry">ROUND #{idx + 1}</span>
+                    <span className="result-event headline">{finish.race}</span>
+                  </div>
+                  <div className={`result-position-badge headline ${getPositionClass(finish.position)}`}>
+                    {formatPositionDisplay(finish.position)}
+                  </div>
                 </div>
-                <div className={`result-position-badge headline ${getPositionClass(finish.position)}`}>
-                  {formatPositionDisplay(finish.position)}
+              ))
+            ) : (
+              <div className="result-row-card" style={{ opacity: 0.7 }}>
+                <div className="result-meta">
+                  <span className="result-index telemetry">// CLASSIFICATION</span>
+                  <span className="result-event headline">Career statistics indexed from F1DB historical records</span>
+                </div>
+                <div className="result-position-badge headline pos-standard">
+                  INDEXED
                 </div>
               </div>
-            ))}
+            )}
           </div>
         </section>
       </main>
     </div>
   );
 };
-

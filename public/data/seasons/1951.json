@@ -1,0 +1,80 @@
+{
+  "year": 1951,
+  "racesCount": 8,
+  "championDriver": "Juan Manuel Fangio",
+  "championTeam": "Not Awarded (Pre-1958)",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1951-05-27",
+      "name": "Grosser Preis der Schweiz 1951",
+      "circuitId": "bremgarten",
+      "laps": 42,
+      "distanceKm": 305.76,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1951-05-30",
+      "name": "1951 Indianapolis 500",
+      "circuitId": "indianapolis",
+      "laps": 200,
+      "distanceKm": 804.672,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1951-06-17",
+      "name": "1951 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 36,
+      "distanceKm": 508.32,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1951-07-01",
+      "name": "Grand Prix de France 1951",
+      "circuitId": "reims",
+      "laps": 77,
+      "distanceKm": 601.755,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1951-07-14",
+      "name": "1951 RAC British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 90,
+      "distanceKm": 418.41,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1951-07-29",
+      "name": "Grosser Preis von Deutschland 1951",
+      "circuitId": "nurburgring",
+      "laps": 20,
+      "distanceKm": 456.2,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1951-09-16",
+      "name": "Gran Premio d'Italia 1951",
+      "circuitId": "monza",
+      "laps": 80,
+      "distanceKm": 504,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1951-10-28",
+      "name": "Gran Premio de España 1951",
+      "circuitId": "pedralbes",
+      "laps": 70,
+      "distanceKm": 442.12,
+      "isCancelled": false
+    }
+  ]
+}

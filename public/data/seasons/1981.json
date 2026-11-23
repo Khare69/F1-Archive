@@ -1,0 +1,143 @@
+{
+  "year": 1981,
+  "racesCount": 15,
+  "championDriver": "Nelson Piquet",
+  "championTeam": "Williams",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1981-03-15",
+      "name": "1981 Toyota Grand Prix of Long Beach",
+      "circuitId": "long-beach",
+      "laps": 80,
+      "distanceKm": 260.08,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1981-03-29",
+      "name": "Grande Prêmio do Brasil 1981",
+      "circuitId": "jacarepagua",
+      "laps": 62,
+      "distanceKm": 311.922,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1981-04-12",
+      "name": "Gran Premio de Argentina 1981",
+      "circuitId": "buenos-aires",
+      "laps": 53,
+      "distanceKm": 316.304,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1981-05-03",
+      "name": "Gran Premio di San Marino 1981",
+      "circuitId": "imola",
+      "laps": 60,
+      "distanceKm": 302.4,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1981-05-17",
+      "name": "1981 Belgian Grand Prix",
+      "circuitId": "zolder",
+      "laps": 54,
+      "distanceKm": 230.148,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1981-05-31",
+      "name": "Grand Prix de Monaco 1981",
+      "circuitId": "monaco",
+      "laps": 76,
+      "distanceKm": 251.712,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1981-06-21",
+      "name": "Gran Premio de España 1981",
+      "circuitId": "jarama",
+      "laps": 80,
+      "distanceKm": 264.96,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1981-07-05",
+      "name": "Grand Prix de France 1981",
+      "circuitId": "dijon",
+      "laps": 80,
+      "distanceKm": 304.08,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1981-07-18",
+      "name": "1981 Marlboro British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 68,
+      "distanceKm": 320.892,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1981-08-02",
+      "name": "Grosser Preis von Deutschland 1981",
+      "circuitId": "hockenheimring",
+      "laps": 45,
+      "distanceKm": 305.505,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1981-08-16",
+      "name": "Grosser Preis von Österreich 1981",
+      "circuitId": "spielberg",
+      "laps": 53,
+      "distanceKm": 314.926,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "1981-08-30",
+      "name": "Grote Prijs van Nederland 1981",
+      "circuitId": "zandvoort",
+      "laps": 72,
+      "distanceKm": 306.144,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "1981-09-13",
+      "name": "Gran Premio d'Italia 1981",
+      "circuitId": "monza",
+      "laps": 52,
+      "distanceKm": 301.6,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "1981-09-27",
+      "name": "Grand Prix Labatt du Canada 1981",
+      "circuitId": "montreal",
+      "laps": 63,
+      "distanceKm": 277.83,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "1981-10-17",
+      "name": "1981 Caesars Palace Grand Prix",
+      "circuitId": "caesars-palace",
+      "laps": 75,
+      "distanceKm": 273.75,
+      "isCancelled": false
+    }
+  ]
+}

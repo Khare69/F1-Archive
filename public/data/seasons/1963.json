@@ -1,0 +1,98 @@
+{
+  "year": 1963,
+  "racesCount": 10,
+  "championDriver": "Jim Clark",
+  "championTeam": "Lotus",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1963-05-26",
+      "name": "Grand Prix de Monaco 1963",
+      "circuitId": "monaco",
+      "laps": 100,
+      "distanceKm": 314.5,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1963-06-09",
+      "name": "1963 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 32,
+      "distanceKm": 451.2,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1963-06-23",
+      "name": "Grote Prijs van Nederland 1963",
+      "circuitId": "zandvoort",
+      "laps": 80,
+      "distanceKm": 335.44,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1963-06-30",
+      "name": "Grand Prix de France 1963",
+      "circuitId": "reims",
+      "laps": 53,
+      "distanceKm": 440.006,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1963-07-20",
+      "name": "1963 RAC British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 82,
+      "distanceKm": 386.302,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1963-08-04",
+      "name": "Grosser Preis von Deutschland 1963",
+      "circuitId": "nurburgring",
+      "laps": 15,
+      "distanceKm": 342.15,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1963-09-08",
+      "name": "Gran Premio d'Italia 1963",
+      "circuitId": "monza",
+      "laps": 86,
+      "distanceKm": 494.5,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1963-10-06",
+      "name": "1963 United States Grand Prix",
+      "circuitId": "watkins-glen",
+      "laps": 110,
+      "distanceKm": 407.11,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1963-10-27",
+      "name": "Gran Premio de México 1963",
+      "circuitId": "mexico-city",
+      "laps": 65,
+      "distanceKm": 325,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1963-12-28",
+      "name": "South African Grand Prix 1963",
+      "circuitId": "east-london",
+      "laps": 85,
+      "distanceKm": 333.2,
+      "isCancelled": false
+    }
+  ]
+}

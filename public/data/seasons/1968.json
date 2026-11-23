@@ -1,0 +1,116 @@
+{
+  "year": 1968,
+  "racesCount": 12,
+  "championDriver": "Graham Hill",
+  "championTeam": "Lotus",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1968-01-01",
+      "name": "South African Grand Prix 1968",
+      "circuitId": "kyalami",
+      "laps": 80,
+      "distanceKm": 328.32,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1968-05-12",
+      "name": "Gran Premio de España 1968",
+      "circuitId": "jarama",
+      "laps": 90,
+      "distanceKm": 306.36,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1968-05-26",
+      "name": "Grand Prix de Monaco 1968",
+      "circuitId": "monaco",
+      "laps": 80,
+      "distanceKm": 251.6,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1968-06-09",
+      "name": "1968 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 28,
+      "distanceKm": 394.8,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1968-06-23",
+      "name": "Grote Prijs van Nederland 1968",
+      "circuitId": "zandvoort",
+      "laps": 90,
+      "distanceKm": 377.37,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1968-07-07",
+      "name": "Grand Prix de France 1968",
+      "circuitId": "rouen",
+      "laps": 60,
+      "distanceKm": 392.52,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1968-07-20",
+      "name": "1968 RAC British Grand Prix",
+      "circuitId": "brands-hatch",
+      "laps": 80,
+      "distanceKm": 341.2,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1968-08-04",
+      "name": "Grosser Preis von Deutschland 1968",
+      "circuitId": "nurburgring",
+      "laps": 14,
+      "distanceKm": 319.69,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1968-09-08",
+      "name": "Gran Premio d'Italia 1968",
+      "circuitId": "monza",
+      "laps": 68,
+      "distanceKm": 391,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1968-09-22",
+      "name": "Player's Canadian Grand Prix 1968",
+      "circuitId": "mont-tremblant",
+      "laps": 90,
+      "distanceKm": 383.85,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1968-10-06",
+      "name": "1968 United States Grand Prix",
+      "circuitId": "watkins-glen",
+      "laps": 108,
+      "distanceKm": 408.24,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "1968-11-03",
+      "name": "Gran Premio de México 1968",
+      "circuitId": "mexico-city",
+      "laps": 65,
+      "distanceKm": 325,
+      "isCancelled": false
+    }
+  ]
+}

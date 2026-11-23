@@ -1,0 +1,170 @@
+{
+  "year": 2006,
+  "racesCount": 18,
+  "championDriver": "Fernando Alonso",
+  "championTeam": "Renault",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "2006-03-12",
+      "name": "2006 Formula 1 Gulf Air Bahrain Grand Prix",
+      "circuitId": "bahrain",
+      "laps": 57,
+      "distanceKm": 308.238,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "2006-03-19",
+      "name": "2006 Formula 1 Petronas Malaysian Grand Prix",
+      "circuitId": "sepang",
+      "laps": 56,
+      "distanceKm": 310.408,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "2006-04-02",
+      "name": "2006 Formula 1 Foster's Australian Grand Prix",
+      "circuitId": "melbourne",
+      "laps": 57,
+      "distanceKm": 302.271,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "2006-04-23",
+      "name": "Formula 1 Gran Premio Foster's di San Marino 2006",
+      "circuitId": "imola",
+      "laps": 62,
+      "distanceKm": 305.609,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "2006-05-07",
+      "name": "2006 Formula 1 Grand Prix of Europe",
+      "circuitId": "nurburgring",
+      "laps": 60,
+      "distanceKm": 308.88,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "2006-05-14",
+      "name": "Formula 1 Gran Premio Telefónica de España 2006",
+      "circuitId": "catalunya",
+      "laps": 66,
+      "distanceKm": 305.256,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "2006-05-28",
+      "name": "Formula 1 Grand Prix de Monaco 2006",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 260.52,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "2006-06-11",
+      "name": "2006 Formula 1 Foster's British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 60,
+      "distanceKm": 308.355,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "2006-06-25",
+      "name": "Formula 1 Grand Prix du Canada 2006",
+      "circuitId": "montreal",
+      "laps": 70,
+      "distanceKm": 305.27,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "2006-07-02",
+      "name": "2006 United States Grand Prix",
+      "circuitId": "indianapolis",
+      "laps": 73,
+      "distanceKm": 306.016,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "2006-07-16",
+      "name": "Formula 1 Grand Prix de France 2006",
+      "circuitId": "magny-cours",
+      "laps": 70,
+      "distanceKm": 308.77,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "2006-07-30",
+      "name": "Formula 1 Grosser Mobil 1 Preis von Deutschland 2006",
+      "circuitId": "hockenheimring",
+      "laps": 67,
+      "distanceKm": 306.458,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "2006-08-06",
+      "name": "Formula 1 Magyar Nagydíj 2006",
+      "circuitId": "hungaroring",
+      "laps": 70,
+      "distanceKm": 306.663,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "2006-08-27",
+      "name": "2006 Formula 1 Petrol Ofisi Turkish Grand Prix",
+      "circuitId": "istanbul",
+      "laps": 58,
+      "distanceKm": 309.396,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "2006-09-10",
+      "name": "Formula 1 Gran Premio Vodafone d'Italia 2006",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 306.72,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "2006-10-01",
+      "name": "2006 Formula 1 Sinopec Chinese Grand Prix",
+      "circuitId": "shanghai",
+      "laps": 56,
+      "distanceKm": 305.066,
+      "isCancelled": false
+    },
+    {
+      "round": 17,
+      "date": "2006-10-08",
+      "name": "2006 Formula 1 Fuji Television Japanese Grand Prix",
+      "circuitId": "suzuka",
+      "laps": 53,
+      "distanceKm": 307.573,
+      "isCancelled": false
+    },
+    {
+      "round": 18,
+      "date": "2006-10-22",
+      "name": "Formula 1 Grande Prêmio do Brasil 2006",
+      "circuitId": "interlagos",
+      "laps": 71,
+      "distanceKm": 305.909,
+      "isCancelled": false
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+{
+  "year": 1996,
+  "racesCount": 16,
+  "championDriver": "Damon Hill",
+  "championTeam": "Williams",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1996-03-10",
+      "name": "1996 Transurban Australian Grand Prix",
+      "circuitId": "melbourne",
+      "laps": 58,
+      "distanceKm": 307.574,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1996-03-31",
+      "name": "Grande Prêmio do Brasil 1996",
+      "circuitId": "interlagos",
+      "laps": 71,
+      "distanceKm": 307.075,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1996-04-07",
+      "name": "Gran Premio Marlboro de Argentina 1996",
+      "circuitId": "buenos-aires",
+      "laps": 72,
+      "distanceKm": 306.648,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1996-04-28",
+      "name": "1996 Grand Prix of Europe",
+      "circuitId": "nurburgring",
+      "laps": 67,
+      "distanceKm": 305.252,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1996-05-05",
+      "name": "Gran Premio di San Marino 1996",
+      "circuitId": "imola",
+      "laps": 63,
+      "distanceKm": 308.196,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1996-05-19",
+      "name": "Grand Prix de Monaco 1996",
+      "circuitId": "monaco",
+      "laps": 75,
+      "distanceKm": 249.6,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1996-06-02",
+      "name": "Gran Premio Marlboro de España 1996",
+      "circuitId": "catalunya",
+      "laps": 65,
+      "distanceKm": 307.114,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1996-06-16",
+      "name": "Grand Prix Molson du Canada 1996",
+      "circuitId": "montreal",
+      "laps": 69,
+      "distanceKm": 305.049,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1996-06-30",
+      "name": "Grand Prix de France 1996",
+      "circuitId": "magny-cours",
+      "laps": 72,
+      "distanceKm": 306,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1996-07-14",
+      "name": "1996 RAC British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 61,
+      "distanceKm": 309.392,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1996-07-28",
+      "name": "Grosser Mobil 1 Preis von Deutschland 1996",
+      "circuitId": "hockenheimring",
+      "laps": 45,
+      "distanceKm": 307.035,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "1996-08-11",
+      "name": "Marlboro Magyar Nagydíj 1996",
+      "circuitId": "hungaroring",
+      "laps": 77,
+      "distanceKm": 305.536,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "1996-08-25",
+      "name": "1996 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 44,
+      "distanceKm": 306.592,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "1996-09-08",
+      "name": "Pioneer Gran Premio d'Italia 1996",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 305.81,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "1996-09-22",
+      "name": "Grande Prémio de Portugal 1996",
+      "circuitId": "estoril",
+      "laps": 70,
+      "distanceKm": 305.2,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "1996-10-13",
+      "name": "1996 Fuji Television Japanese Grand Prix",
+      "circuitId": "suzuka",
+      "laps": 52,
+      "distanceKm": 304.72,
+      "isCancelled": false
+    }
+  ]
+}

@@ -4,7 +4,7 @@ import { getDriverEra, DRIVER_METADATA_REGISTRY } from './constructorEmblems';
 export interface DriverHelmetAvatarProps {
   accentColor?: string;
   secondaryColor?: string;
-  driverNumber?: number;
+  driverNumber?: number | null;
   driverCode?: string;
   championships?: number;
   era?: 'vintage' | 'classic' | 'modern';

@@ -74,7 +74,7 @@ export const DriverComparison: React.FC = () => {
           >
             {drivers.map(d => (
               <option key={d.id} value={d.id} style={{ color: '#F5F7FA', background: '#0D1322' }}>
-                #{d.number} {d.name} ({d.country}) {d.isLegend ? '⭐' : ''}
+                {d.number ? `#${d.number} ` : (d.code ? `[${d.code}] ` : '')}{d.name} ({d.country}) {d.isLegend ? '⭐' : ''}
               </option>
             ))}
           </select>
@@ -97,7 +97,7 @@ export const DriverComparison: React.FC = () => {
           >
             {drivers.map(d => (
               <option key={d.id} value={d.id} style={{ color: '#F5F7FA', background: '#0D1322' }}>
-                #{d.number} {d.name} ({d.country}) {d.isLegend ? '⭐' : ''}
+                {d.number ? `#${d.number} ` : (d.code ? `[${d.code}] ` : '')}{d.name} ({d.country}) {d.isLegend ? '⭐' : ''}
               </option>
             ))}
           </select>
@@ -113,7 +113,7 @@ export const DriverComparison: React.FC = () => {
         >
           <div className="showdown-info-left">
             <span className="showdown-num headline" style={{ color: colorA }}>
-              #{driverA.number}
+              {driverA.number ? `#${driverA.number}` : (driverA.code || '—')}
             </span>
             <h2 className="showdown-name headline">{driverA.name}</h2>
             {teamA && (
@@ -148,7 +148,7 @@ export const DriverComparison: React.FC = () => {
         >
           <div className="showdown-info-left">
             <span className="showdown-num headline" style={{ color: colorB }}>
-              #{driverB.number}
+              {driverB.number ? `#${driverB.number}` : (driverB.code || '—')}
             </span>
             <h2 className="showdown-name headline">{driverB.name}</h2>
             {teamB && (

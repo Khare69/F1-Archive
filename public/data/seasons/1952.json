@@ -1,0 +1,80 @@
+{
+  "year": 1952,
+  "racesCount": 8,
+  "championDriver": "Alberto Ascari",
+  "championTeam": "Not Awarded (Pre-1958)",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1952-05-18",
+      "name": "Grosser Preis der Schweiz 1952",
+      "circuitId": "bremgarten",
+      "laps": 62,
+      "distanceKm": 451.36,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1952-05-30",
+      "name": "1952 Indianapolis 500",
+      "circuitId": "indianapolis",
+      "laps": 200,
+      "distanceKm": 804.672,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1952-06-22",
+      "name": "1952 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 36,
+      "distanceKm": 508.32,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1952-07-06",
+      "name": "Grand Prix de France 1952",
+      "circuitId": "rouen",
+      "laps": 77,
+      "distanceKm": 392.7,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1952-07-19",
+      "name": "1952 RAC British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 85,
+      "distanceKm": 400.435,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1952-08-03",
+      "name": "Grosser Preis von Deutschland 1952",
+      "circuitId": "nurburgring",
+      "laps": 18,
+      "distanceKm": 410.58,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1952-08-17",
+      "name": "Grote Prijs van Nederland 1952",
+      "circuitId": "zandvoort",
+      "laps": 90,
+      "distanceKm": 377.37,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1952-09-07",
+      "name": "Gran Premio d'Italia 1952",
+      "circuitId": "monza",
+      "laps": 80,
+      "distanceKm": 504,
+      "isCancelled": false
+    }
+  ]
+}

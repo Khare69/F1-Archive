@@ -1,0 +1,143 @@
+{
+  "year": 1983,
+  "racesCount": 15,
+  "championDriver": "Nelson Piquet",
+  "championTeam": "Ferrari",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1983-03-13",
+      "name": "Grande Prêmio do Brasil 1983",
+      "circuitId": "jacarepagua",
+      "laps": 63,
+      "distanceKm": 316.953,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1983-03-27",
+      "name": "1983 Toyota Grand Prix of Long Beach",
+      "circuitId": "long-beach",
+      "laps": 75,
+      "distanceKm": 245.625,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1983-04-17",
+      "name": "Grand Prix de France 1983",
+      "circuitId": "paul-ricard",
+      "laps": 54,
+      "distanceKm": 313.686,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1983-05-01",
+      "name": "Gran Premio di San Marino 1983",
+      "circuitId": "imola",
+      "laps": 60,
+      "distanceKm": 302.4,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1983-05-15",
+      "name": "Grand Prix de Monaco 1983",
+      "circuitId": "monaco",
+      "laps": 76,
+      "distanceKm": 251.712,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1983-05-22",
+      "name": "1983 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 40,
+      "distanceKm": 277.6,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1983-06-05",
+      "name": "1983 Detroit Grand Prix",
+      "circuitId": "detroit",
+      "laps": 60,
+      "distanceKm": 241.38,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1983-06-12",
+      "name": "Grand Prix Labatt du Canada 1983",
+      "circuitId": "montreal",
+      "laps": 70,
+      "distanceKm": 308.7,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1983-07-16",
+      "name": "1983 Marlboro British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 67,
+      "distanceKm": 316.173,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1983-08-07",
+      "name": "Grosser Preis von Deutschland 1983",
+      "circuitId": "hockenheimring",
+      "laps": 45,
+      "distanceKm": 306.09,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1983-08-14",
+      "name": "Grosser Preis von Österreich 1983",
+      "circuitId": "spielberg",
+      "laps": 53,
+      "distanceKm": 314.926,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "1983-08-28",
+      "name": "Grote Prijs van Nederland 1983",
+      "circuitId": "zandvoort",
+      "laps": 72,
+      "distanceKm": 306.144,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "1983-09-11",
+      "name": "Gran Premio d'Italia 1983",
+      "circuitId": "monza",
+      "laps": 52,
+      "distanceKm": 301.6,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "1983-09-25",
+      "name": "1983 John Player Grand Prix of Europe",
+      "circuitId": "brands-hatch",
+      "laps": 76,
+      "distanceKm": 319.732,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "1983-10-15",
+      "name": "Southern Sun Hotels South African Grand Prix 1983",
+      "circuitId": "kyalami",
+      "laps": 77,
+      "distanceKm": 316.008,
+      "isCancelled": false
+    }
+  ]
+}

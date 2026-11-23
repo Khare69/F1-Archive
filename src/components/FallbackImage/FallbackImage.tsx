@@ -14,7 +14,7 @@ export interface FallbackImageProps extends Omit<React.HTMLAttributes<HTMLDivEle
   variant?: 'team' | 'driver' | 'car' | 'badge';
   teamId?: string;
   driverCode?: string;
-  driverNumber?: number;
+  driverNumber?: number | null;
   championships?: number;
   era?: 'vintage' | 'classic' | 'modern';
   lastActiveYear?: number;

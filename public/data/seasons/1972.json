@@ -1,0 +1,116 @@
+{
+  "year": 1972,
+  "racesCount": 12,
+  "championDriver": "Emerson Fittipaldi",
+  "championTeam": "Lotus",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1972-01-23",
+      "name": "Gran Premio de Argentina 1972",
+      "circuitId": "buenos-aires",
+      "laps": 95,
+      "distanceKm": 317.87,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1972-03-04",
+      "name": "South African Grand Prix 1972",
+      "circuitId": "kyalami",
+      "laps": 79,
+      "distanceKm": 324.216,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1972-05-01",
+      "name": "Gran Premio de España 1972",
+      "circuitId": "jarama",
+      "laps": 90,
+      "distanceKm": 306.36,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1972-05-14",
+      "name": "Grand Prix de Monaco 1972",
+      "circuitId": "monaco",
+      "laps": 80,
+      "distanceKm": 251.6,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1972-06-04",
+      "name": "1972 Belgian Grand Prix",
+      "circuitId": "nivelles",
+      "laps": 85,
+      "distanceKm": 316.54,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1972-07-02",
+      "name": "Grand Prix de France 1972",
+      "circuitId": "clermont-ferrand",
+      "laps": 38,
+      "distanceKm": 306.09,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1972-07-15",
+      "name": "1972 John Player British Grand Prix",
+      "circuitId": "brands-hatch",
+      "laps": 76,
+      "distanceKm": 324.14,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1972-07-30",
+      "name": "Grosser Preis von Deutschland 1972",
+      "circuitId": "nurburgring",
+      "laps": 14,
+      "distanceKm": 319.69,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1972-08-13",
+      "name": "Grosser Preis von Österreich 1972",
+      "circuitId": "spielberg",
+      "laps": 54,
+      "distanceKm": 319.194,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1972-09-10",
+      "name": "Gran Premio d'Italia 1972",
+      "circuitId": "monza",
+      "laps": 55,
+      "distanceKm": 317.625,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1972-09-24",
+      "name": "Labatt's Canadian Grand Prix 1972",
+      "circuitId": "mosport",
+      "laps": 80,
+      "distanceKm": 316.56,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "1972-10-08",
+      "name": "1972 United States Grand Prix",
+      "circuitId": "watkins-glen",
+      "laps": 59,
+      "distanceKm": 320.665,
+      "isCancelled": false
+    }
+  ]
+}

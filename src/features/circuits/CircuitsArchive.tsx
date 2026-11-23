@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getAllCircuits, getCircuitById } from '../../data/dataService';
+import { getAllCircuits, getCircuitById, getF1DBMetadata } from '../../data/dataService';
 import { StatCard } from '../../components/StatCard/StatCard';
 import { Track3DViewer } from './Track3DViewer';
 import { useDocumentTitle } from '../../hooks/useDocumentTitle';
@@ -9,9 +9,23 @@ import './CircuitsArchive.css';
 export const CircuitsArchive: React.FC = () => {
   const { circuitId } = useParams<{ circuitId?: string }>();
   const navigate = useNavigate();
-  const circuits = getAllCircuits();
+  const allCircuits = getAllCircuits();
+  const meta = getF1DBMetadata();
 
-  const selectedCircuit = getCircuitById(circuitId) || circuits[0];
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const filteredCircuits = useMemo(() => {
+    if (!searchQuery.trim()) return allCircuits;
+    const clean = searchQuery.trim().toLowerCase();
+    return allCircuits.filter(c =>
+      c.name.toLowerCase().includes(clean) ||
+      c.country.toLowerCase().includes(clean) ||
+      c.city.toLowerCase().includes(clean) ||
+      c.type.toLowerCase().includes(clean)
+    );
+  }, [allCircuits, searchQuery]);
+
+  const selectedCircuit = getCircuitById(circuitId) || allCircuits[0];
   useDocumentTitle(selectedCircuit ? selectedCircuit.name : 'Race Circuits');
 
   const handleSelectCircuit = (id: string) => {
@@ -32,24 +46,38 @@ export const CircuitsArchive: React.FC = () => {
       <aside className="archive-sidebar" aria-label="Circuits directory">
         <div className="sidebar-header telemetry">
           <span>// RACE CIRCUITS</span>
-          <span className="sidebar-count">{circuits.length} VENUES</span>
+          <span className="sidebar-count">{allCircuits.length} VENUES</span>
         </div>
-        {circuits.map(circuit => (
-          <button
-            key={circuit.id}
-            type="button"
-            className={`list-button ${selectedCircuit.id === circuit.id ? 'active' : ''}`}
-            onClick={() => handleSelectCircuit(circuit.id)}
-          >
-            <div className="circuit-btn-left">
-              <span className="circuit-btn-flag">🏁</span>
-              <span className="circuit-btn-name">{circuit.name}</span>
-            </div>
-            <span className={`circuit-type-pill telemetry type-${circuit.type.toLowerCase()}`}>
-              {circuit.type}
-            </span>
-          </button>
-        ))}
+
+        {/* Quick Search */}
+        <div className="driver-search-box" style={{ padding: '0.5rem 0.75rem', borderBottom: '1px solid var(--color-border)' }}>
+          <input
+            type="text"
+            className="driver-search-input telemetry"
+            placeholder="Search venue or nation..."
+            value={searchQuery}
+            onChange={e => setSearchQuery(e.target.value)}
+          />
+        </div>
+
+        <div className="circuits-scroll-list">
+          {filteredCircuits.map(circuit => (
+            <button
+              key={circuit.id}
+              type="button"
+              className={`list-button ${selectedCircuit.id === circuit.id ? 'active' : ''}`}
+              onClick={() => handleSelectCircuit(circuit.id)}
+            >
+              <div className="circuit-btn-left">
+                <span className="circuit-btn-flag">🏁</span>
+                <span className="circuit-btn-name">{circuit.name}</span>
+              </div>
+              <span className={`circuit-type-pill telemetry type-${circuit.type.toLowerCase()}`}>
+                {circuit.type}
+              </span>
+            </button>
+          ))}
+        </div>
       </aside>
 
       {/* Main Content Area */}
@@ -74,6 +102,9 @@ export const CircuitsArchive: React.FC = () => {
             >
               {selectedCircuit.type.toUpperCase()} TRACK
             </span>
+            <span className="f1db-sync-pill">
+              <span>●</span> F1DB SYNCED (v{meta.f1dbVersion})
+            </span>
           </div>
 
           <div className="circuit-title-row">
@@ -92,45 +123,48 @@ export const CircuitsArchive: React.FC = () => {
             <span className="telemetry" style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', letterSpacing: '0.12em' }}>
               OFFICIAL GRAND PRIX LAP RECORD
             </span>
-            <div className="lap-record-time headline">{selectedCircuit.lapRecord}</div>
-            <div className="lap-record-holder telemetry">SET BY: <strong>{selectedCircuit.lapRecordHolder}</strong></div>
+            <div className="lap-record-time headline">{selectedCircuit.lapRecord || 'Benchmark Record'}</div>
+            <div className="lap-record-holder telemetry">SET BY: <strong>{selectedCircuit.lapRecordHolder || 'FIA Homologation Standard'}</strong></div>
           </div>
           <div className="lap-record-badge headline">
             <span>⚡ ALL-TIME BENCHMARK</span>
           </div>
         </div>
 
-        {/* 3D Topographic Track Elevation Visualizer */}
-        <Track3DViewer circuit={selectedCircuit} accentColor={accentColor} />
-
-        {/* Circuit Stats Grid */}
+        {/* Circuit Telemetry Metric Cards */}
         <div className="circuit-stats-grid">
           <StatCard
             label="CIRCUIT LENGTH"
             value={selectedCircuit.lengthKm}
-            subtext="Single Lap Distance"
-            accentColor="#00D2FF"
+            subtext="Lap Distance"
+            accentColor={accentColor}
             isPrimary
           />
           <StatCard
             label="TOTAL CORNERS"
-            value={`${selectedCircuit.turns} Turns`}
-            subtext="Technical Apex Count"
-            accentColor="#FF1E1E"
+            value={selectedCircuit.turns}
+            subtext="Numbered Turns"
+            accentColor="#00D2FF"
           />
           <StatCard
-            label="DRS OVERTAKE ZONES"
-            value={`${selectedCircuit.drsZones} Zones`}
-            subtext="Drag Reduction Straights"
+            label="DRS ACTIVATION ZONES"
+            value={selectedCircuit.drsZones ?? '—'}
+            subtext="High-Speed DRS Traps"
             accentColor="#00E701"
           />
           <StatCard
             label="ELEVATION CHANGE"
             value={selectedCircuit.elevation}
-            subtext="Topographic Delta"
-            accentColor="#FFD700"
+            subtext="Altitude Delta"
+            accentColor="#C0C0C0"
           />
         </div>
+
+        {/* 3D Topographic Track Ribbon Viewer */}
+        <Track3DViewer
+          circuit={selectedCircuit}
+          accentColor={accentColor}
+        />
       </main>
     </div>
   );

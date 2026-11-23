@@ -20,6 +20,7 @@ export interface Team {
   polePositions: number;
   fastestLaps: number;
   isLegendary?: boolean;
+  isActive2026?: boolean;
   specs: TeamSpecs;
 }
 
@@ -30,15 +31,25 @@ export interface RaceFinish {
 
 export interface Driver {
   id: string;
+  slug?: string;
+  code?: string;
   name: string;
-  number: number;
+  fullName?: string;
+  number: number | null;
   teamId: string;
   wins: number;
   podiums: number;
   championships: number;
+  polePositions?: number;
+  fastestLaps?: number;
+  starts?: number;
+  winRate?: number;
+  podiumRate?: number;
   country: string;
+  dateOfBirth?: string | null;
   imageUrl?: string;
   isLegend?: boolean;
+  isActive2026?: boolean;
   raceFinishes: RaceFinish[];
 }
 
@@ -47,10 +58,11 @@ export interface Season {
   races: number;
   championDriver: string;
   championTeam: string;
-  championDriverId?: string;
-  championTeamId?: string;
+  championDriverId?: string | null;
+  championTeamId?: string | null;
   notableEvents: string[];
   recordsBroken: string[];
+  isCancelled?: boolean;
 }
 
 export interface Circuit {
@@ -60,14 +72,28 @@ export interface Circuit {
   city: string;
   lengthKm: string;
   turns: number;
-  lapRecord: string;
-  lapRecordHolder: string;
+  lapRecord: string | null;
+  lapRecordHolder: string | null;
   firstGP: number;
-  drsZones: number;
+  drsZones: number | null;
   elevation: string;
   type: 'Street' | 'Permanent' | 'Semi-Permanent';
   description: string;
+  poleToWinRate?: number | null;
   trackCoordinates?: [number, number, number][];
+}
+
+export interface F1DBMetadata {
+  f1dbVersion: string;
+  syncedAt: string;
+  license: string;
+  attribution: string;
+  recordCounts: {
+    seasons: number;
+    constructors: number;
+    drivers: number;
+    circuits: number;
+  };
 }
 
 export interface LiveDriverStanding {

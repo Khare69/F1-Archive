@@ -1,0 +1,84 @@
+name: Sync F1DB Post-Race Data
+
+on:
+  schedule:
+    # Run every Monday at 06:00 UTC (following Grand Prix weekends)
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+    inputs:
+      force_sync:
+        description: 'Force sync regardless of CalVer tag match'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-and-verify:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: 'dev'
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check F1DB Release Tag
+        id: check-release
+        run: |
+          LATEST_TAG=$(curl -s -H "User-Agent: F1-Archive-CI" https://api.github.com/repos/f1db/f1db/releases/latest | jq -r .tag_name // empty)
+          CURRENT_VERSION=$(jq -r .f1dbVersion src/data/generated/meta.json // empty)
+          echo "Latest F1DB Release: $LATEST_TAG"
+          echo "Current Archive Version: $CURRENT_VERSION"
+
+          if [ -n "$LATEST_TAG" ] && [ "$LATEST_TAG" = "v$CURRENT_VERSION" ] && [ "${{ inputs.force_sync }}" != "true" ]; then
+            echo "should_sync=false" >> $GITHUB_OUTPUT
+            echo "F1DB dataset is already up to date with tag $LATEST_TAG. Skipping sync."
+          else
+            echo "should_sync=true" >> $GITHUB_OUTPUT
+            echo "f1db_tag=$LATEST_TAG" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Run F1DB Automated ETL Pipeline
+        if: steps.check-release.outputs.should_sync == 'true'
+        run: npm run sync:data
+
+      - name: Verify Code Quality & Type Integrity
+        if: steps.check-release.outputs.should_sync == 'true'
+        run: |
+          npm run lint
+          npx tsc -b
+
+      - name: Execute Known-Facts & Data Integrity Test Suite
+        if: steps.check-release.outputs.should_sync == 'true'
+        run: npm test
+
+      - name: Verify Production Build
+        if: steps.check-release.outputs.should_sync == 'true'
+        run: npm run build
+
+      - name: Commit & Push Updated Datasets
+        if: steps.check-release.outputs.should_sync == 'true'
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            git config --global user.name "github-actions[bot]"
+            git config --global user.email "github-actions[bot]@users.noreply.github.com"
+            git add src/data/generated/ public/data/
+            TAG_SUFFIX="${{ steps.check-release.outputs.f1db_tag }}"
+            git commit -m "chore(data): sync F1DB post-race dataset ${TAG_SUFFIX:-latest}"
+            git push origin dev
+          else
+            echo "No data changes detected after sync."
+          fi

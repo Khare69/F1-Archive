@@ -1,0 +1,152 @@
+{
+  "year": 1994,
+  "racesCount": 16,
+  "championDriver": "Michael Schumacher",
+  "championTeam": "Williams",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1994-03-27",
+      "name": "Grande Prêmio do Brasil 1994",
+      "circuitId": "interlagos",
+      "laps": 71,
+      "distanceKm": 307.075,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1994-04-17",
+      "name": "1994 Pacific Grand Prix",
+      "circuitId": "aida",
+      "laps": 83,
+      "distanceKm": 307.349,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1994-05-01",
+      "name": "Gran Premio di San Marino 1994",
+      "circuitId": "imola",
+      "laps": 58,
+      "distanceKm": 292.32,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1994-05-15",
+      "name": "Grand Prix de Monaco 1994",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 259.584,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1994-05-29",
+      "name": "Gran Premio Marlboro de España 1994",
+      "circuitId": "catalunya",
+      "laps": 65,
+      "distanceKm": 308.284,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1994-06-12",
+      "name": "Grand Prix Molson du Canada 1994",
+      "circuitId": "montreal",
+      "laps": 69,
+      "distanceKm": 307.05,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1994-07-03",
+      "name": "Grand Prix de France 1994",
+      "circuitId": "magny-cours",
+      "laps": 72,
+      "distanceKm": 306,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1994-07-10",
+      "name": "1994 RAC British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 60,
+      "distanceKm": 303.42,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1994-07-31",
+      "name": "Grosser Mobil 1 Preis von Deutschland 1994",
+      "circuitId": "hockenheimring",
+      "laps": 45,
+      "distanceKm": 307.035,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1994-08-14",
+      "name": "Marlboro Magyar Nagydíj 1994",
+      "circuitId": "hungaroring",
+      "laps": 77,
+      "distanceKm": 305.536,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1994-08-28",
+      "name": "1994 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 44,
+      "distanceKm": 308.044,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "1994-09-11",
+      "name": "Pioneer Gran Premio d'Italia 1994",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 307.4,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "1994-09-25",
+      "name": "Grande Prémio de Portugal 1994",
+      "circuitId": "estoril",
+      "laps": 71,
+      "distanceKm": 309.56,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "1994-10-16",
+      "name": "1994 Grand Prix of Europe",
+      "circuitId": "jerez",
+      "laps": 69,
+      "distanceKm": 305.532,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "1994-11-06",
+      "name": "1994 Fuji Television Japanese Grand Prix",
+      "circuitId": "suzuka",
+      "laps": 50,
+      "distanceKm": 293,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "1994-11-13",
+      "name": "1994 Adelaide Australian Grand Prix",
+      "circuitId": "adelaide",
+      "laps": 81,
+      "distanceKm": 306.18,
+      "isCancelled": false
+    }
+  ]
+}

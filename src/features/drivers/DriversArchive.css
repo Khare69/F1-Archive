@@ -300,3 +300,107 @@
     font-size: 2.2rem;
   }
 }
+
+/* Sidebar Filter Tabs & Search */
+.driver-filter-tabs {
+  display: flex;
+  gap: 0.35rem;
+  padding: 0.5rem 0.75rem;
+  background: rgba(13, 19, 34, 0.6);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.driver-tab-pill {
+  flex: 1;
+  padding: 0.35rem 0.4rem;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  color: var(--color-text-muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  text-align: center;
+}
+
+.driver-tab-pill:hover {
+  background: rgba(0, 210, 255, 0.08);
+  color: var(--color-text-primary);
+  border-color: rgba(0, 210, 255, 0.3);
+}
+
+.driver-tab-pill.active {
+  background: rgba(0, 210, 255, 0.15);
+  color: #00D2FF;
+  border-color: #00D2FF;
+}
+
+.driver-search-box {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  position: relative;
+}
+
+.driver-search-input {
+  width: 100%;
+  padding: 0.45rem 1.8rem 0.45rem 0.65rem;
+  background: rgba(5, 7, 12, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: var(--color-text-primary);
+  font-size: 0.75rem;
+  outline: none;
+  transition: border-color var(--transition-fast);
+}
+
+.driver-search-input:focus {
+  border-color: #00D2FF;
+  box-shadow: 0 0 8px rgba(0, 210, 255, 0.2);
+}
+
+.driver-search-clear {
+  position: absolute;
+  right: 1.25rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.load-more-btn {
+  width: 100%;
+  padding: 0.75rem;
+  margin: 0.5rem 0;
+  background: rgba(0, 210, 255, 0.08);
+  border: 1px dashed rgba(0, 210, 255, 0.4);
+  color: #00D2FF;
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+}
+
+.load-more-btn:hover {
+  background: rgba(0, 210, 255, 0.16);
+  border-color: #00D2FF;
+}
+
+.f1db-sync-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.6rem;
+  background: rgba(0, 210, 255, 0.08);
+  border: 1px solid rgba(0, 210, 255, 0.25);
+  border-radius: 12px;
+  font-size: 0.65rem;
+  color: #00D2FF;
+  letter-spacing: 0.05em;
+}

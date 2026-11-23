@@ -1,0 +1,179 @@
+{
+  "year": 2005,
+  "racesCount": 19,
+  "championDriver": "Fernando Alonso",
+  "championTeam": "Renault",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "2005-03-06",
+      "name": "2005 Formula 1 Foster's Australian Grand Prix",
+      "circuitId": "melbourne",
+      "laps": 57,
+      "distanceKm": 302.271,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "2005-03-20",
+      "name": "2005 Formula 1 Petronas Malaysian Grand Prix",
+      "circuitId": "sepang",
+      "laps": 56,
+      "distanceKm": 310.408,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "2005-04-03",
+      "name": "2005 Formula 1 Gulf Air Bahrain Grand Prix",
+      "circuitId": "bahrain",
+      "laps": 57,
+      "distanceKm": 308.238,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "2005-04-24",
+      "name": "Formula 1 Gran Premio Foster's di San Marino 2005",
+      "circuitId": "imola",
+      "laps": 62,
+      "distanceKm": 305.609,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "2005-05-08",
+      "name": "Formula 1 Gran Premio Marlboro de España 2005",
+      "circuitId": "catalunya",
+      "laps": 66,
+      "distanceKm": 305.256,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "2005-05-22",
+      "name": "Formula 1 Grand Prix de Monaco 2005",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 260.52,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "2005-05-29",
+      "name": "2005 Formula 1 Grand Prix of Europe",
+      "circuitId": "nurburgring",
+      "laps": 59,
+      "distanceKm": 303.732,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "2005-06-12",
+      "name": "Formula 1 Grand Prix du Canada 2005",
+      "circuitId": "montreal",
+      "laps": 70,
+      "distanceKm": 305.27,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "2005-06-19",
+      "name": "2005 Foster's United States Grand Prix",
+      "circuitId": "indianapolis",
+      "laps": 73,
+      "distanceKm": 306.016,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "2005-07-03",
+      "name": "Formula 1 Grand Prix de France 2005",
+      "circuitId": "magny-cours",
+      "laps": 70,
+      "distanceKm": 308.77,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "2005-07-10",
+      "name": "2005 Formula 1 Foster's British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 60,
+      "distanceKm": 308.355,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "2005-07-24",
+      "name": "Formula 1 Grosser Mobil 1 Preis von Deutschland 2005",
+      "circuitId": "hockenheimring",
+      "laps": 67,
+      "distanceKm": 306.458,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "2005-07-31",
+      "name": "Formula 1 Marlboro Magyar Nagydíj 2005",
+      "circuitId": "hungaroring",
+      "laps": 70,
+      "distanceKm": 306.663,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "2005-08-21",
+      "name": "2005 Formula 1 Turkish Grand Prix",
+      "circuitId": "istanbul",
+      "laps": 58,
+      "distanceKm": 309.396,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "2005-09-04",
+      "name": "Formula 1 Gran Premio Vodafone d'Italia 2005",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 306.72,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "2005-09-11",
+      "name": "2005 Formula 1 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 44,
+      "distanceKm": 306.927,
+      "isCancelled": false
+    },
+    {
+      "round": 17,
+      "date": "2005-09-25",
+      "name": "Formula 1 Grande Prêmio do Brasil 2005",
+      "circuitId": "interlagos",
+      "laps": 71,
+      "distanceKm": 305.909,
+      "isCancelled": false
+    },
+    {
+      "round": 18,
+      "date": "2005-10-09",
+      "name": "2005 Formula 1 Fuji Television Japanese Grand Prix",
+      "circuitId": "suzuka",
+      "laps": 53,
+      "distanceKm": 307.573,
+      "isCancelled": false
+    },
+    {
+      "round": 19,
+      "date": "2005-10-16",
+      "name": "2005 Formula 1 Sinopec Chinese Grand Prix",
+      "circuitId": "shanghai",
+      "laps": 56,
+      "distanceKm": 305.066,
+      "isCancelled": false
+    }
+  ]
+}

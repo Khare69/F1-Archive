@@ -1,0 +1,170 @@
+{
+  "year": 2004,
+  "racesCount": 18,
+  "championDriver": "Michael Schumacher",
+  "championTeam": "Ferrari",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "2004-03-07",
+      "name": "2004 Foster's Australian Grand Prix",
+      "circuitId": "melbourne",
+      "laps": 58,
+      "distanceKm": 307.574,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "2004-03-21",
+      "name": "2004 Petronas Malaysian Grand Prix",
+      "circuitId": "sepang",
+      "laps": 56,
+      "distanceKm": 310.408,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "2004-04-04",
+      "name": "2004 Gulf Air Bahrain Grand Prix",
+      "circuitId": "bahrain",
+      "laps": 57,
+      "distanceKm": 308.238,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "2004-04-25",
+      "name": "Gran Premio Foster's di San Marino 2004",
+      "circuitId": "imola",
+      "laps": 62,
+      "distanceKm": 305.609,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "2004-05-09",
+      "name": "Formula 1 Gran Premio Marlboro de España 2004",
+      "circuitId": "catalunya",
+      "laps": 66,
+      "distanceKm": 305.256,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "2004-05-23",
+      "name": "Formula 1 Grand Prix de Monaco 2004",
+      "circuitId": "monaco",
+      "laps": 77,
+      "distanceKm": 257.18,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "2004-05-30",
+      "name": "2004 Formula 1 Allianz Grand Prix of Europe",
+      "circuitId": "nurburgring",
+      "laps": 60,
+      "distanceKm": 308.88,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "2004-06-13",
+      "name": "Formula 1 Grand Prix du Canada 2004",
+      "circuitId": "montreal",
+      "laps": 70,
+      "distanceKm": 305.27,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "2004-06-20",
+      "name": "2004 Formula 1 United States Grand Prix",
+      "circuitId": "indianapolis",
+      "laps": 73,
+      "distanceKm": 306.016,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "2004-07-04",
+      "name": "Formula 1 Mobil 1 Grand Prix de France 2004",
+      "circuitId": "magny-cours",
+      "laps": 70,
+      "distanceKm": 308.77,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "2004-07-11",
+      "name": "2004 Formula 1 Foster's British Grand Prix",
+      "circuitId": "silverstone",
+      "laps": 60,
+      "distanceKm": 308.355,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "2004-07-25",
+      "name": "Formula 1 Grosser Mobil 1 Preis von Deutschland 2004",
+      "circuitId": "hockenheimring",
+      "laps": 66,
+      "distanceKm": 301.884,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "2004-08-15",
+      "name": "Formula 1 Marlboro Magyar Nagydíj 2004",
+      "circuitId": "hungaroring",
+      "laps": 70,
+      "distanceKm": 306.663,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "2004-08-29",
+      "name": "2004 Formula 1 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 44,
+      "distanceKm": 306.927,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "2004-09-12",
+      "name": "Formula 1 Gran Premio Vodafone d'Italia 2004",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 306.72,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "2004-09-26",
+      "name": "2004 Formula 1 Sinopec Chinese Grand Prix",
+      "circuitId": "shanghai",
+      "laps": 56,
+      "distanceKm": 305.066,
+      "isCancelled": false
+    },
+    {
+      "round": 17,
+      "date": "2004-10-10",
+      "name": "2004 Formula 1 Fuji Television Japanese Grand Prix",
+      "circuitId": "suzuka",
+      "laps": 53,
+      "distanceKm": 307.573,
+      "isCancelled": false
+    },
+    {
+      "round": 18,
+      "date": "2004-10-24",
+      "name": "Formula 1 Grande Prêmio do Brasil 2004",
+      "circuitId": "interlagos",
+      "laps": 71,
+      "distanceKm": 305.909,
+      "isCancelled": false
+    }
+  ]
+}

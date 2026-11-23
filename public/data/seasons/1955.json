@@ -1,0 +1,71 @@
+{
+  "year": 1955,
+  "racesCount": 7,
+  "championDriver": "Juan Manuel Fangio",
+  "championTeam": "Not Awarded (Pre-1958)",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1955-01-16",
+      "name": "Gran Premio de Argentina 1955",
+      "circuitId": "buenos-aires",
+      "laps": 96,
+      "distanceKm": 375.552,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1955-05-22",
+      "name": "Grand Prix de Monaco 1955",
+      "circuitId": "monaco",
+      "laps": 100,
+      "distanceKm": 314.5,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1955-05-30",
+      "name": "1955 Indianapolis 500",
+      "circuitId": "indianapolis",
+      "laps": 200,
+      "distanceKm": 804.672,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1955-06-05",
+      "name": "1955 Belgian Grand Prix",
+      "circuitId": "spa-francorchamps",
+      "laps": 36,
+      "distanceKm": 508.32,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1955-06-19",
+      "name": "Grote Prijs van Nederland 1955",
+      "circuitId": "zandvoort",
+      "laps": 100,
+      "distanceKm": 419.3,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1955-07-16",
+      "name": "1955 RAC British Grand Prix",
+      "circuitId": "aintree",
+      "laps": 90,
+      "distanceKm": 434.52,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1955-09-11",
+      "name": "Gran Premio d'Italia 1955",
+      "circuitId": "monza",
+      "laps": 50,
+      "distanceKm": 500,
+      "isCancelled": false
+    }
+  ]
+}

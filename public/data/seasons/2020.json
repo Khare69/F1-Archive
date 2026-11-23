@@ -1,0 +1,161 @@
+{
+  "year": 2020,
+  "racesCount": 17,
+  "championDriver": "Lewis Hamilton",
+  "championTeam": "Mercedes",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "2020-07-05",
+      "name": "Formula 1 Rolex Grosser Preis von Österreich 2020",
+      "circuitId": "spielberg",
+      "laps": 71,
+      "distanceKm": 306.452,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "2020-07-12",
+      "name": "Formula 1 Pirelli Grosser Preis der Steiermark 2020",
+      "circuitId": "spielberg",
+      "laps": 71,
+      "distanceKm": 306.452,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "2020-07-19",
+      "name": "Formula 1 Aramco Magyar Nagydíj 2020",
+      "circuitId": "hungaroring",
+      "laps": 70,
+      "distanceKm": 306.63,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "2020-08-02",
+      "name": "Formula 1 Pirelli British Grand Prix 2020",
+      "circuitId": "silverstone",
+      "laps": 52,
+      "distanceKm": 306.198,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "2020-08-09",
+      "name": "Emirates Formula 1 70th Anniversary Grand Prix 2020",
+      "circuitId": "silverstone",
+      "laps": 52,
+      "distanceKm": 306.198,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "2020-08-16",
+      "name": "Formula 1 Aramco Gran Premio de España 2020",
+      "circuitId": "catalunya",
+      "laps": 66,
+      "distanceKm": 307.104,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "2020-08-30",
+      "name": "Formula 1 Rolex Belgian Grand Prix 2020",
+      "circuitId": "spa-francorchamps",
+      "laps": 44,
+      "distanceKm": 308.052,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "2020-09-06",
+      "name": "Formula 1 Gran Premio Heineken d'Italia 2020",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 306.72,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "2020-09-13",
+      "name": "Formula 1 Gran Premio Della Toscana Ferrari 1000 2020",
+      "circuitId": "mugello",
+      "laps": 59,
+      "distanceKm": 309.455,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "2020-09-27",
+      "name": "Formula 1 VTB Russian Grand Prix 2020",
+      "circuitId": "sirius",
+      "laps": 53,
+      "distanceKm": 309.745,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "2020-10-11",
+      "name": "Formula 1 Aramco Grosser Preis der Eifel 2020",
+      "circuitId": "nurburgring",
+      "laps": 60,
+      "distanceKm": 308.623,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "2020-10-25",
+      "name": "Formula 1 Heineken Grande Prémio de Portugal 2020",
+      "circuitId": "portimao",
+      "laps": 66,
+      "distanceKm": 306.826,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "2020-11-01",
+      "name": "Formula 1 Emirates Gran Premio dell'Emilia Romagna 2020",
+      "circuitId": "imola",
+      "laps": 63,
+      "distanceKm": 309.05,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "2020-11-15",
+      "name": "Formula 1 DHL Turkish Grand Prix 2020",
+      "circuitId": "istanbul",
+      "laps": 58,
+      "distanceKm": 309.396,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "2020-11-29",
+      "name": "Formula 1 Gulf Air Bahrain Grand Prix 2020",
+      "circuitId": "bahrain",
+      "laps": 57,
+      "distanceKm": 308.238,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "2020-12-06",
+      "name": "Formula 1 Rolex Sakhir Grand Prix 2020",
+      "circuitId": "bahrain",
+      "laps": 87,
+      "distanceKm": 307.995,
+      "isCancelled": false
+    },
+    {
+      "round": 17,
+      "date": "2020-12-13",
+      "name": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2020",
+      "circuitId": "yas-marina",
+      "laps": 55,
+      "distanceKm": 305.355,
+      "isCancelled": false
+    }
+  ]
+}

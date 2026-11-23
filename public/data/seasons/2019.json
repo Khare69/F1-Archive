@@ -1,0 +1,197 @@
+{
+  "year": 2019,
+  "racesCount": 21,
+  "championDriver": "Lewis Hamilton",
+  "championTeam": "Mercedes",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "2019-03-17",
+      "name": "Formula 1 Rolex Australian Grand Prix 2019",
+      "circuitId": "melbourne",
+      "laps": 58,
+      "distanceKm": 307.574,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "2019-03-31",
+      "name": "Formula 1 Gulf Air Bahrain Grand Prix 2019",
+      "circuitId": "bahrain",
+      "laps": 57,
+      "distanceKm": 308.238,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "2019-04-14",
+      "name": "Formula 1 Heineken Chinese Grand Prix 2019",
+      "circuitId": "shanghai",
+      "laps": 56,
+      "distanceKm": 305.066,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "2019-04-28",
+      "name": "Formula 1 SOCAR Azerbaijan Grand Prix 2019",
+      "circuitId": "baku",
+      "laps": 51,
+      "distanceKm": 306.049,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "2019-05-12",
+      "name": "Formula 1 Emirates Gran Premio de España 2019",
+      "circuitId": "catalunya",
+      "laps": 66,
+      "distanceKm": 307.104,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "2019-05-26",
+      "name": "Formula 1 Grand Prix de Monaco 2019",
+      "circuitId": "monaco",
+      "laps": 78,
+      "distanceKm": 260.286,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "2019-06-09",
+      "name": "Formula 1 Pirelli Grand Prix du Canada 2019",
+      "circuitId": "montreal",
+      "laps": 70,
+      "distanceKm": 305.27,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "2019-06-23",
+      "name": "Formula 1 Pirelli Grand Prix de France 2019",
+      "circuitId": "paul-ricard",
+      "laps": 53,
+      "distanceKm": 309.69,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "2019-06-30",
+      "name": "Formula 1 myWorld Grosser Preis von Österreich 2019",
+      "circuitId": "spielberg",
+      "laps": 71,
+      "distanceKm": 306.452,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "2019-07-14",
+      "name": "Formula 1 Rolex British Grand Prix 2019",
+      "circuitId": "silverstone",
+      "laps": 52,
+      "distanceKm": 306.198,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "2019-07-28",
+      "name": "Formula 1 Mercedes-Benz Grosser Preis von Deutschland 2019",
+      "circuitId": "hockenheimring",
+      "laps": 64,
+      "distanceKm": 292.736,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "2019-08-04",
+      "name": "Formula 1 Rolex Magyar Nagydíj 2019",
+      "circuitId": "hungaroring",
+      "laps": 70,
+      "distanceKm": 306.63,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "2019-09-01",
+      "name": "Formula 1 Johnnie Walker Belgian Grand Prix 2019",
+      "circuitId": "spa-francorchamps",
+      "laps": 44,
+      "distanceKm": 308.052,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "2019-09-08",
+      "name": "Formula 1 Gran Premio Heineken d'Italia 2019",
+      "circuitId": "monza",
+      "laps": 53,
+      "distanceKm": 306.72,
+      "isCancelled": false
+    },
+    {
+      "round": 15,
+      "date": "2019-09-22",
+      "name": "Formula 1 Singapore Airlines Singapore Grand Prix 2019",
+      "circuitId": "marina-bay",
+      "laps": 61,
+      "distanceKm": 308.706,
+      "isCancelled": false
+    },
+    {
+      "round": 16,
+      "date": "2019-09-29",
+      "name": "Formula 1 VTB Russian Grand Prix 2019",
+      "circuitId": "sirius",
+      "laps": 53,
+      "distanceKm": 309.745,
+      "isCancelled": false
+    },
+    {
+      "round": 17,
+      "date": "2019-10-13",
+      "name": "Formula 1 Japanese Grand Prix 2019",
+      "circuitId": "suzuka",
+      "laps": 52,
+      "distanceKm": 301.664,
+      "isCancelled": false
+    },
+    {
+      "round": 18,
+      "date": "2019-10-27",
+      "name": "Formula 1 Gran Premio de México 2019",
+      "circuitId": "mexico-city",
+      "laps": 71,
+      "distanceKm": 305.354,
+      "isCancelled": false
+    },
+    {
+      "round": 19,
+      "date": "2019-11-03",
+      "name": "Formula 1 Emirates United States Grand Prix 2019",
+      "circuitId": "austin",
+      "laps": 56,
+      "distanceKm": 308.405,
+      "isCancelled": false
+    },
+    {
+      "round": 20,
+      "date": "2019-11-17",
+      "name": "Formula 1 Heineken Grande Prêmio do Brasil 2019",
+      "circuitId": "interlagos",
+      "laps": 71,
+      "distanceKm": 305.909,
+      "isCancelled": false
+    },
+    {
+      "round": 21,
+      "date": "2019-12-01",
+      "name": "Formula 1 Etihad Airways Abu Dhabi Grand Prix 2019",
+      "circuitId": "yas-marina",
+      "laps": 55,
+      "distanceKm": 305.355,
+      "isCancelled": false
+    }
+  ]
+}

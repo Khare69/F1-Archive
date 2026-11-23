@@ -14,6 +14,8 @@ interface SearchItem {
   category: 'driver' | 'team' | 'season' | 'circuit';
   stat: string;
   path: string;
+  code?: string;
+  extra?: string;
 }
 
 export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose }) => {
@@ -38,32 +40,39 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
       id: d.id,
       name: d.name,
       category: 'driver' as const,
-      stat: `${d.championships} Titles // ${d.wins} Wins`,
-      path: `/drivers/${d.id}`
+      stat: d.championships > 0 
+        ? `${d.championships}x WDC • ${d.wins} Wins` 
+        : `${d.wins} Wins • ${d.starts || 0} Starts`,
+      path: `/drivers/${d.id}`,
+      code: d.code,
+      extra: `${d.country} ${d.code || ''} ${d.slug || ''}`
     }));
 
     const teams = getAllTeams().map(t => ({
       id: t.id,
       name: t.name,
       category: 'team' as const,
-      stat: `${t.carName} // ${t.championships} Titles`,
-      path: `/teams/${t.id}`
+      stat: `${t.carName} • ${t.championships} Titles`,
+      path: `/teams/${t.id}`,
+      extra: `${t.principal} ${t.base} ${t.id}`
     }));
 
     const seasons = getAllSeasons().map(s => ({
       id: String(s.year),
       name: `${s.year} World Championship`,
       category: 'season' as const,
-      stat: `Champ: ${s.championDriver}`,
-      path: `/seasons/${s.year}`
+      stat: `Champ: ${s.championDriver} (${s.championTeam})`,
+      path: `/seasons/${s.year}`,
+      extra: `${s.championDriver} ${s.championTeam}`
     }));
 
     const circuits = getAllCircuits().map(c => ({
       id: c.id,
       name: c.name,
       category: 'circuit' as const,
-      stat: `${c.country} // ${c.lengthKm}`,
-      path: `/circuits/${c.id}`
+      stat: `${c.country} • ${c.lengthKm}`,
+      path: `/circuits/${c.id}`,
+      extra: `${c.city} ${c.country} ${c.type}`
     }));
 
     return [...drivers, ...teams, ...seasons, ...circuits];
@@ -73,10 +82,10 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
   const filteredResults = useMemo(() => {
     if (!query.trim()) {
       return {
-        drivers: allItems.filter(i => i.category === 'driver').slice(0, 3),
-        teams: allItems.filter(i => i.category === 'team').slice(0, 3),
-        seasons: allItems.filter(i => i.category === 'season').slice(0, 3),
-        circuits: allItems.filter(i => i.category === 'circuit').slice(0, 3)
+        drivers: allItems.filter(i => i.category === 'driver').slice(0, 4),
+        teams: allItems.filter(i => i.category === 'team').slice(0, 4),
+        seasons: allItems.filter(i => i.category === 'season').slice(0, 4),
+        circuits: allItems.filter(i => i.category === 'circuit').slice(0, 4)
       };
     }
 
@@ -84,14 +93,16 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
     const matches = allItems.filter(item =>
       item.name.toLowerCase().includes(clean) ||
       item.id.toLowerCase().includes(clean) ||
+      (item.code && item.code.toLowerCase().includes(clean)) ||
+      (item.extra && item.extra.toLowerCase().includes(clean)) ||
       item.stat.toLowerCase().includes(clean)
     );
 
     return {
-      drivers: matches.filter(i => i.category === 'driver').slice(0, 4),
-      teams: matches.filter(i => i.category === 'team').slice(0, 4),
-      seasons: matches.filter(i => i.category === 'season').slice(0, 4),
-      circuits: matches.filter(i => i.category === 'circuit').slice(0, 4)
+      drivers: matches.filter(i => i.category === 'driver').slice(0, 5),
+      teams: matches.filter(i => i.category === 'team').slice(0, 5),
+      seasons: matches.filter(i => i.category === 'season').slice(0, 5),
+      circuits: matches.filter(i => i.category === 'circuit').slice(0, 5)
     };
   }, [allItems, query]);
 

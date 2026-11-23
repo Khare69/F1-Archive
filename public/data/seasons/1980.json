@@ -1,0 +1,134 @@
+{
+  "year": 1980,
+  "racesCount": 14,
+  "championDriver": "Alan Jones",
+  "championTeam": "Williams",
+  "rounds": [
+    {
+      "round": 1,
+      "date": "1980-01-13",
+      "name": "Gran Premio de Argentina 1980",
+      "circuitId": "buenos-aires",
+      "laps": 53,
+      "distanceKm": 316.304,
+      "isCancelled": false
+    },
+    {
+      "round": 2,
+      "date": "1980-01-27",
+      "name": "Grande Prêmio do Brasil 1980",
+      "circuitId": "interlagos",
+      "laps": 40,
+      "distanceKm": 314.92,
+      "isCancelled": false
+    },
+    {
+      "round": 3,
+      "date": "1980-03-01",
+      "name": "South African Grand Prix 1980",
+      "circuitId": "kyalami",
+      "laps": 78,
+      "distanceKm": 320.112,
+      "isCancelled": false
+    },
+    {
+      "round": 4,
+      "date": "1980-03-30",
+      "name": "1980 Toyota Grand Prix of Long Beach",
+      "circuitId": "long-beach",
+      "laps": 80,
+      "distanceKm": 260.08,
+      "isCancelled": false
+    },
+    {
+      "round": 5,
+      "date": "1980-05-04",
+      "name": "1980 Belgian Grand Prix",
+      "circuitId": "zolder",
+      "laps": 72,
+      "distanceKm": 306.864,
+      "isCancelled": false
+    },
+    {
+      "round": 6,
+      "date": "1980-05-18",
+      "name": "Grand Prix de Monaco 1980",
+      "circuitId": "monaco",
+      "laps": 76,
+      "distanceKm": 251.712,
+      "isCancelled": false
+    },
+    {
+      "round": 7,
+      "date": "1980-06-29",
+      "name": "Grand Prix de France 1980",
+      "circuitId": "paul-ricard",
+      "laps": 54,
+      "distanceKm": 313.686,
+      "isCancelled": false
+    },
+    {
+      "round": 8,
+      "date": "1980-07-13",
+      "name": "1980 Marlboro British Grand Prix",
+      "circuitId": "brands-hatch",
+      "laps": 76,
+      "distanceKm": 319.732,
+      "isCancelled": false
+    },
+    {
+      "round": 9,
+      "date": "1980-08-10",
+      "name": "Grosser Preis von Deutschland 1980",
+      "circuitId": "hockenheimring",
+      "laps": 45,
+      "distanceKm": 305.505,
+      "isCancelled": false
+    },
+    {
+      "round": 10,
+      "date": "1980-08-17",
+      "name": "Grosser Preis von Österreich 1980",
+      "circuitId": "spielberg",
+      "laps": 54,
+      "distanceKm": 320.868,
+      "isCancelled": false
+    },
+    {
+      "round": 11,
+      "date": "1980-08-31",
+      "name": "Grote Prijs van Nederland 1980",
+      "circuitId": "zandvoort",
+      "laps": 72,
+      "distanceKm": 306.144,
+      "isCancelled": false
+    },
+    {
+      "round": 12,
+      "date": "1980-09-14",
+      "name": "Gran Premio d'Italia 1980",
+      "circuitId": "imola",
+      "laps": 60,
+      "distanceKm": 302.4,
+      "isCancelled": false
+    },
+    {
+      "round": 13,
+      "date": "1980-09-28",
+      "name": "Grand Prix Labatt du Canada 1980",
+      "circuitId": "montreal",
+      "laps": 70,
+      "distanceKm": 308.7,
+      "isCancelled": false
+    },
+    {
+      "round": 14,
+      "date": "1980-10-05",
+      "name": "1980 Toyota United States Grand Prix",
+      "circuitId": "watkins-glen",
+      "laps": 59,
+      "distanceKm": 320.665,
+      "isCancelled": false
+    }
+  ]
+}
