@@ -120,6 +120,14 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
 
     const tools: SearchItem[] = [
       {
+        id: 'pitwall-strategy',
+        name: 'Pit-Wall Strategy & Undercut Simulator',
+        category: 'tool' as const,
+        stat: 'Monte Carlo 10k Permutations • Tyre Cliff Model',
+        path: '/pitwall',
+        extra: 'pit wall strategy undercut monte carlo tyre degradation pit stop simulation worker'
+      },
+      {
         id: 'historian-lab',
         name: 'Explainable AI Race Historian & SQL Lab',
         category: 'tool' as const,

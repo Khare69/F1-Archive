@@ -10,12 +10,12 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/Khare69/F1-Archive/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/Release-v1.0.0-gold?style=flat-square&logo=github" alt="v1.0.0 Release" /></a>
+  <a href="https://github.com/Khare69/F1-Archive/releases/tag/v1.1.0"><img src="https://img.shields.io/badge/Release-v1.1.0-gold?style=flat-square&logo=github" alt="v1.1.0 Release" /></a>
   <img src="https://img.shields.io/badge/React-18.3.1-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React 18" />
   <img src="https://img.shields.io/badge/TypeScript-5.5.3-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript 5" />
   <img src="https://img.shields.io/badge/Three.js-R174-000000?style=flat-square&logo=threedotjs&logoColor=white" alt="Three.js R174" />
   <img src="https://img.shields.io/badge/Vite-6.4.3-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite 6" />
-  <img src="https://img.shields.io/badge/Vitest-68_Passed-00E701?style=flat-square&logo=vitest&logoColor=white" alt="Unit Tests: 68 Passed" />
+  <img src="https://img.shields.io/badge/Vitest-91_Passed-00E701?style=flat-square&logo=vitest&logoColor=white" alt="Unit Tests: 91 Passed" />
   <img src="https://img.shields.io/badge/Playwright-E2E_Passed-45ba4b?style=flat-square&logo=playwright&logoColor=white" alt="Playwright E2E" />
   <img src="https://img.shields.io/badge/Model_Size-1.19_MB_Draco-00D2FF?style=flat-square" alt="1.19 MB Draco GLB" />
 </p>
@@ -25,6 +25,10 @@
 ## ⚡ Highlights & Engineering Benchmarks
 
 - **Full F1DB Historical Vault (1950–2026)**: Ingests 77 world championship seasons, 861 drivers, 214 constructors, 77 circuits, and 1,100+ Grands Prix with zero runtime API dependency.
+- **Monte Carlo Pit-Wall Strategy & Undercut Simulator**: Seeded Monte Carlo engine (Mulberry32 PRNG) running 1,000–5,000 iterations in an off-thread Web Worker, modeling compound pace offsets, non-linear degradation cliffs, fuel burn-off ($-0.035\text{ s/lap}$), and pit loss with normalized win rate distributions.
+- **Multi-Car Timing Tower & Replay Stream Engine**: Per-driver ring buffers with 2-sample continuous linear interpolation for smooth 60 FPS motion across 20-car grids, tracking interval gaps, sector times, and 2026 Active Aero straight/corner modes.
+- **Voice Engineer Companion**: Authentic two-tone Web Audio synthesized pit-radio chirp & static squelch, Web Speech voice recognition facade, and Text-to-Speech radio transmissions.
+- **Shareable High-DPI Poster & Analysis Export**: Zero-dependency client-side HTML5 Canvas export generating high-resolution ($2.5\times$ scale) shareable PNG cards for strategy predictions, driver head-to-heads, and historical queries.
 - **Explainable AI Race Historian & SQL Lab**: Natural language query synthesizer over F1DB with 16 analytical presets, client-side entity parser, inspectable SQL, and optional hardened FastAPI SQLite microservice.
 - **3D Telemetry Ghost-Lap Replay**: Sector-anchored 3D dual-car playback (Silverstone, Monaco, Spa, Madrid 2026 sim) with 25 mini-sectors, dynamic delta times, synchronized telemetry traces, and 80 ms throttled UI updates.
 - **Strategy & Tyre Degradation Analytics**: Multi-stint compound wear curves, lap-time delta breakdowns, and fuel-corrected pace toggle ($-0.035\text{ s/lap}$ per kg burn-off).
@@ -61,21 +65,30 @@ flowchart TD
         ThreeCore --> Draco[1.19 MB Draco GLB + PBR Shaders]
         ThreeCore --> Aero2026[2026 Active Aero Inspector]
         
-        Nav --> Telemetry[3D Telemetry Replay & Strategy]
+        Nav --> Telemetry[3D Telemetry Replay & Timing Tower]
         Telemetry --> Ghost3D[Sector-Anchored Ghost Car Playback]
         Telemetry --> StintAnalytics[Fuel-Corrected Stint Degradation]
+        Telemetry --> TimingTower[Multi-Car 20-Grid Timing Tower]
         
-        Nav --> Historian[Explainable AI Race Historian]
+        Nav --> PitWall[Monte Carlo Pit-Wall Strategy Simulator]
+        PitWall --> WorkerEngine[Web Worker + Pure Seeded Mulberry32 Engine]
+        
+        Nav --> Historian[Explainable AI Race Historian & Voice Engineer]
         Historian --> Tier1Engine[Tier 1: Client In-Memory F1DB Text-to-SQL]
+        Historian --> VoiceAudio[Web Audio Pit-Radio Chirp & Speech API]
+        
+        Drivers -.-> PosterExport[High-DPI 2.5x Canvas Poster Exporter]
+        PitWall -.-> PosterExport
+        Historian -.-> PosterExport
     end
 
     subgraph BackendTier2[Optional Tier 2 Backend Microservice]
         Historian -.->|VITE_HISTORIAN_API_URL| FastAPISvc[FastAPI SQLite Microservice]
-        FastAPISvc --> SQLiteSandboxed[(Sandboxed Read-Only SQLite F1DB)]
+        FastAPISvc --> SQLiteSandboxed[(Sandboxed Read-Only SQLite F1DB ?mode=ro&immutable=1)]
     end
 
     subgraph OfflineObservability[PWA & Observability]
-        SW[Service Worker sw.js] --> CacheStorage[(CacheStorage v1.0.0)]
+        SW[Service Worker sw.js] --> CacheStorage[(CacheStorage v1.1.0)]
         Obs[observability.ts] --> PerfObserver[Native PerformanceObserver]
         Obs -.-> SentryPostHog[Sentry & PostHog Facades]
     end
@@ -85,14 +98,36 @@ flowchart TD
 
 ## 📦 Feature Breakdown
 
-### 1. 🏛️ Explainable AI Race Historian & SQL Lab (`/historian`)
+### 1. 🏁 Monte Carlo Pit-Wall Strategy & Undercut Simulator (`/pitwall`)
+- **Web Worker Compute**: Off-threads 1,000 to 5,000 full race simulations using a seedable PRNG (Mulberry32) for 100% deterministic, reproducible strategy analysis.
+- **Physics & Degradation Model**: Non-linear tyre cliff degradation per compound (Soft, Medium, Hard, Wet), compound pace offsets (Soft $-0.6\text{ s}$, Medium base, Hard $+0.8\text{ s}$), and continuous fuel burn-off ($-0.035\text{ s/lap}$ per kg fuel consumed).
+- **Customizable Strategy Cards**: Compare standard 1-stop (M-H), aggressive 2-stop (S-M-H), and alternate undercut strategies (H-M) across any historic Grand Prix circuit with custom stint laps and pit loss penalties ($20\text{ s}$ to $30\text{ s}$).
+- **Normalized Win Rates**: Win-rate percentages calculated across Monte Carlo iterations and normalized strictly to sum to 100%.
+
+### 2. ⏱️ Multi-Car Timing Tower & Replay Stream Engine (`/telemetry`)
+- **20-Car Pilot Ladder**: Real-time broadcast-style timing tower tracking race leaders, interval deltas, speed traps ($km/h$), and mini-sector status (personal best, session fastest, normal).
+- **Per-Driver Ring Buffers**: Decoupled circular buffers (`LiveTelemetryRingBuffer`) storing timestamped telemetry packets per car.
+- **Two-Sample Continuous Linear Interpolation**: Interpolates continuous channels (`speed`, `throttle`, `distanceRatio`) between 10 Hz incoming packets to deliver smooth 60 FPS motion without stutter.
+- **2026 Active Aero & Overtake Modes**: Real-time status tags for Straight Mode (`STR`) vs. Corner Mode (`CNR`) and Manual Override Mode (`MOM`) energy deployment.
+
+### 3. 🎙️ Voice Engineer Companion & Web Audio Engine (`/historian`)
+- **Native Two-Tone Pit-Radio Chirp**: Synthetic two-tone audio chirp ($880\text{ Hz} \to 1,760\text{ Hz}$) followed by a bandpass-filtered white noise burst simulating authentic Formula 1 team radio squelch with zero external audio assets.
+- **Web Speech API Facade**: Feature-detected speech recognition allowing users to speak natural language queries directly to the race engineer.
+- **Text-to-Speech Radio Transmission**: Audio synthesis reads out pit-wall answers accompanied by team radio audio cues.
+- **Quick-Prompt Radio Bar**: One-click team radio prompts ("Box this lap", "Tire degradation report", "Gap to leader", "Under-cut delta").
+
+### 4. 🖼️ Shareable High-DPI Poster & Analysis Exporter
+- **Zero-Dependency HTML5 Canvas Rendering**: Programmatically renders crisp, high-resolution ($2.5\times$ scale) branded cards with circuit elevation, telemetry metrics, and comparison stats.
+- **Direct PNG Download**: Exports downloadable PNG files directly from the browser for Pit-Wall strategies, Driver Head-to-Head showdowns, and Race Historian findings.
+
+### 5. 🏛️ Explainable AI Race Historian & SQL Lab (`/historian`)
 - **Natural Language Parsing**: Client-side intent parser converts natural language queries ("Tell me about Lewis Hamilton career stats", "Ferrari titles", "Monza masters", "1988 Senna vs Prost") into inspectable SQL.
 - **16 Analytical Presets**: Verified SQL queries covering all-time Grand Prix winners, constructor titles, pole-to-win advantages, youngest champions, dropped score simulations, and rain-master classifications.
 - **Dual View Modes**: Interactive sortable data tables and comparative horizontal bar charts.
 - **SQL Inspector**: Full formatted SQL code block with explanation of era regulations, translation reasoning, execution latency, and one-click copy button.
 - **Two-Tier Architecture**: Runs 100% in the browser (Tier 1) with zero server requirement; seamlessly integrates with the FastAPI microservice (Tier 2) when configured.
 
-### 2. 🏎️ 3D Telemetry Ghost-Lap Replay & Strategy Analytics (`/telemetry`)
+### 6. 🏎️ 3D Telemetry Ghost-Lap Replay & Strategy Analytics (`/telemetry`)
 - **Precomputed Iconic Showdowns**:
   - *Silverstone 2024*: Hamilton vs. Verstappen (British GP victory duel)
   - *Monaco 2024*: Leclerc vs. Piastri (Q3 pole shootout)
@@ -103,7 +138,7 @@ flowchart TD
 - **25 Track Mini-Sectors**: Micro-sector delta map highlighting where each driver gained or lost time.
 - **Strategy & Stint Degradation**: Multi-stint degradation curves, tyre compound performance, and toggleable fuel-corrected pace ($-0.035\text{ s/lap}$ per kg burn-off).
 
-### 3. 📐 3D Vehicle CAD Lab & 2026 Regulation Inspector (`/cars`)
+### 7. 📐 3D Vehicle CAD Lab & 2026 Regulation Inspector (`/cars`)
 - **Draco Compressed GLB**: Chassis geometry optimized to **1.19 MB** (down from 18 MB original mesh).
 - **Procedural PBR Shaders**: Carbon-fiber weave, metallic car paint with clearcoat, glass, and tyre rubber.
 - **Wind-Tunnel Flow**: 2,000-particle aerodynamic streamline simulator.
@@ -112,19 +147,19 @@ flowchart TD
   - Interactive **Active Aero Toggle**: Straight Mode (low drag) vs. Corner Mode (high downforce).
   - Parametric 3D wireframe box comparing 2026 compact dimensions ($3,400\text{ mm}$ wheelbase, $1,900\text{ mm}$ width) against 2022–2025 ground-effect regulations ($3,600\text{ mm} \times 2,000\text{ mm}$).
 
-### 4. ⚖️ Driver Head-to-Head & Cross-Era What-If Simulator
+### 8. ⚖️ Driver Head-to-Head & Cross-Era What-If Simulator
 - **Driver Comparison (`/drivers/compare`)**: Side-by-side radar and bar comparisons with mutual teammate head-to-head calculations (filtering non-mutual races, DNS entries, and mid-season team transfers) and career points share percentages.
 - **What-If Championship Simulator (`/seasons/:year`)**: Recalculates historical World Drivers' Championships under alternative points systems (25-18-15 modern, 10-6-4 classic, 9-6-4, 10-8-6, medal system, and dropped scores). Fully covers 1988 (Senna 11-best vs. Prost total), 2008, 2021, and complete FIA countback.
 
-### 5. 🗺️ Circuits Archive & 3D Topographic Ribbons (`/circuits`)
+### 9. 🗺️ Circuits Archive & 3D Topographic Ribbons (`/circuits`)
 - Topographic ribbon extrusion rendering 3D elevation profiles for all 77 historical circuits.
 - Historic statistics: circuit length, lap records, pole-to-win rates, and era layout changes.
 
-### 6. 🔧 Paddock Garage Telemetry Simulator (`/garage`)
+### 10. 🔧 Paddock Garage Telemetry Simulator (`/garage`)
 - Dynamic vehicle setup tuning: downforce levels, Pirelli tyre compounds, power unit engine modes.
 - Real-time physics engine calculating simulated lap times, cornering G-forces, top speeds, and tyre thermal degradation.
 
-### 7. 📊 Live Standings & Calendar (`/standings`)
+### 11. 📊 Live Standings & Calendar (`/standings`)
 - Live drivers' and constructors' championship standings via Jolpica F1 API.
 - Offline resilience: in-memory + safeStorage caching with 12-hour TTL and curated static fallbacks.
 
@@ -199,13 +234,13 @@ uvicorn app:app --reload --port 8000
 ## 🧪 Verification & Testing Suite
 
 ### Unit & Integration Tests (Vitest)
-Executes 68 unit tests across 10 test suites covering telemetry math, scoring simulators, Jolpica client error handling, OpenF1 LRU caching, data integrity, and the AI Race Historian:
+Executes 91 unit tests across 16 test suites covering Monte Carlo strategy simulation, per-driver live stream telemetry ring buffers, voice engineer Web Audio chirps, poster canvas exports, telemetry math, scoring simulators, Jolpica client error handling, OpenF1 LRU caching, data integrity, and the AI Race Historian:
 ```bash
 npm test
 ```
 
 ### End-to-End Tests (Playwright)
-Executes deterministic offline E2E tests verifying all 10 core pages, 3D WebGL canvases, transport controls, and command palette navigation:
+Executes deterministic offline E2E tests verifying all 11 core pages, 3D WebGL canvases, transport controls, timing tower ladder, and command palette navigation:
 ```bash
 npm run test:e2e
 ```

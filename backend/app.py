@@ -138,8 +138,8 @@ def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
             return 1
         return 0
 
-    # URI read-only mode connection
-    uri = f"file:{os.path.abspath(DB_PATH)}?mode=ro"
+    # URI read-only mode connection with shared cache and immutable flag
+    uri = f"file:{os.path.abspath(DB_PATH)}?mode=ro&cache=shared&immutable=1"
     conn = None
     try:
         conn = sqlite3.connect(uri, uri=True, check_same_thread=False)

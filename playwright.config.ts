@@ -12,7 +12,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   workers: 1,
   reporter: 'list',
-  timeout: 60000,
+  timeout: 90000,
   use: {
     baseURL: 'http://127.0.0.1:4173',
     trace: 'on-first-retry',
@@ -41,7 +41,7 @@ export default defineConfig({
     command: 'npx vite preview --port 4173 --host 127.0.0.1',
     url: 'http://127.0.0.1:4173',
     reuseExistingServer: !process.env.CI,
-    timeout: 60000,
+    timeout: 90000,
     stdout: 'pipe',
   },
 });

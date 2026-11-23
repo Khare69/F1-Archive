@@ -8,6 +8,7 @@ import { TelemetryTraceChart } from './components/TelemetryTraceChart';
 import { TransportControls } from './components/TransportControls';
 import { LiveTelemetryGauges } from './components/LiveTelemetryGauges';
 import { StrategyAnalytics } from './components/StrategyAnalytics';
+import { TimingTower } from './components/TimingTower';
 import { usePageMeta } from '../../hooks/usePageMeta';
 import './TelemetryHub.css';
 
@@ -31,7 +32,7 @@ interface ShowdownIndexItem {
   feedAvailability: string;
 }
 
-type TelemetryViewTab = 'ghost_replay' | 'strategy_pace';
+type TelemetryViewTab = 'ghost_replay' | 'timing_tower' | 'strategy_pace';
 
 export const TelemetryHub: React.FC = () => {
   const { slug } = useParams<{ slug?: string }>();
@@ -211,14 +212,21 @@ export const TelemetryHub: React.FC = () => {
                 className={`tab-btn telemetry ${activeTab === 'ghost_replay' ? 'active' : ''}`}
                 onClick={() => setActiveTab('ghost_replay')}
               >
-                <span>🎮 3D GHOST REPLAY &amp; TRACES</span>
+                <span>🎮 3D GHOST REPLAY</span>
+              </button>
+              <button
+                type="button"
+                className={`tab-btn telemetry ${activeTab === 'timing_tower' ? 'active' : ''}`}
+                onClick={() => setActiveTab('timing_tower')}
+              >
+                <span>⏱ 20-CAR TIMING TOWER</span>
               </button>
               <button
                 type="button"
                 className={`tab-btn telemetry ${activeTab === 'strategy_pace' ? 'active' : ''}`}
                 onClick={() => setActiveTab('strategy_pace')}
               >
-                <span>📊 STRATEGY &amp; STINT DEGRADATION</span>
+                <span>📊 STRATEGY &amp; STINTS</span>
               </button>
             </div>
           </div>
@@ -292,8 +300,21 @@ export const TelemetryHub: React.FC = () => {
                   onSeek={handleSeek}
                 />
               </div>
+            ) : activeTab === 'timing_tower' ? (
+              <div className="timing-tower-layout">
+                <TimingTower />
+              </div>
             ) : (
               <div className="strategy-layout">
+                <div className="strategy-top-action-bar">
+                  <button
+                    type="button"
+                    className="pitwall-jump-btn telemetry"
+                    onClick={() => navigate('/pitwall')}
+                  >
+                    ⚡ LAUNCH MONTE CARLO PIT WALL &amp; UNDERCUT SIMULATOR ➔
+                  </button>
+                </div>
                 {strategyData ? (
                   <StrategyAnalytics
                     strategyData={strategyData}

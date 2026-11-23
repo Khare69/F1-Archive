@@ -1,12 +1,12 @@
 /**
- * F1 Archive — Service Worker (v1.0.0)
+ * F1 Archive — Service Worker (v1.1.0)
  * Bulletproof offline & performance caching strategy:
  * - Network-First for navigations (index.html)
  * - Cache-First for immutable hashed assets, 3D models, decoders, and static data
  * - Network-Only for live APIs (Jolpica, OpenF1, Sentry, PostHog, Backend)
  */
 
-const CACHE_NAME = 'f1-archive-v1.0.0';
+const CACHE_NAME = 'f1-archive-v1.1.0';
 
 // Core shell assets pre-cached during install
 const PRECACHE_ASSETS = [

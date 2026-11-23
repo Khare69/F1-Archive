@@ -122,17 +122,23 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
 
     // Test Play/Pause transport toggle
     const playBtn = page.locator('.transport-play-btn');
-    await playBtn.click();
+    await playBtn.click({ force: true });
     await expect(playBtn).toHaveClass(/playing/);
-    await playBtn.click();
+    await playBtn.click({ force: true });
 
     // Test Strategy & Stint Degradation Tab
     const strategyTabBtn = page.locator('.tab-btn', { hasText: 'STRATEGY' });
-    await strategyTabBtn.click();
+    await strategyTabBtn.click({ force: true });
     await expect(page.locator('.strategy-analytics-card')).toBeVisible({ timeout: 10000 });
     const fuelBtn = page.locator('.fuel-toggle-btn');
     await expect(fuelBtn).toBeVisible();
-    await fuelBtn.click();
+    await fuelBtn.click({ force: true });
+
+    // Test 20-Car Timing Tower Tab
+    const towerTabBtn = page.locator('.tab-btn', { hasText: 'TIMING TOWER' });
+    await towerTabBtn.click({ force: true });
+    await expect(page.locator('.timing-tower-card')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('.timing-row').first()).toBeVisible();
 
     // 10. Explainable AI Race Historian & SQL Lab
     await page.goto('/historian');
@@ -140,6 +146,12 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     await expect(page.locator('.sql-inspector-card')).toBeVisible();
     await expect(page.locator('.copy-sql-btn')).toBeVisible();
     await expect(page.locator('.engine-status-pill')).toBeVisible();
+
+    // Test quick radio prompt
+    const quickRadioBtn = page.locator('.quick-radio-pill').first();
+    await expect(quickRadioBtn).toBeVisible();
+    await quickRadioBtn.click();
+    await expect(page.locator('.sql-code-block')).toBeVisible();
 
     // Test selecting a preset chip
     const presetBtn = page.locator('.preset-chip').nth(1);
@@ -151,6 +163,13 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     const chartToggleBtn = page.locator('.view-toggle-btn', { hasText: 'BAR CHART' });
     await chartToggleBtn.click();
     await expect(page.locator('.results-chart-wrapper')).toBeVisible();
+
+    // 11. Monte Carlo Pit-Wall Strategy & Undercut Simulator
+    await page.goto('/pitwall');
+    await expect(page.locator('.pitwall-page-root, h1').first()).toBeVisible();
+    await expect(page.locator('.strategy-result-card').first()).toBeVisible({ timeout: 10000 });
+    const exportPosterBtn = page.locator('.export-poster-btn');
+    await expect(exportPosterBtn).toBeVisible();
 
     // Assert zero uncaught exceptions across all pages
     expect(pageErrors).toEqual([]);

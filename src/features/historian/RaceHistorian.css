@@ -513,3 +513,101 @@
   text-align: right;
   white-space: nowrap;
 }
+
+/* Voice Engineer Mic Button & Prompts */
+.mic-radio-btn {
+  background: var(--color-bg-surface-elevated);
+  border: 1px solid var(--color-border);
+  color: var(--color-text-primary);
+  padding: 0.35rem 0.75rem;
+  font-size: 0.75rem;
+  cursor: pointer;
+  border-radius: 2px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  white-space: nowrap;
+  transition: all var(--transition-fast);
+}
+
+.mic-radio-btn:hover {
+  border-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+}
+
+.mic-radio-btn.listening {
+  background: rgba(255, 30, 30, 0.2);
+  border-color: #FF1E1E;
+  color: #FF1E1E;
+  animation: pulse-radio 1s infinite alternate;
+}
+
+@keyframes pulse-radio {
+  from {
+    box-shadow: 0 0 4px rgba(255, 30, 30, 0.4);
+  }
+  to {
+    box-shadow: 0 0 14px rgba(255, 30, 30, 0.8);
+  }
+}
+
+.speech-error-banner {
+  font-size: 0.75rem;
+  color: #FF9F1C;
+  background: rgba(255, 159, 28, 0.1);
+  border: 1px solid rgba(255, 159, 28, 0.3);
+  padding: 0.4rem 0.8rem;
+  border-radius: 2px;
+}
+
+.quick-radio-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: 0.35rem 0;
+}
+
+.radio-label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.quick-radio-pill {
+  background: var(--color-bg-start);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: var(--color-text-secondary);
+  font-size: 0.7rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.quick-radio-pill:hover {
+  border-color: var(--color-accent-primary);
+  color: #fff;
+  background: rgba(0, 210, 255, 0.08);
+}
+
+.export-poster-pill {
+  background: var(--color-bg-start);
+  border: 1px solid var(--color-border);
+  color: var(--color-accent-primary);
+  font-size: 0.7rem;
+  padding: 0.25rem 0.6rem;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.export-poster-pill:hover:not(:disabled) {
+  background: rgba(0, 210, 255, 0.2);
+  border-color: var(--color-accent-primary);
+}
+
+.export-poster-pill:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+

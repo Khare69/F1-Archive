@@ -161,11 +161,35 @@
 
 /* Layout Containers */
 .ghost-replay-layout,
+.timing-tower-layout,
 .strategy-layout {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
   width: 100%;
+}
+
+.strategy-top-action-bar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.pitwall-jump-btn {
+  background: rgba(0, 210, 255, 0.15);
+  border: 1px solid var(--color-accent-primary);
+  color: var(--color-accent-primary);
+  padding: 0.6rem 1.2rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+}
+
+.pitwall-jump-btn:hover {
+  background: var(--color-accent-primary);
+  color: #05070C;
+  box-shadow: 0 0 14px var(--color-accent-primary-glow);
 }
 
 .telemetry-loading-banner,

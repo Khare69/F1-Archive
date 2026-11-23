@@ -30,6 +30,9 @@ const TelemetryHub = lazy(() =>
 const RaceHistorian = lazy(() =>
   import('./features/historian/RaceHistorian').then((m) => ({ default: m.RaceHistorian }))
 );
+const PitWallStrategy = lazy(() =>
+  import('./features/strategy/PitWallStrategy').then((m) => ({ default: m.PitWallStrategy }))
+);
 
 const AppContent: React.FC = () => {
   const {
@@ -207,6 +210,28 @@ const AppContent: React.FC = () => {
                 }
               />
 
+              {/* Lazy-loaded Monte Carlo Pit-Wall Strategy Simulator */}
+              <Route
+                path="/pitwall"
+                element={
+                  <ErrorBoundary fallbackTitle="Strategy Simulator Fault">
+                    <Suspense
+                      fallback={
+                        <div className="lazy-3d-loading telemetry-panel">
+                          <div className="loading-spinner"></div>
+                          <div className="headline">INITIALIZING PIT-WALL STRATEGY ENGINE...</div>
+                          <div className="telemetry">[ PREPARING MONTE CARLO WEB WORKER ]</div>
+                        </div>
+                      }
+                    >
+                      <PageTransition>
+                        <PitWallStrategy />
+                      </PageTransition>
+                    </Suspense>
+                  </ErrorBoundary>
+                }
+              />
+
               <Route
                 path="/garage"
                 element={
@@ -253,6 +278,8 @@ const AppContent: React.FC = () => {
 
           <div className="footer-links telemetry">
             <Link to="/standings">STANDINGS</Link>
+            <span>•</span>
+            <Link to="/pitwall">PIT WALL</Link>
             <span>•</span>
             <Link to="/historian">HISTORIAN</Link>
             <span>•</span>

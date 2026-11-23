@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getAllDrivers, getDriverById, getTeamById } from '../../data/dataService';
 import { FallbackImage } from '../../components/FallbackImage/FallbackImage';
 import { usePageMeta } from '../../hooks/usePageMeta';
+import { exportPosterAsPng } from '../../utils/posterExport';
 import type { TeammateH2HRecord } from '../../types/f1';
 import './DriverComparison.css';
 
@@ -99,6 +100,8 @@ export const DriverComparison: React.FC = () => {
 
   // Clipboard share link feedback state
   const [copied, setCopied] = useState(false);
+  const [isExportingPoster, setIsExportingPoster] = useState(false);
+
   const handleCopyShareLink = async () => {
     const url = `${window.location.origin}/drivers/compare?a=${driverA.id}&b=${driverB.id}`;
     try {
@@ -109,6 +112,26 @@ export const DriverComparison: React.FC = () => {
       // Fallback if clipboard API restricted
       setCopied(true);
       setTimeout(() => setCopied(false), 2400);
+    }
+  };
+
+  const handleExportPoster = async () => {
+    setIsExportingPoster(true);
+    try {
+      await exportPosterAsPng({
+        title: `${driverA.name.toUpperCase()} VS ${driverB.name.toUpperCase()}`,
+        subtitle: `HEAD-TO-HEAD CAREER & ERA-NORMALIZED COMPARISON (${driverA.country} vs ${driverB.country})`,
+        rows: [
+          { label: 'WORLD CHAMPIONSHIPS', value: `${driverA.championships} vs ${driverB.championships}`, color: '#FFD700' },
+          { label: 'GRAND PRIX WINS', value: `${driverA.wins} vs ${driverB.wins}`, color: '#00D2FF' },
+          { label: 'PODIUM FINISHES', value: `${driverA.podiums} vs ${driverB.podiums}`, color: '#00E701' },
+          { label: 'CAREER STARTS', value: `${driverA.starts || 0} vs ${driverB.starts || 0}` },
+          { label: 'POINTS SHARE %', value: `${driverA.pointsSharePct || 0}% vs ${driverB.pointsSharePct || 0}%`, color: '#FF8000' }
+        ],
+        filename: `comparison-${driverA.code || driverA.id}-vs-${driverB.code || driverB.id}.png`
+      });
+    } finally {
+      setIsExportingPoster(false);
     }
   };
 
@@ -134,6 +157,15 @@ export const DriverComparison: React.FC = () => {
         <div className="comparison-meta telemetry">
           <span>// TELEMETRY COMPARATOR</span>
           <div className="comparison-actions">
+            <button
+              onClick={handleExportPoster}
+              disabled={isExportingPoster}
+              className="f1-btn f1-btn-secondary telemetry"
+              title="Export high-resolution comparison poster (PNG)"
+              aria-label="Export comparison poster"
+            >
+              {isExportingPoster ? 'EXPORTING...' : '📸 EXPORT POSTER'}
+            </button>
             <button
               onClick={handleCopyShareLink}
               className={`f1-btn f1-btn-secondary telemetry ${copied ? 'btn-copied' : ''}`}
