@@ -5,6 +5,7 @@ import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
 import * as THREE from 'three';
 import type { Circuit } from '../../types/f1';
 import { CanvasErrorBoundary } from '../cars/components/CanvasErrorBoundary';
+import { PerfDebugCollector } from '../cars/components/PerfDebugOverlay';
 import './Track3DViewer.css';
 
 interface Track3DViewerProps {
@@ -225,6 +226,7 @@ export const Track3DViewer: React.FC<Track3DViewerProps> = ({
               }}
             >
               <TrackInvalidator trigger={`${circuit.id}_${is3DMode}_${selectedTurn}`} />
+              <PerfDebugCollector />
 
               <ambientLight intensity={0.9} />
               <directionalLight position={[10, 20, 15]} intensity={1.5} color="#FFFFFF" />

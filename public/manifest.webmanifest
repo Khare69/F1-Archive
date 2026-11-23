@@ -1,0 +1,19 @@
+{
+  "name": "F1 Archive — The Evolution of Speed",
+  "short_name": "F1 Archive",
+  "description": "Cinematic Formula 1 Historical Archive, 3D Telemetry & AI Historian (1950–2026)",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#05070C",
+  "theme_color": "#05070C",
+  "orientation": "any",
+  "categories": ["sports", "analytics", "history"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

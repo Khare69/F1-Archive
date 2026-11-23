@@ -24,6 +24,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenSearch }) => {
   const navLinks = [
     { path: '/', label: 'HOME' },
     { path: '/standings', label: 'STANDINGS' },
+    { path: '/historian', label: 'HISTORIAN' },
     { path: '/telemetry', label: 'TELEMETRY' },
     { path: '/seasons', label: 'SEASONS' },
     { path: '/teams', label: 'TEAMS' },

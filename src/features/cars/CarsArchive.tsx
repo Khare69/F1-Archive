@@ -11,7 +11,7 @@ import { FallbackImage } from '../../components/FallbackImage/FallbackImage';
 import { usePreferencesContext } from '../../contexts/UserPreferencesContext';
 import { CanvasErrorBoundary } from './components/CanvasErrorBoundary';
 import { TelemetryLoadingProgress } from './components/TelemetryLoadingProgress';
-import { PerfDebugOverlay, PerfDebugCollector } from './components/PerfDebugOverlay';
+import { PerfDebugCollector } from './components/PerfDebugOverlay';
 import { usePageMeta } from '../../hooks/usePageMeta';
 import type { ActiveAeroMode } from './components/Regulation2026Overlay';
 import './CarsArchive.css';
@@ -360,9 +360,6 @@ export const CarsArchive: React.FC = () => {
               label={`LOADING ${selectedTeam.carName.toUpperCase()} MESH`}
               accentColor={selectedTeam.color}
             />
-
-            {/* GPU Performance Profiler DOM Overlay for ?debug=perf */}
-            <PerfDebugOverlay />
 
             {/* Mobile Interaction Gate Overlay */}
             {isTouchDevice && !isTouchUnlocked && (

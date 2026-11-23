@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import type { TelemetryShowdown } from '../../../types/telemetry';
 import { getSectorAnchoredDistanceFraction } from '../telemetryMath';
 import { CanvasErrorBoundary } from '../../cars/components/CanvasErrorBoundary';
+import { PerfDebugCollector } from '../../cars/components/PerfDebugOverlay';
 import './GhostLapViewer3D.css';
 
 export interface PlaybackHandle {
@@ -330,6 +331,7 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
             <SceneInvalidator
               trigger={`${showdown.slug}_${is3DMode}_${isPlaying}_${currentTime}`}
             />
+            <PerfDebugCollector />
 
             <ambientLight intensity={0.9} />
             <directionalLight position={[10, 25, 15]} intensity={1.5} color="#FFFFFF" />

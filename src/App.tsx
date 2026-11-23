@@ -10,6 +10,7 @@ import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import { PageTransition } from './components/PageTransition/PageTransition';
 import { WelcomeExperience } from './features/welcome/WelcomeExperience';
 import { SearchPalette } from './features/search/SearchPalette';
+import { PerfDebugOverlay } from './features/cars/components/PerfDebugOverlay';
 import { Home } from './features/home/Home';
 import { SeasonsArchive } from './features/seasons/SeasonsArchive';
 import { TeamsArchive } from './features/teams/TeamsArchive';
@@ -21,10 +22,13 @@ import { LiveStandings } from './features/standings/LiveStandings';
 import { NotFound } from './features/notfound/NotFound';
 import './App.css';
 
-// Code-split / lazy-load the heavy 3D Cars module for optimal initial performance
+// Code-split / lazy-load heavy modules for optimal initial performance
 const CarsArchive = lazy(() => import('./features/cars/CarsArchive'));
 const TelemetryHub = lazy(() =>
   import('./features/telemetry/TelemetryHub').then((m) => ({ default: m.TelemetryHub }))
+);
+const RaceHistorian = lazy(() =>
+  import('./features/historian/RaceHistorian').then((m) => ({ default: m.RaceHistorian }))
 );
 
 const AppContent: React.FC = () => {
@@ -73,6 +77,9 @@ const AppContent: React.FC = () => {
 
       {/* Global Navigation Header with Command Palette Trigger */}
       <Navigation onOpenSearch={() => setIsSearchOpen(true)} />
+
+      {/* Global GPU Performance Profiler Overlay (?debug=perf / Shift+P) */}
+      <PerfDebugOverlay />
 
       {/* Global Command Palette / Search Modal */}
       <SearchPalette
@@ -178,6 +185,28 @@ const AppContent: React.FC = () => {
                 }
               />
 
+              {/* Lazy-loaded Explainable AI Race Historian */}
+              <Route
+                path="/historian"
+                element={
+                  <ErrorBoundary fallbackTitle="AI Race Historian Fault">
+                    <Suspense
+                      fallback={
+                        <div className="lazy-3d-loading telemetry-panel">
+                          <div className="loading-spinner"></div>
+                          <div className="headline">INITIALIZING AI RACE HISTORIAN...</div>
+                          <div className="telemetry">[ LOADING F1DB SQL ENGINE & PRESETS ]</div>
+                        </div>
+                      }
+                    >
+                      <PageTransition>
+                        <RaceHistorian />
+                      </PageTransition>
+                    </Suspense>
+                  </ErrorBoundary>
+                }
+              />
+
               <Route
                 path="/garage"
                 element={
@@ -224,6 +253,10 @@ const AppContent: React.FC = () => {
 
           <div className="footer-links telemetry">
             <Link to="/standings">STANDINGS</Link>
+            <span>•</span>
+            <Link to="/historian">HISTORIAN</Link>
+            <span>•</span>
+            <Link to="/telemetry">TELEMETRY</Link>
             <span>•</span>
             <Link to="/seasons">SEASONS</Link>
             <span>•</span>

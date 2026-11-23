@@ -11,7 +11,7 @@ interface SearchPaletteProps {
 interface SearchItem {
   id: string;
   name: string;
-  category: 'driver' | 'team' | 'season' | 'circuit' | 'telemetry';
+  category: 'driver' | 'team' | 'season' | 'circuit' | 'telemetry' | 'tool';
   stat: string;
   path: string;
   code?: string;
@@ -118,13 +118,57 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
       }
     ];
 
-    return [...drivers, ...teams, ...seasons, ...circuits, ...telemetries];
+    const tools: SearchItem[] = [
+      {
+        id: 'historian-lab',
+        name: 'Explainable AI Race Historian & SQL Lab',
+        category: 'tool' as const,
+        stat: 'Natural Language F1DB Text-to-SQL • 16 Presets',
+        path: '/historian',
+        extra: 'historian sql ai f1db natural language query presets text-to-sql copilot'
+      },
+      {
+        id: 'cars-cad-lab',
+        name: '3D Vehicle CAD Lab & 2026 Aero Inspector',
+        category: 'tool' as const,
+        stat: 'Active Aero Straight/Corner Mode • Draco GLB',
+        path: '/cars',
+        extra: 'cars 3d vehicle cad model aero drs wing chassis wireframe'
+      },
+      {
+        id: 'driver-comparison',
+        name: 'Driver Head-to-Head & Era Normalizer',
+        category: 'tool' as const,
+        stat: 'Teammate H2H Gap • Career Points Share %',
+        path: '/drivers/compare',
+        extra: 'compare drivers head to head h2h teammate gap era normalized stats'
+      },
+      {
+        id: 'paddock-garage',
+        name: 'Paddock Garage & Audio Experience',
+        category: 'tool' as const,
+        stat: 'Engine Audio Simulator • Radio Comms',
+        path: '/garage',
+        extra: 'garage paddock audio radio engine team sound'
+      },
+      {
+        id: 'live-standings',
+        name: 'Championship Standings & Race Calendar',
+        category: 'tool' as const,
+        stat: 'WDC & WCC Live Points • Race Schedule',
+        path: '/standings',
+        extra: 'standings championship points calendar schedule race'
+      }
+    ];
+
+    return [...tools, ...telemetries, ...drivers, ...teams, ...seasons, ...circuits];
   }, []);
 
   // Filter items based on query
   const filteredResults = useMemo(() => {
     if (!query.trim()) {
       return {
+        tools: allItems.filter(i => i.category === 'tool').slice(0, 3),
         telemetries: allItems.filter(i => i.category === 'telemetry').slice(0, 3),
         drivers: allItems.filter(i => i.category === 'driver').slice(0, 4),
         teams: allItems.filter(i => i.category === 'team').slice(0, 4),
@@ -143,6 +187,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
     );
 
     return {
+      tools: matches.filter(i => i.category === 'tool').slice(0, 4),
       telemetries: matches.filter(i => i.category === 'telemetry').slice(0, 4),
       drivers: matches.filter(i => i.category === 'driver').slice(0, 5),
       teams: matches.filter(i => i.category === 'team').slice(0, 5),
@@ -153,6 +198,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
 
   const flatResults = useMemo(() => {
     return [
+      ...filteredResults.tools,
       ...filteredResults.telemetries,
       ...filteredResults.drivers,
       ...filteredResults.teams,
@@ -233,6 +279,39 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
             </div>
           ) : (
             <>
+              {filteredResults.tools.length > 0 && (
+                <div className="search-category-group">
+                  <div className="search-category-header telemetry">// ANALYTICS &amp; 3D LABS</div>
+                  {filteredResults.tools.map(item => {
+                    const currentIndex = globalIndexCounter++;
+                    return (
+                      <div
+                        key={item.id}
+                        className={`search-result-item ${selectedIndex === currentIndex ? 'selected' : ''}`}
+                        onClick={() => handleSelect(item.path)}
+                      >
+                        <div className="search-item-left">
+                          <span
+                            className="search-type-badge"
+                            style={{
+                              background: 'rgba(255, 215, 0, 0.15)',
+                              color: '#FFD700',
+                              border: '1px solid rgba(255, 215, 0, 0.4)'
+                            }}
+                          >
+                            MODULE
+                          </span>
+                          <span className="search-item-name">{item.name}</span>
+                        </div>
+                        <div className="search-item-right">
+                          <span className="search-item-stat telemetry">{item.stat}</span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
               {filteredResults.telemetries.length > 0 && (
                 <div className="search-category-group">
                   <div className="search-category-header telemetry">// 3D GHOST TELEMETRY</div>

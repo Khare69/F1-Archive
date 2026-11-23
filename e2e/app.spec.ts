@@ -134,6 +134,24 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     await expect(fuelBtn).toBeVisible();
     await fuelBtn.click();
 
+    // 10. Explainable AI Race Historian & SQL Lab
+    await page.goto('/historian');
+    await expect(page.locator('.historian-page-root, h1').first()).toBeVisible();
+    await expect(page.locator('.sql-inspector-card')).toBeVisible();
+    await expect(page.locator('.copy-sql-btn')).toBeVisible();
+    await expect(page.locator('.engine-status-pill')).toBeVisible();
+
+    // Test selecting a preset chip
+    const presetBtn = page.locator('.preset-chip').nth(1);
+    await expect(presetBtn).toBeVisible();
+    await presetBtn.click();
+    await expect(page.locator('.sql-code-block')).toBeVisible();
+
+    // Test toggling view mode
+    const chartToggleBtn = page.locator('.view-toggle-btn', { hasText: 'BAR CHART' });
+    await chartToggleBtn.click();
+    await expect(page.locator('.results-chart-wrapper')).toBeVisible();
+
     // Assert zero uncaught exceptions across all pages
     expect(pageErrors).toEqual([]);
   });

@@ -602,6 +602,44 @@
   color: #FF1E1E;
 }
 
+.perf-muted {
+  color: var(--color-text-muted);
+  font-weight: 400;
+  font-size: 0.65rem;
+}
+
+.perf-debug-close {
+  margin-left: auto;
+  background: transparent;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  padding: 0 0.2rem;
+  transition: color 0.15s ease;
+}
+
+.perf-debug-close:hover {
+  color: #FF1E1E;
+}
+
+.perf-debug-footer {
+  margin-top: 0.25rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  font-size: 0.6rem;
+  color: var(--color-text-muted);
+  text-align: center;
+}
+
+.perf-debug-footer kbd {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  color: #00D2FF;
+}
+
 /* Canvas Error Fallback */
 .canvas-error-fallback,
 .canvas-context-lost-banner {
