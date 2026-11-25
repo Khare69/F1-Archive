@@ -5,12 +5,6 @@ import {
   type HistorianQueryResult
 } from './historianEngine';
 import { usePageMeta } from '../../hooks/usePageMeta';
-import {
-  playPitRadioChirp,
-  isSpeechRecognitionSupported,
-  startSpeechListening,
-  speakRaceEngineerRadio
-} from '../../utils/speechEngine';
 import { exportPosterAsPng } from '../../utils/posterExport';
 import './RaceHistorian.css';
 
@@ -30,11 +24,7 @@ export const RaceHistorian: React.FC = () => {
   const [activeViewMode, setActiveViewMode] = useState<'chart' | 'table'>('table');
   const [isBackendConnected, setIsBackendConnected] = useState<boolean>(false);
   const [isProbingBackend, setIsProbingBackend] = useState<boolean>(false);
-  const [isListening, setIsListening] = useState<boolean>(false);
   const [isExporting, setIsExporting] = useState<boolean>(false);
-  const [speechError, setSpeechError] = useState<string | null>(null);
-
-  const stopListeningRef = useRef<(() => void) | null>(null);
 
   // Initial result from preset #1
   const [queryResult, setQueryResult] = useState<HistorianQueryResult>(() => {
@@ -110,45 +100,9 @@ export const RaceHistorian: React.FC = () => {
     }
   };
 
-  const handleToggleVoice = () => {
-    setSpeechError(null);
-    if (isListening) {
-      if (stopListeningRef.current) stopListeningRef.current();
-      setIsListening(false);
-      return;
-    }
-
-    if (!isSpeechRecognitionSupported()) {
-      setSpeechError('Microphone speech recognition is not supported on this browser. Try the quick radio prompts below.');
-      return;
-    }
-
-    playPitRadioChirp();
-    setIsListening(true);
-
-    const stopFn = startSpeechListening({
-      onResult: (transcript) => {
-        setIsListening(false);
-        setNaturalInput(transcript);
-        executeQuery(transcript);
-        speakRaceEngineerRadio(`Roger, searching for ${transcript}.`);
-      },
-      onError: (err) => {
-        setIsListening(false);
-        setSpeechError(err);
-      },
-      onEnd: () => {
-        setIsListening(false);
-      }
-    });
-
-    stopListeningRef.current = stopFn;
-  };
-
   const handleQuickRadioPrompt = (prompt: string) => {
     setNaturalInput(prompt);
     executeQuery(prompt);
-    playPitRadioChirp();
   };
 
   const handleExportPoster = async () => {
@@ -176,8 +130,8 @@ export const RaceHistorian: React.FC = () => {
   };
 
   usePageMeta({
-    title: 'Explainable AI Race Historian & Voice Engineer — F1 Archive',
-    description: 'Query 77 seasons of Formula 1 history with natural language or voice engineer radio. Inspect verified SQL, explore statistics, and export high-DPI telemetry posters.',
+    title: 'Explainable AI Race Historian & SQL Lab — F1 Archive',
+    description: 'Query 77 seasons of Formula 1 history with natural language and SQL. Inspect verified queries, explore statistics, and export high-DPI telemetry posters.',
     canonicalPath: '/historian'
   });
 
@@ -190,7 +144,7 @@ export const RaceHistorian: React.FC = () => {
             <span className="historian-badge telemetry">// EXPLAINABLE AI RACE ENGINEER</span>
             <h1 className="historian-title headline">RACE HISTORIAN &amp; SQL LAB</h1>
             <p className="historian-subtitle telemetry">
-              NATURAL LANGUAGE &amp; VOICE QUERY SYNTHESIZER OVER F1DB HISTORICAL REGISTRY (1950–2026)
+              NATURAL LANGUAGE &amp; SQL QUERY SYNTHESIZER OVER F1DB HISTORICAL REGISTRY (1950–2026)
             </p>
           </div>
 
@@ -210,14 +164,14 @@ export const RaceHistorian: React.FC = () => {
           </div>
         </div>
 
-        {/* Natural Language & Voice Search Input */}
+        {/* Natural Language & SQL Search Input */}
         <form onSubmit={handleSearchSubmit} className="historian-search-form">
           <div className="historian-search-input-box">
             <span className="search-icon">🔍</span>
             <input
               type="text"
               className="historian-text-input telemetry"
-              placeholder="Ask any F1 question or speak via radio mic (e.g., 'Lewis Hamilton career stats', 'Ferrari titles', '1988 Senna vs Prost')..."
+              placeholder="Ask any F1 question (e.g., 'Lewis Hamilton career stats', 'Ferrari titles', '1988 Senna vs Prost')..."
               value={naturalInput}
               onChange={(e) => setNaturalInput(e.target.value)}
               aria-label="Natural language Formula 1 query"
@@ -232,17 +186,6 @@ export const RaceHistorian: React.FC = () => {
                 ×
               </button>
             )}
-
-            {/* Voice Radio Mic Button */}
-            <button
-              type="button"
-              className={`mic-radio-btn telemetry ${isListening ? 'listening' : ''}`}
-              onClick={handleToggleVoice}
-              title={isListening ? 'Listening to voice transmission... Click to stop' : 'Activate Voice Engineer Microphone'}
-              aria-label="Voice Engineer Radio Microphone"
-            >
-              <span>{isListening ? '🔴 TRANSMITTING...' : '🎙 RADIO MIC'}</span>
-            </button>
           </div>
 
           <button type="submit" className="f1-btn telemetry query-submit-btn">
@@ -250,15 +193,9 @@ export const RaceHistorian: React.FC = () => {
           </button>
         </form>
 
-        {speechError && (
-          <div className="speech-error-banner telemetry">
-            ⚠️ {speechError}
-          </div>
-        )}
-
-        {/* Quick Voice / Radio Prompts Bar */}
+        {/* Suggested Historical Prompts Bar */}
         <div className="quick-radio-bar">
-          <span className="radio-label telemetry">📻 TEAM RADIO PROMPTS:</span>
+          <span className="radio-label telemetry">SUGGESTED PROMPTS:</span>
           {QUICK_RADIO_PROMPTS.map((prompt) => (
             <button
               key={prompt}

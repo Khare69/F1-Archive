@@ -7,6 +7,29 @@ on:
     branches: [dev, main, "debugging-&-error-correction"]
 
 jobs:
+  backend-quality:
+    name: Backend Quality (Python & pytest)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: backend/requirements-dev.txt
+
+      - name: Install dependencies
+        run: pip install -r backend/requirements-dev.txt
+
+      - name: Lint with ruff
+        run: ruff check backend/
+
+      - name: Run security tests with pytest
+        run: pytest backend/tests -v
+
   build-and-test:
     runs-on: ubuntu-latest
 
