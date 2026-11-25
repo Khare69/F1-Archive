@@ -140,24 +140,33 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     await expect(page.locator('.timing-tower-card')).toBeVisible({ timeout: 10000 });
     await expect(page.locator('.timing-row').first()).toBeVisible();
 
-    // 10. Explainable AI Race Historian & SQL Lab
+    // 10. Explainable AI Race Historian & SQL Lab (Offline SQLite-WASM)
     await page.goto('/historian');
     await expect(page.locator('.historian-page-root, h1').first()).toBeVisible();
     await expect(page.locator('.sql-inspector-card')).toBeVisible();
-    await expect(page.locator('.copy-sql-btn')).toBeVisible();
+    await expect(page.locator('.copy-sql-btn').first()).toBeVisible();
     await expect(page.locator('.engine-status-pill')).toBeVisible();
 
-    // Test quick radio prompt
-    const quickRadioBtn = page.locator('.quick-radio-pill').first();
-    await expect(quickRadioBtn).toBeVisible();
-    await quickRadioBtn.click();
-    await expect(page.locator('.sql-code-block')).toBeVisible();
+    // Test Temple of Speed (Monza) Masters preset (real SQLite-WASM execution)
+    const monzaPresetBtn = page.locator('.preset-chip', { hasText: 'Monza' });
+    await expect(monzaPresetBtn).toBeVisible({ timeout: 15000 });
+    await monzaPresetBtn.click();
 
-    // Test selecting a preset chip
-    const presetBtn = page.locator('.preset-chip').nth(1);
-    await expect(presetBtn).toBeVisible();
-    await presetBtn.click();
-    await expect(page.locator('.sql-code-block')).toBeVisible();
+    // Verify all-time records: Michael Schumacher with 5 wins
+    const resultsTable = page.locator('.historian-table');
+    await expect(resultsTable).toContainText('Michael Schumacher', { timeout: 15000 });
+    await expect(resultsTable).toContainText('5');
+
+    // Test custom CodeMirror SQL editing and live execution
+    const cmContent = page.locator('.cm-content[role="textbox"]');
+    await cmContent.click();
+    await page.keyboard.press('ControlOrMeta+A');
+    await page.keyboard.press('Backspace');
+    await page.keyboard.type("SELECT name FROM circuit WHERE id = 'monza';", { delay: 10 });
+
+    const runSqlBtn = page.locator('.sql-run-btn');
+    await runSqlBtn.click();
+    await expect(resultsTable).toContainText('Monza', { timeout: 15000 });
 
     // Test toggling view mode
     const chartToggleBtn = page.locator('.view-toggle-btn', { hasText: 'BAR CHART' });
