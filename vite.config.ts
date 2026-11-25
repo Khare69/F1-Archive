@@ -60,6 +60,12 @@ export default defineConfig({
     port: 5173,
     host: true
   },
+  optimizeDeps: {
+    exclude: ['@sqlite.org/sqlite-wasm']
+  },
+  worker: {
+    format: 'es'
+  },
   build: {
     chunkSizeWarningLimit: 1000,
     rollupOptions: {
