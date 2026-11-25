@@ -514,52 +514,6 @@
   white-space: nowrap;
 }
 
-/* Voice Engineer Mic Button & Prompts */
-.mic-radio-btn {
-  background: var(--color-bg-surface-elevated);
-  border: 1px solid var(--color-border);
-  color: var(--color-text-primary);
-  padding: 0.35rem 0.75rem;
-  font-size: 0.75rem;
-  cursor: pointer;
-  border-radius: 2px;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  white-space: nowrap;
-  transition: all var(--transition-fast);
-}
-
-.mic-radio-btn:hover {
-  border-color: var(--color-accent-primary);
-  color: var(--color-accent-primary);
-}
-
-.mic-radio-btn.listening {
-  background: rgba(255, 30, 30, 0.2);
-  border-color: #FF1E1E;
-  color: #FF1E1E;
-  animation: pulse-radio 1s infinite alternate;
-}
-
-@keyframes pulse-radio {
-  from {
-    box-shadow: 0 0 4px rgba(255, 30, 30, 0.4);
-  }
-  to {
-    box-shadow: 0 0 14px rgba(255, 30, 30, 0.8);
-  }
-}
-
-.speech-error-banner {
-  font-size: 0.75rem;
-  color: #FF9F1C;
-  background: rgba(255, 159, 28, 0.1);
-  border: 1px solid rgba(255, 159, 28, 0.3);
-  padding: 0.4rem 0.8rem;
-  border-radius: 2px;
-}
-
 .quick-radio-bar {
   display: flex;
   align-items: center;
