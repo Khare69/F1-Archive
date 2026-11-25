@@ -10,6 +10,7 @@ import { ElevationService } from './elevation';
 import { transformF1Data } from './transform';
 import { validateTransformedData } from './validate';
 import { writeMinifiedData } from './write';
+import { buildBrowserSqlite } from './build-browser-sqlite';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,6 +41,9 @@ async function runETL() {
 
     // Stage 5: Write Minified Artifacts
     writeMinifiedData(ROOT_DIR, transformed);
+
+    // Stage 6: Build Browser SQLite Database
+    buildBrowserSqlite();
 
     const elapsed = ((Date.now() - startTime) / 1000).toFixed(2);
     console.log(`🎉 ETL Pipeline completed successfully in ${elapsed}s!`);
