@@ -61,16 +61,128 @@ def build_readonly_sqlite_uri(db_path: str | Path) -> str:
     return f"{resolved.as_uri()}?mode=ro"
 
 
-# Disallowed tokens & patterns for SQL Sandbox Hardening
-DISALLOWED_KEYWORDS = [
-    r"\bINSERT\b", r"\bUPDATE\b", r"\bDELETE\b", r"\bDROP\b", r"\bALTER\b",
-    r"\bCREATE\b", r"\bATTACH\b", r"\bDETACH\b", r"\bPRAGMA\b", r"\bVACUUM\b",
-    r"\bREINDEX\b", r"\bEXEC\b", r"\bEXECUTE\b", r"\bTRUNCATE\b", r"\bREPLACE\b",
-    r"\bRECURSIVE\b",  # Prevent recursive CTE infinite loops
-    r"\bLOAD_EXTENSION\b"
-]
-DISALLOWED_REGEX = re.compile("|".join(DISALLOWED_KEYWORDS), re.IGNORECASE)
-COMMENT_REGEX = re.compile(r"(--|/\*|\*/)")
+MAX_QUERY_LENGTH = 4000
+
+# Strict allowlist of safe SQLite functions (OOM DoS and side-effect prevention)
+ALLOWED_SQL_FUNCTIONS = frozenset({
+    # Aggregates
+    "count", "sum", "avg", "min", "max", "total", "group_concat",
+    # Safe string functions
+    "lower", "upper", "length", "substr", "substring", "trim",
+    "ltrim", "rtrim", "replace", "instr", "coalesce", "ifnull",
+    "nullif", "iif", "typeof",
+    # Safe math & date functions
+    "abs", "round", "sign", "ceil", "ceiling", "floor", "power", "sqrt",
+    "date", "time", "datetime", "julianday", "strftime", "unixepoch",
+})
+
+SQLITE_RECURSIVE_CODE = getattr(sqlite3, "SQLITE_RECURSIVE", 33)
+
+
+def sqlite_readonly_authorizer(action_code: int, arg1: Optional[str], arg2: Optional[str],
+                               db_name: Optional[str], trigger_name: Optional[str]) -> int:
+    """
+    SQLite authorizer callback enforcing strict read-only execution:
+    - Allows SQLITE_SELECT
+    - Allows SQLITE_READ on main database
+    - Allows SQLITE_FUNCTION only for safe functions in ALLOWED_SQL_FUNCTIONS
+    - Unconditionally denies all other action codes (DML, DDL, PRAGMA, ATTACH, RECURSIVE)
+    """
+    if action_code == sqlite3.SQLITE_SELECT:
+        return sqlite3.SQLITE_OK
+    elif action_code == sqlite3.SQLITE_READ:
+        if db_name in (None, "", "main"):
+            return sqlite3.SQLITE_OK
+        return sqlite3.SQLITE_DENY
+    elif action_code == sqlite3.SQLITE_FUNCTION:
+        func_name = (arg2 or "").lower()
+        if func_name in ALLOWED_SQL_FUNCTIONS:
+            return sqlite3.SQLITE_OK
+        return sqlite3.SQLITE_DENY
+    elif action_code == SQLITE_RECURSIVE_CODE:
+        return sqlite3.SQLITE_DENY
+    return sqlite3.SQLITE_DENY
+
+
+def validate_sql_structure(sql: str) -> str:
+    """
+    Quote-aware SQL validation:
+    1. Validates query length (max 4000 chars)
+    2. Scans outside single & double quotes to reject comments (-- or /* */)
+    3. Rejects statement stacking (semicolons with subsequent tokens)
+    4. Rejects RECURSIVE CTE keyword outside quotes
+    5. Verifies query begins with SELECT or WITH
+    """
+    if len(sql) > MAX_QUERY_LENGTH:
+        raise HTTPException(status_code=400, detail="Query exceeds maximum length of 4000 characters.")
+
+    stripped = sql.strip()
+    if not stripped:
+        raise HTTPException(status_code=400, detail="Query cannot be empty.")
+
+    in_single = False
+    in_double = False
+    i = 0
+    n = len(stripped)
+    outside_tokens: List[str] = []
+
+    while i < n:
+        c = stripped[i]
+        if not in_single and not in_double:
+            if c == "'":
+                in_single = True
+                i += 1
+                continue
+            elif c == '"':
+                in_double = True
+                i += 1
+                continue
+            elif c == '-' and i + 1 < n and stripped[i + 1] == '-':
+                raise HTTPException(status_code=400, detail="SQL comments are disallowed for security.")
+            elif c == '/' and i + 1 < n and stripped[i + 1] == '*':
+                raise HTTPException(status_code=400, detail="SQL comments are disallowed for security.")
+            elif c == ';':
+                rest = stripped[i + 1:].strip()
+                if rest:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Stacked statements are prohibited. Execute only a single statement."
+                    )
+                else:
+                    break
+            else:
+                outside_tokens.append(c)
+                i += 1
+        elif in_single:
+            if c == "'":
+                if i + 1 < n and stripped[i + 1] == "'":
+                    i += 2
+                    continue
+                else:
+                    in_single = False
+            i += 1
+        elif in_double:
+            if c == '"':
+                if i + 1 < n and stripped[i + 1] == '"':
+                    i += 2
+                    continue
+                else:
+                    in_double = False
+            i += 1
+
+    if in_single or in_double:
+        raise HTTPException(status_code=400, detail="Unclosed quotation mark in SQL query.")
+
+    outside_text = "".join(outside_tokens)
+    if re.search(r"\bRECURSIVE\b", outside_text, re.IGNORECASE):
+        raise HTTPException(status_code=400, detail="Recursive CTEs are prohibited.")
+
+    cleaned = stripped.rstrip(";").strip()
+    if not re.match(r"^(SELECT|WITH)\b", cleaned, re.IGNORECASE):
+        raise HTTPException(status_code=400, detail="Query must begin with SELECT or WITH.")
+
+    return cleaned
+
 
 # Simple in-memory rate limiting (max 30 requests per minute per client IP)
 RATE_LIMIT_WINDOW = 60.0
@@ -81,7 +193,6 @@ client_request_history: Dict[str, List[float]] = {}
 def check_rate_limit(client_ip: str) -> None:
     now = time.time()
     history = client_request_history.get(client_ip, [])
-    # Filter requests within the current window
     history = [t for t in history if now - t < RATE_LIMIT_WINDOW]
     if len(history) >= RATE_LIMIT_MAX_REQUESTS:
         raise HTTPException(
@@ -92,55 +203,10 @@ def check_rate_limit(client_ip: str) -> None:
     client_request_history[client_ip] = history
 
 
-def validate_sql(sql: str) -> None:
-    """
-    Strict security validation:
-    1. Rejects empty queries
-    2. Rejects multiple statements (semicolon stacking)
-    3. Rejects SQL comments (-- and /* */)
-    4. Rejects recursive CTEs and write/DDL keywords
-    5. Must begin with SELECT or WITH
-    """
-    stripped = sql.strip()
-    if not stripped:
-        raise HTTPException(status_code=400, detail="Query cannot be empty.")
-
-    # Reject comments
-    if COMMENT_REGEX.search(stripped):
-        raise HTTPException(
-            status_code=400,
-            detail="SQL comments (-- or /* */) are disallowed for security."
-        )
-
-    # Reject statement stacking (semicolon inside or ending before extra tokens)
-    clean_no_semi = stripped.rstrip(";")
-    if ";" in clean_no_semi:
-        raise HTTPException(
-            status_code=400,
-            detail="Stacked statements are prohibited. Execute only a single statement."
-        )
-
-    # Reject write/DDL and recursive CTEs
-    match = DISALLOWED_REGEX.search(clean_no_semi)
-    if match:
-        raise HTTPException(
-            status_code=400,
-            detail=f"Security sandbox violation: keyword '{match.group(0)}' is prohibited."
-        )
-
-    # Must start with SELECT or WITH
-    normalized_start = clean_no_semi.lstrip()[:10].upper()
-    if not (normalized_start.startswith("SELECT") or normalized_start.startswith("WITH")):
-        raise HTTPException(
-            status_code=400,
-            detail="Query must begin with SELECT or WITH."
-        )
-
-
 def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
     """
     Executes a query in read-only URI mode with PRAGMA query_only=ON,
-    and a 3,000 ms wall-clock execution cap enforced via set_progress_handler.
+    authorizer callback, and a 3,000 ms wall-clock execution cap enforced via set_progress_handler.
     """
     target_db_path = get_db_path()
     if not target_db_path.exists():
@@ -150,13 +216,11 @@ def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
             detail="Database is currently unavailable."
         )
 
-    start_time = time.time()
+    start_time = time.monotonic()
     timeout_seconds = 3.0
 
     def progress_callback():
-        # Invoked periodically every N opcodes by SQLite
-        if time.time() - start_time > timeout_seconds:
-            # Returning non-zero aborts the query immediately with OperationalError: interrupted
+        if time.monotonic() - start_time > timeout_seconds:
             return 1
         return 0
 
@@ -164,11 +228,13 @@ def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
     conn = None
     try:
         conn = sqlite3.connect(uri, uri=True, check_same_thread=False)
+        # Register PRAGMAs BEFORE attaching authorizer (authorizer denies SQLITE_PRAGMA)
         conn.execute("PRAGMA query_only = ON;")
+        conn.execute("PRAGMA temp_store = MEMORY;")
+        conn.execute("PRAGMA cache_size = -8000;")
+        conn.set_authorizer(sqlite_readonly_authorizer)
+        conn.set_progress_handler(progress_callback, 2000)
         conn.row_factory = sqlite3.Row
-
-        # Set progress handler every 10,000 SQLite VM opcodes
-        conn.set_progress_handler(progress_callback, 10000)
 
         cursor = conn.cursor()
         cursor.execute(sql)
@@ -187,6 +253,11 @@ def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
             row_dict = {}
             for col in columns:
                 val = r[col["key"]]
+                if isinstance(val, str) and len(val) > 65536:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Result cell value exceeds 64KB limit."
+                    )
                 row_dict[col["key"]] = val
                 if val is not None:
                     if isinstance(val, bool):
@@ -195,7 +266,7 @@ def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
                         col["type"] = "number"
             formatted_rows.append(row_dict)
 
-        elapsed_ms = round((time.time() - start_time) * 1000, 2)
+        elapsed_ms = round((time.monotonic() - start_time) * 1000, 2)
 
         return {
             "columns": columns,
@@ -214,6 +285,16 @@ def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
             )
         logger.warning("SQLite operational error: %s", e)
         raise HTTPException(status_code=400, detail="Invalid or unauthorized SQL query.")
+    except sqlite3.DatabaseError as e:
+        if "not authorized" in str(e).lower():
+            raise HTTPException(
+                status_code=400,
+                detail="Query rejected by read-only SQL security policy."
+            )
+        logger.warning("SQLite database error: %s", e)
+        raise HTTPException(status_code=400, detail="Invalid or unauthorized SQL query.")
+    except HTTPException:
+        raise
     except Exception as e:
         logger.exception("Unexpected error during query execution: %s", e)
         raise HTTPException(status_code=500, detail="Internal query execution error.")
@@ -223,7 +304,7 @@ def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
 
 
 class QueryRequest(BaseModel):
-    query: str = Field(..., description="Inspectable read-only SQL query")
+    query: str = Field(..., min_length=1, max_length=4000, description="Inspectable read-only SQL query")
     natural_prompt: Optional[str] = Field(None, description="Original natural language query")
     max_rows: Optional[int] = Field(200, ge=1, le=1000, description="Max rows to return")
 
@@ -242,10 +323,10 @@ def health_check():
 def run_query(req: QueryRequest, request: Request):
     client_ip = request.client.host if request.client else "unknown"
     check_rate_limit(client_ip)
-    validate_sql(req.query)
-    result = execute_sandboxed_query(req.query, max_rows=req.max_rows or 200)
+    validated_sql = validate_sql_structure(req.query)
+    result = execute_sandboxed_query(validated_sql, max_rows=req.max_rows or 200)
     result["naturalPrompt"] = req.natural_prompt
-    result["sql"] = req.query
+    result["sql"] = validated_sql
     return result
 
 
