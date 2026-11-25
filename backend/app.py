@@ -13,14 +13,44 @@ from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.errors import RateLimitExceeded
 
 logger = logging.getLogger("f1_archive.backend")
+
+# Proxy-aware client IP extraction
+TRUSTED_PROXY_COUNT = int(os.environ.get("TRUSTED_PROXY_COUNT", "0"))
+
+
+def get_client_ip(request: Request) -> str:
+    """
+    Extracts client IP. If TRUSTED_PROXY_COUNT > 0 and X-Forwarded-For is present,
+    selects the rightmost untrusted hop to prevent client header spoofing.
+    """
+    trusted_count = int(os.environ.get("TRUSTED_PROXY_COUNT", str(TRUSTED_PROXY_COUNT)))
+    if trusted_count > 0:
+        xff = request.headers.get("x-forwarded-for")
+        if xff:
+            hops = [h.strip() for h in xff.split(",") if h.strip()]
+            if hops:
+                target_idx = max(0, len(hops) - trusted_count)
+                return hops[target_idx]
+    return request.client.host if request.client else "127.0.0.1"
+
+
+limiter = Limiter(
+    key_func=get_client_ip,
+    default_limits=[],
+    storage_uri=os.environ.get("RATE_LIMIT_STORAGE_URI", "memory://"),
+)
 
 app = FastAPI(
     title="F1 Archive Historian Backend",
     description="Sandboxed read-only SQL execution microservice over F1DB SQLite",
     version="1.0.0"
 )
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 # CORS configuration
 allowed_origins_env = os.environ.get("CORS_ORIGINS", "")
@@ -184,25 +214,6 @@ def validate_sql_structure(sql: str) -> str:
     return cleaned
 
 
-# Simple in-memory rate limiting (max 30 requests per minute per client IP)
-RATE_LIMIT_WINDOW = 60.0
-RATE_LIMIT_MAX_REQUESTS = 30
-client_request_history: Dict[str, List[float]] = {}
-
-
-def check_rate_limit(client_ip: str) -> None:
-    now = time.time()
-    history = client_request_history.get(client_ip, [])
-    history = [t for t in history if now - t < RATE_LIMIT_WINDOW]
-    if len(history) >= RATE_LIMIT_MAX_REQUESTS:
-        raise HTTPException(
-            status_code=429,
-            detail="Rate limit exceeded. Maximum 30 queries per minute permitted."
-        )
-    history.append(now)
-    client_request_history[client_ip] = history
-
-
 def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
     """
     Executes a query in read-only URI mode with PRAGMA query_only=ON,
@@ -320,9 +331,8 @@ def health_check():
 
 
 @app.post("/query")
-def run_query(req: QueryRequest, request: Request):
-    client_ip = request.client.host if request.client else "unknown"
-    check_rate_limit(client_ip)
+@limiter.limit("30/minute")
+def run_query(request: Request, req: QueryRequest):
     validated_sql = validate_sql_structure(req.query)
     result = execute_sandboxed_query(validated_sql, max_rows=req.max_rows or 200)
     result["naturalPrompt"] = req.natural_prompt
