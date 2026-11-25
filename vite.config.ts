@@ -8,7 +8,7 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['favicon.svg', 'robots.txt', 'models/f1_chassis.glb'],
+      includeAssets: ['favicon.svg', 'robots.txt'],
       manifest: {
         name: 'F1 // ARCHIVE — The Evolution of Speed',
         short_name: 'F1 Archive',
@@ -28,6 +28,7 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,wasm,json}'],
+        globIgnores: ['**/data/**', '**/*.sqlite', '**/*.glb', '**/models/**'],
         runtimeCaching: [
           {
             urlPattern: ({ url }) => url.pathname.startsWith('/data/'),
@@ -58,6 +59,12 @@ export default defineConfig({
   server: {
     port: 5173,
     host: true
+  },
+  optimizeDeps: {
+    exclude: ['@sqlite.org/sqlite-wasm']
+  },
+  worker: {
+    format: 'es'
   },
   build: {
     chunkSizeWarningLimit: 1000,
