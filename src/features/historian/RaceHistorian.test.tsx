@@ -32,6 +32,7 @@ vi.mock('./sqlClient', () => {
             sql,
             params: ['fernando-alonso'],
             source: 'sqlite_wasm',
+            chartType: 'table',
             rowCount: 1,
             executionTimeMs: 5,
             columns: [
@@ -50,6 +51,7 @@ vi.mock('./sqlClient', () => {
             sql,
             params: [],
             source: 'sqlite_wasm',
+            chartType: 'table',
             rowCount: 2,
             executionTimeMs: 4,
             columns: [
@@ -70,6 +72,7 @@ vi.mock('./sqlClient', () => {
           sql,
           params: [],
           source: 'sqlite_wasm',
+          chartType: 'table',
           rowCount: 1,
           executionTimeMs: 3,
           columns: [

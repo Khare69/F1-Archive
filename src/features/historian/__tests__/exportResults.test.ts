@@ -63,6 +63,7 @@ describe('Query Results Exporter (exportResults)', () => {
       sql: 'SELECT * FROM driver;',
       params: [],
       source: 'sqlite_wasm',
+      chartType: 'table',
       rowCount: 1,
       executionTimeMs: 12.5,
       columns: [{ key: 'name', label: 'NAME', type: 'string' }],
