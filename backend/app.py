@@ -3,18 +3,22 @@ F1 Archive — Race Historian & SQLite Analytics Microservice (Tier 2 Backend)
 FastAPI service providing sandboxed, read-only SQL execution against F1DB SQLite.
 """
 
+import logging
 import os
 import re
 import sqlite3
 import time
+from pathlib import Path
 from typing import Any, Dict, List, Optional
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
+logger = logging.getLogger("f1_archive.backend")
+
 app = FastAPI(
     title="F1 Archive Historian Backend",
-    description="Sandboxed read-only SQL execution and LLM query parsing over F1DB",
+    description="Sandboxed read-only SQL execution microservice over F1DB SQLite",
     version="1.0.0"
 )
 
@@ -32,14 +36,30 @@ if allowed_origins_env:
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_credentials=True,
+    allow_credentials=False,
     allow_methods=["GET", "POST", "OPTIONS"],
-    allow_headers=["*"],
+    allow_headers=["Content-Type", "Accept"],
 )
 
 # Database path resolution
-DEFAULT_DB_PATH = os.path.join(os.path.dirname(__file__), "..", "scripts", ".cache", "f1db.sqlite")
-DB_PATH = os.environ.get("F1DB_SQLITE_PATH", os.path.abspath(DEFAULT_DB_PATH))
+DEFAULT_DB_PATH = Path(__file__).resolve().parent.parent / "public" / "data" / "f1db-browser.sqlite"
+
+
+def get_db_path() -> Path:
+    if "F1DB_SQLITE_PATH" in os.environ:
+        return Path(os.environ["F1DB_SQLITE_PATH"]).resolve()
+    if DEFAULT_DB_PATH.exists():
+        return DEFAULT_DB_PATH.resolve()
+    legacy_cache_path = Path(__file__).resolve().parent.parent / "scripts" / ".cache" / "f1db.sqlite"
+    if legacy_cache_path.exists():
+        return legacy_cache_path.resolve()
+    return DEFAULT_DB_PATH.resolve()
+
+
+def build_readonly_sqlite_uri(db_path: str | Path) -> str:
+    resolved = Path(db_path).resolve()
+    return f"{resolved.as_uri()}?mode=ro"
+
 
 # Disallowed tokens & patterns for SQL Sandbox Hardening
 DISALLOWED_KEYWORDS = [
@@ -122,10 +142,12 @@ def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
     Executes a query in read-only URI mode with PRAGMA query_only=ON,
     and a 3,000 ms wall-clock execution cap enforced via set_progress_handler.
     """
-    if not os.path.exists(DB_PATH):
+    target_db_path = get_db_path()
+    if not target_db_path.exists():
+        logger.error("Database file not found at %s", target_db_path)
         raise HTTPException(
             status_code=503,
-            detail=f"Database file not found at {DB_PATH}. Please run F1DB ingestion or configure F1DB_SQLITE_PATH."
+            detail="Database is currently unavailable."
         )
 
     start_time = time.time()
@@ -138,8 +160,7 @@ def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
             return 1
         return 0
 
-    # URI read-only mode connection with shared cache and immutable flag
-    uri = f"file:{os.path.abspath(DB_PATH)}?mode=ro&cache=shared&immutable=1"
+    uri = build_readonly_sqlite_uri(target_db_path)
     conn = None
     try:
         conn = sqlite3.connect(uri, uri=True, check_same_thread=False)
@@ -167,9 +188,11 @@ def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
             for col in columns:
                 val = r[col["key"]]
                 row_dict[col["key"]] = val
-                # Infer numeric type if applicable
-                if isinstance(val, (int, float)):
-                    col["type"] = "number"
+                if val is not None:
+                    if isinstance(val, bool):
+                        col["type"] = "boolean"
+                    elif isinstance(val, (int, float)) and col["type"] != "boolean":
+                        col["type"] = "number"
             formatted_rows.append(row_dict)
 
         elapsed_ms = round((time.time() - start_time) * 1000, 2)
@@ -189,9 +212,11 @@ def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
                 status_code=408,
                 detail="Query execution timed out (exceeded 3,000 ms execution cap)."
             )
-        raise HTTPException(status_code=400, detail=f"SQLite Operational Error: {str(e)}")
+        logger.warning("SQLite operational error: %s", e)
+        raise HTTPException(status_code=400, detail="Invalid or unauthorized SQL query.")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database execution error: {str(e)}")
+        logger.exception("Unexpected error during query execution: %s", e)
+        raise HTTPException(status_code=500, detail="Internal query execution error.")
     finally:
         if conn:
             conn.close()
@@ -205,12 +230,11 @@ class QueryRequest(BaseModel):
 
 @app.get("/health")
 def health_check():
-    db_exists = os.path.exists(DB_PATH)
+    db_exists = get_db_path().exists()
     return {
-        "status": "ok",
+        "status": "ok" if db_exists else "degraded",
         "mode": "sqlite_readonly",
         "db_available": db_exists,
-        "db_path": DB_PATH
     }
 
 
