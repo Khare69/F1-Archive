@@ -49,6 +49,18 @@ pnpm-debug.log*
 # Agent & internal configuration
 .agents/
 
+# Python & Backend
+backend/.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+
+# SQLite generated databases
+public/data/*.sqlite
+public/data/*.sqlite-journal
+public/data/*.sqlite-wal
+
 # F1DB ETL Download Cache
 scripts/.cache/
 review_bundle.txt

@@ -9,7 +9,8 @@ import re
 import sqlite3
 import time
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any
+
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
@@ -33,8 +34,9 @@ def get_client_ip(request: Request) -> str:
         if xff:
             hops = [h.strip() for h in xff.split(",") if h.strip()]
             if hops:
-                target_idx = max(0, len(hops) - trusted_count)
-                return hops[target_idx]
+                if len(hops) > trusted_count:
+                    return hops[-1 - trusted_count]
+                return hops[0]
     return request.client.host if request.client else "127.0.0.1"
 
 
@@ -109,8 +111,8 @@ ALLOWED_SQL_FUNCTIONS = frozenset({
 SQLITE_RECURSIVE_CODE = getattr(sqlite3, "SQLITE_RECURSIVE", 33)
 
 
-def sqlite_readonly_authorizer(action_code: int, arg1: Optional[str], arg2: Optional[str],
-                               db_name: Optional[str], trigger_name: Optional[str]) -> int:
+def sqlite_readonly_authorizer(action_code: int, arg1: str | None, arg2: str | None,
+                               db_name: str | None, trigger_name: str | None) -> int:
     """
     SQLite authorizer callback enforcing strict read-only execution:
     - Allows SQLITE_SELECT
@@ -154,7 +156,7 @@ def validate_sql_structure(sql: str) -> str:
     in_double = False
     i = 0
     n = len(stripped)
-    outside_tokens: List[str] = []
+    outside_tokens: list[str] = []
 
     while i < n:
         c = stripped[i]
@@ -167,9 +169,7 @@ def validate_sql_structure(sql: str) -> str:
                 in_double = True
                 i += 1
                 continue
-            elif c == '-' and i + 1 < n and stripped[i + 1] == '-':
-                raise HTTPException(status_code=400, detail="SQL comments are disallowed for security.")
-            elif c == '/' and i + 1 < n and stripped[i + 1] == '*':
+            elif c == '-' and i + 1 < n and stripped[i + 1] == '-' or c == '/' and i + 1 < n and stripped[i + 1] == '*':
                 raise HTTPException(status_code=400, detail="SQL comments are disallowed for security.")
             elif c == ';':
                 rest = stripped[i + 1:].strip()
@@ -214,7 +214,7 @@ def validate_sql_structure(sql: str) -> str:
     return cleaned
 
 
-def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
+def execute_sandboxed_query(sql: str, max_rows: int = 200) -> dict[str, Any]:
     """
     Executes a query in read-only URI mode with PRAGMA query_only=ON,
     authorizer callback, and a 3,000 ms wall-clock execution cap enforced via set_progress_handler.
@@ -306,8 +306,8 @@ def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
         raise HTTPException(status_code=400, detail="Invalid or unauthorized SQL query.")
     except HTTPException:
         raise
-    except Exception as e:
-        logger.exception("Unexpected error during query execution: %s", e)
+    except Exception:
+        logger.exception("Unexpected error during query execution")
         raise HTTPException(status_code=500, detail="Internal query execution error.")
     finally:
         if conn:
@@ -316,8 +316,8 @@ def execute_sandboxed_query(sql: str, max_rows: int = 200) -> Dict[str, Any]:
 
 class QueryRequest(BaseModel):
     query: str = Field(..., min_length=1, max_length=4000, description="Inspectable read-only SQL query")
-    natural_prompt: Optional[str] = Field(None, description="Original natural language query")
-    max_rows: Optional[int] = Field(200, ge=1, le=1000, description="Max rows to return")
+    natural_prompt: str | None = Field(None, description="Original natural language query")
+    max_rows: int | None = Field(200, ge=1, le=1000, description="Max rows to return")
 
 
 @app.get("/health")
@@ -342,5 +342,5 @@ def run_query(request: Request, req: QueryRequest):
 
 if __name__ == "__main__":
     import uvicorn
-    port = int(os.environ.get("PORT", 8000))
+    port = int(os.environ.get("PORT", "8000"))
     uvicorn.run(app, host="0.0.0.0", port=port)
