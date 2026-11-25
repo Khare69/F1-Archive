@@ -18,25 +18,15 @@ window.addEventListener('vite:preloadError', (event) => {
   }
 });
 
+import { registerSW } from 'virtual:pwa-register';
+
 // Register Service Worker in production only, with ?no-sw opt-out escape hatch
 if (
   import.meta.env.PROD &&
   'serviceWorker' in navigator &&
   !window.location.search.includes('no-sw')
 ) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker
-      .register('/sw.js')
-      .then((registration) => {
-        // SW registered
-        if (registration.waiting) {
-          registration.waiting.postMessage({ type: 'SKIP_WAITING' });
-        }
-      })
-      .catch((error) => {
-        console.warn('Service worker registration failed:', error);
-      });
-  });
+  registerSW({ immediate: true });
 }
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

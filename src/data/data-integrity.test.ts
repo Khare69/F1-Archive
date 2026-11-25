@@ -1,4 +1,6 @@
 import { describe, it, expect } from 'vitest';
+import fs from 'node:fs';
+import path from 'node:path';
 import {
   getAllSeasons,
   getSeasonByYear,
@@ -160,11 +162,18 @@ describe('F1DB Historical Data Integrity & Invariants', () => {
       expect(madrid?.firstGP).toBe(2026);
     });
 
-    it('should ensure all circuits have non-empty 3D coordinates with no identical start/end kinks', () => {
+    it('should ensure all circuits have non-empty 3D coordinates in lazy-loaded files with no identical start/end kinks', () => {
       const circuits = getAllCircuits();
       for (const circuit of circuits) {
-        const coords = circuit.trackCoordinates;
-        expect(coords, `Circuit ${circuit.name} must have trackCoordinates`).toBeDefined();
+        // F-12: trackCoordinates is NOT embedded in summary circuits.json; loaded strictly on demand
+        expect(circuit.trackCoordinates).toBeUndefined();
+
+        const splineFilePath = path.resolve(process.cwd(), 'public/data/circuits', `${circuit.id}.json`);
+        expect(fs.existsSync(splineFilePath), `Spline file for ${circuit.id} must exist`).toBe(true);
+
+        const splineData = JSON.parse(fs.readFileSync(splineFilePath, 'utf8'));
+        const coords = splineData.coordinates;
+        expect(coords, `Circuit ${circuit.name} must have coordinates in spline file`).toBeDefined();
         expect(coords!.length, `Circuit ${circuit.name} points count`).toBeGreaterThanOrEqual(10);
 
         // Verify valid numeric 3D coordinates [x, y, z]
@@ -184,6 +193,23 @@ describe('F1DB Historical Data Integrity & Invariants', () => {
           `Circuit ${circuit.name} must not have duplicate closing endpoint`
         ).toBe(false);
       }
+    });
+
+    it('should verify F-11 classic tracks have > 50 projected vertices and F-13 real elevation delta', () => {
+      const classicVenues = ['monaco', 'monza', 'silverstone', 'suzuka', 'interlagos', 'spa-francorchamps'];
+      for (const cId of classicVenues) {
+        const filePath = path.resolve(process.cwd(), 'public/data/circuits', `${cId}.json`);
+        const splineData = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        expect(splineData.coordinates.length, `${cId} must have > 50 vertices`).toBeGreaterThan(50);
+      }
+
+      const spaPath = path.resolve(process.cwd(), 'public/data/circuits/spa-francorchamps.json');
+      const spaData = JSON.parse(fs.readFileSync(spaPath, 'utf8'));
+      expect(spaData.elevationDeltaM, 'Spa elevationDeltaM must be > 80m').toBeGreaterThan(80);
+
+      const monzaPath = path.resolve(process.cwd(), 'public/data/circuits/monza.json');
+      const monzaData = JSON.parse(fs.readFileSync(monzaPath, 'utf8'));
+      expect(monzaData.elevationDeltaM, 'Monza elevationDeltaM must be < 30m').toBeLessThan(30);
     });
   });
 

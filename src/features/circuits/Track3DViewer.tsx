@@ -147,20 +147,44 @@ export const Track3DViewer: React.FC<Track3DViewerProps> = ({
   const [is3DMode, setIs3DMode] = useState<boolean>(true);
   const [selectedTurn, setSelectedTurn] = useState<number | null>(null);
   const [isContextLost, setIsContextLost] = useState<boolean>(false);
+  const [loadedCoords, setLoadedCoords] = useState<[number, number, number][] | null>(
+    circuit.trackCoordinates || null
+  );
 
   const orbitRef = useRef<OrbitControlsImpl>(null);
 
+  useEffect(() => {
+    if (circuit.trackCoordinates && circuit.trackCoordinates.length > 3) {
+      setLoadedCoords(circuit.trackCoordinates);
+      return;
+    }
+
+    let isCancelled = false;
+    fetch(`/data/circuits/${circuit.id}.json`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (!isCancelled && data && data.coordinates) {
+          setLoadedCoords(data.coordinates);
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      isCancelled = true;
+    };
+  }, [circuit.id, circuit.trackCoordinates]);
+
   // Fallback points if circuit coordinates are absent
   const trackPoints: [number, number, number][] = useMemo(() => {
-    if (circuit.trackCoordinates && circuit.trackCoordinates.length > 3) {
-      return circuit.trackCoordinates;
+    if (loadedCoords && loadedCoords.length > 3) {
+      return loadedCoords;
     }
     // Default standard oval curve
     return [
       [0, 0, 0], [4, 0.5, 0], [7, 1.2, 3], [5, 1.5, 6], [1, 0.8, 7],
       [-4, 0.2, 5], [-8, 0, 2], [-6, 0.2, -3], [0, 0, 0]
     ];
-  }, [circuit]);
+  }, [loadedCoords]);
 
   const handleResetCamera = useCallback(() => {
     if (orbitRef.current) {

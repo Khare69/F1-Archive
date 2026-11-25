@@ -180,7 +180,7 @@ export const CircuitsArchive: React.FC = () => {
           />
           <StatCard
             label="ELEVATION CHANGE"
-            value={selectedCircuit.elevation}
+            value={selectedCircuit.elevation ?? 'N/A'}
             subtext="Altitude Delta"
             accentColor="#C0C0C0"
           />

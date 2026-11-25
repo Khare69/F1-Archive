@@ -35,6 +35,12 @@ jobs:
       - name: Build Production Bundle
         run: npm run build
 
+      - name: Enforce Bundle Size Budgets
+        run: npm run size
+
+      - name: Run ETL Invariant Tests
+        run: npx vitest run scripts/etl/__tests__
+
       - name: Install Playwright Browsers (Chromium only)
         run: npx playwright install --with-deps chromium
 

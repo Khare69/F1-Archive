@@ -16,7 +16,7 @@ export interface Team {
   championships: number;
   logoUrl?: string;
   description: string;
-  firstEntry: number;
+  firstEntry: number | null;
   polePositions: number;
   fastestLaps: number;
   isLegendary?: boolean;
@@ -76,9 +76,9 @@ export interface Circuit {
   turns: number;
   lapRecord: string | null;
   lapRecordHolder: string | null;
-  firstGP: number;
+  firstGP: number | null;
   drsZones: number | null;
-  elevation: string;
+  elevation: string | null;
   type: 'Street' | 'Permanent' | 'Semi-Permanent';
   description: string;
   totalRaces?: number;

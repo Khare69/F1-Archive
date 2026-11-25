@@ -68,7 +68,6 @@ describe('DataService Queries & Integrity', () => {
     expect(buddh).toBeDefined();
     expect(buddh?.country).toBe('India');
     expect(buddh?.turns).toBe(16);
-    expect(buddh?.trackCoordinates?.length).toBeGreaterThan(10);
   });
 
   it('should calculate global archive stats correctly', () => {

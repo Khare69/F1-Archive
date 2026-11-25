@@ -51,3 +51,4 @@ pnpm-debug.log*
 
 # F1DB ETL Download Cache
 scripts/.cache/
+review_bundle.txt
