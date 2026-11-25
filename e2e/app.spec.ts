@@ -122,9 +122,10 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
 
     // Test Play/Pause transport toggle
     const playBtn = page.locator('.transport-play-btn');
-    await playBtn.click({ force: true });
-    await expect(playBtn).toHaveClass(/playing/);
-    await playBtn.click({ force: true });
+    await expect(playBtn).toBeVisible({ timeout: 10000 });
+    await playBtn.click();
+    await expect(playBtn).toHaveClass(/playing/, { timeout: 10000 });
+    await playBtn.click();
 
     // Test Strategy & Stint Degradation Tab
     const strategyTabBtn = page.locator('.tab-btn', { hasText: 'STRATEGY' });
@@ -142,10 +143,10 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
 
     // 10. Explainable AI Race Historian & SQL Lab (Offline SQLite-WASM)
     await page.goto('/historian');
-    await expect(page.locator('.historian-page-root, h1').first()).toBeVisible();
-    await expect(page.locator('.sql-inspector-card')).toBeVisible();
-    await expect(page.locator('.copy-sql-btn').first()).toBeVisible();
-    await expect(page.locator('.engine-status-pill')).toBeVisible();
+    await expect(page.locator('.historian-page-root, h1').first()).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.sql-inspector-card')).toBeVisible({ timeout: 15000 });
+    await expect(page.locator('.copy-sql-btn').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('.engine-status-pill')).toBeVisible({ timeout: 10000 });
 
     // Test Temple of Speed (Monza) Masters preset (real SQLite-WASM execution)
     const monzaPresetBtn = page.locator('.preset-chip', { hasText: 'Monza' });

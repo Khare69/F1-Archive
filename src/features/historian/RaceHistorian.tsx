@@ -208,12 +208,15 @@ export const RaceHistorian: React.FC = () => {
         rows: queryResult.rows.slice(0, 10).map((row, idx) => {
           const primaryCol = queryResult.columns[0]?.key || 'driver';
           const numericCol =
-            queryResult.columns.find((c) => c.type === 'number') || queryResult.columns[1];
+            queryResult.columns.find((c) => c.type === 'number') ||
+            queryResult.columns[1] ||
+            queryResult.columns[0];
           const label = String(row[primaryCol] || `Entry #${idx + 1}`);
-          const val = row[numericCol.key];
+          const val = numericCol ? row[numericCol.key] : undefined;
+          const colLabel = numericCol ? ` ${numericCol.label}` : '';
           return {
             label: `#${idx + 1} ${label}`,
-            value: `${val !== undefined ? String(val) : ''} ${numericCol.label}`,
+            value: `${val !== undefined ? String(val) : ''}${colLabel}`,
             color: idx === 0 ? '#FFD700' : idx === 1 ? '#00D2FF' : '#00E701'
           };
         }),
@@ -519,10 +522,11 @@ export const RaceHistorian: React.FC = () => {
                       const primaryCol = queryResult.columns[0]?.key || 'driver';
                       const numericCol =
                         queryResult.columns.find((c) => c.type === 'number') ||
-                        queryResult.columns[1];
+                        queryResult.columns[1] ||
+                        queryResult.columns[0];
                       const label = String(row[primaryCol] || `Item #${rIdx + 1}`);
                       const val =
-                        typeof row[numericCol.key] === 'number'
+                        numericCol && typeof row[numericCol.key] === 'number'
                           ? (row[numericCol.key] as number)
                           : 1;
 
@@ -530,7 +534,7 @@ export const RaceHistorian: React.FC = () => {
                       const maxVal = Math.max(
                         1,
                         ...queryResult.rows.map((r) =>
-                          typeof r[numericCol.key] === 'number'
+                          numericCol && typeof r[numericCol.key] === 'number'
                             ? (r[numericCol.key] as number)
                             : 1
                         )
@@ -553,7 +557,9 @@ export const RaceHistorian: React.FC = () => {
                             ></div>
                           </div>
                           <div className="bar-value telemetry">
-                            {val} {numericCol.label}
+                            {numericCol && typeof row[numericCol.key] === 'number'
+                              ? `${val} ${numericCol.label}`
+                              : label}
                           </div>
                         </div>
                       );
