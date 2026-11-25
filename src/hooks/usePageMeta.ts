@@ -98,3 +98,15 @@ export function usePageMeta(options: PageMetaOptions) {
     };
   }, [title, description, canonicalPath, ogType, ogImage, jsonLd]);
 }
+
+/**
+ * Lightweight helper to set document title and reset on unmount.
+ */
+export function useDocumentTitle(pageTitle?: string) {
+  useEffect(() => {
+    document.title = pageTitle ? `${pageTitle} — F1 // ARCHIVE` : 'F1 // ARCHIVE';
+    return () => {
+      document.title = 'F1 // ARCHIVE';
+    };
+  }, [pageTitle]);
+}

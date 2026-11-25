@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { safeStorage } from '../../../lib/safeStorage';
+import { safeStorage } from '../../../utils/safeStorage';
 import { getAllDrivers, getAllTeams, getDriverById, getTeamById } from '../../../data/dataService';
 import type { Driver, Team } from '../../../types/f1';
 import './FavoritesWidget.css';

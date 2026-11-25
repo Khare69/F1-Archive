@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { useDocumentTitle } from '../../hooks/usePageMeta';
 import './NotFound.css';
 
 export const NotFound: React.FC = () => {

@@ -4,7 +4,7 @@ import {
   useConstructorStandingsQuery,
   useSeasonScheduleQuery
 } from '../../api/jolpicaClient';
-import { useDocumentTitle } from '../../hooks/useDocumentTitle';
+import { useDocumentTitle } from '../../hooks/usePageMeta';
 import { LiveStatusBadge } from './LiveStatusBadge';
 import { StandingsTable } from './StandingsTable';
 import './LiveStandings.css';
