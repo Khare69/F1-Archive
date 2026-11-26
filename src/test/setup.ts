@@ -37,6 +37,11 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
 };
 
+// Mock scrollIntoView for cmdk in JSDOM
+if (typeof Element !== 'undefined' && !Element.prototype.scrollIntoView) {
+  Element.prototype.scrollIntoView = () => {};
+}
+
 // Mock IntersectionObserver
 global.IntersectionObserver = class IntersectionObserver {
   root = null;
@@ -67,4 +72,3 @@ if (typeof window !== 'undefined') {
     });
   }
 }
-

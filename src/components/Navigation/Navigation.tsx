@@ -1,16 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import './Navigation.css';
+import { motion, useReducedMotion } from 'motion/react';
+import { Search, HelpCircle, Menu, X, ChevronDown } from 'lucide-react';
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from '../ui/dropdown-menu';
 
-interface NavigationProps {
+export interface NavigationProps {
   onOpenSearch?: () => void;
+  onOpenShortcuts?: () => void;
 }
 
-export const Navigation: React.FC<NavigationProps> = ({ onOpenSearch }) => {
+const isArchiveActive = (pathname: string): boolean => {
+  return (
+    pathname === '/archive' ||
+    pathname.startsWith('/archive/') ||
+    pathname === '/standings' ||
+    pathname.startsWith('/standings/') ||
+    pathname === '/seasons' ||
+    pathname.startsWith('/seasons/') ||
+    pathname === '/drivers' ||
+    pathname.startsWith('/drivers/') ||
+    pathname === '/teams' ||
+    pathname.startsWith('/teams/') ||
+    pathname === '/circuits' ||
+    pathname.startsWith('/circuits/')
+  );
+};
+
+const isTelemetryActive = (pathname: string): boolean => {
+  return (
+    pathname === '/engineering' ||
+    pathname.startsWith('/engineering/') ||
+    pathname === '/telemetry' ||
+    pathname.startsWith('/telemetry/') ||
+    pathname === '/pitwall' ||
+    pathname.startsWith('/pitwall/')
+  );
+};
+
+export const Navigation: React.FC<NavigationProps> = ({ onOpenSearch, onOpenShortcuts }) => {
   const location = useLocation();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const shouldReduceMotion = useReducedMotion();
+  const { pathname } = location;
 
-  // Close mobile drawer on Escape key
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && mobileMenuOpen) {
@@ -21,94 +58,366 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenSearch }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [mobileMenuOpen]);
 
-  const navLinks = [
-    { path: '/', label: 'HOME' },
-    { path: '/standings', label: 'STANDINGS' },
-    { path: '/pitwall', label: 'PIT WALL' },
-    { path: '/historian', label: 'HISTORIAN' },
-    { path: '/telemetry', label: 'TELEMETRY' },
-    { path: '/seasons', label: 'SEASONS' },
-    { path: '/teams', label: 'TEAMS' },
-    { path: '/lab', label: '3D LAB' },
-    { path: '/circuits', label: 'CIRCUITS' },
-    { path: '/drivers', label: 'DRIVERS' }
-  ];
-
-  const isActive = (path: string) => {
-    if (path === '/') return location.pathname === '/';
-    return location.pathname.startsWith(path);
-  };
+  const archiveActive = isArchiveActive(pathname);
+  const telemetryActive = isTelemetryActive(pathname);
+  const labActive = pathname === '/lab' || pathname.startsWith('/lab/');
+  const historianActive = pathname === '/historian' || pathname.startsWith('/historian/');
+  const homeActive = pathname === '/';
 
   return (
-    <header className="f1-navbar">
-      <div className="navbar-container">
+    <header className="sticky top-0 z-40 h-14 bg-canvas/90 backdrop-blur-md border-b border-white/10">
+      <div className="max-w-7xl mx-auto h-full px-4 flex items-center justify-between gap-4">
         {/* Brand */}
-        <Link to="/" className="navbar-brand" onClick={() => setMobileMenuOpen(false)}>
-          <div className="brand-logo-box">
-            <span className="brand-f1">F1</span>
-            <span className="brand-slash">//</span>
+        <Link
+          to="/"
+          className="flex items-center gap-2 group shrink-0"
+          onClick={() => setMobileMenuOpen(false)}
+        >
+          <div className="flex items-center text-sm font-bold tracking-tight">
+            <span className="text-crimson font-black tracking-tighter text-base">F1</span>
+            <span className="text-white/40 mx-1 font-mono">//</span>
+            <span className="text-white tracking-widest font-mono text-xs">ARCHIVE</span>
           </div>
-          <div className="brand-text-box">
-            <span className="brand-title headline">ARCHIVE</span>
-            <span className="brand-subtitle telemetry">THE EVOLUTION OF SPEED</span>
-          </div>
+          <span className="hidden xl:inline text-[9px] font-mono tracking-widest text-neutral-500 uppercase">
+            THE EVOLUTION OF SPEED
+          </span>
         </Link>
 
-        {/* Desktop Nav Links */}
-        <nav className={`navbar-nav ${mobileMenuOpen ? 'mobile-open' : ''}`} aria-label="Main Navigation">
-          {navLinks.map((link) => (
+        {/* Center Desktop Navigation: Exactly 5 Hubs */}
+        <nav
+          className="hidden md:flex items-center gap-1 h-full"
+          aria-label="Main Hub Navigation"
+        >
+          {/* 1. Home */}
+          <div className="relative flex items-center h-full">
             <Link
-              key={link.path}
-              to={link.path}
-              className={`nav-link headline ${isActive(link.path) ? 'active' : ''}`}
-              onClick={() => setMobileMenuOpen(false)}
+              to="/"
+              data-testid="hub-nav-item"
+              aria-current={homeActive ? 'page' : undefined}
+              className={`relative flex items-center h-full px-3 text-xs font-mono uppercase tracking-wider transition-colors ${
+                homeActive
+                  ? 'text-white font-bold active'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
             >
-              <span className="nav-dot"></span>
-              {link.label}
+              Home
+              {homeActive && (
+                <motion.div
+                  layoutId={shouldReduceMotion ? undefined : 'active-hub-indicator'}
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-crimson"
+                  transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                />
+              )}
             </Link>
-          ))}
+          </div>
+
+          {/* 2. Archive */}
+          <div className="relative flex items-center h-full">
+            <Link
+              to="/seasons"
+              data-testid="hub-nav-item"
+              aria-current={archiveActive ? 'page' : undefined}
+              className={`relative flex items-center h-full pl-3 pr-1 text-xs font-mono uppercase tracking-wider transition-colors ${
+                archiveActive
+                  ? 'text-white font-bold active'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Archive
+              {archiveActive && (
+                <motion.div
+                  layoutId={shouldReduceMotion ? undefined : 'active-hub-indicator'}
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-crimson"
+                  transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                />
+              )}
+            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="p-1 mr-1 text-neutral-400 hover:text-white rounded hover:bg-white/5 transition-colors"
+                  aria-label="Archive sub-menu"
+                >
+                  <ChevronDown className="w-3 h-3" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="start"
+                className="w-48 bg-surface-elevated border-white/10"
+              >
+                <DropdownMenuItem asChild>
+                  <Link to="/standings">Standings</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/seasons">Seasons</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/drivers">Drivers</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/drivers/compare">Driver Comparison</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/teams">Constructors</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/circuits">Circuits</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* 3. Telemetry & Strategy */}
+          <div className="relative flex items-center h-full">
+            <Link
+              to="/telemetry"
+              data-testid="hub-nav-item"
+              aria-current={telemetryActive ? 'page' : undefined}
+              className={`relative flex items-center h-full pl-3 pr-1 text-xs font-mono uppercase tracking-wider transition-colors ${
+                telemetryActive
+                  ? 'text-white font-bold active'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Telemetry &amp; Strategy
+              {telemetryActive && (
+                <motion.div
+                  layoutId={shouldReduceMotion ? undefined : 'active-hub-indicator'}
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-crimson"
+                  transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                />
+              )}
+            </Link>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button
+                  type="button"
+                  className="p-1 mr-1 text-neutral-400 hover:text-white rounded hover:bg-white/5 transition-colors"
+                  aria-label="Telemetry & Strategy sub-menu"
+                >
+                  <ChevronDown className="w-3 h-3" />
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent
+                align="start"
+                className="w-52 bg-surface-elevated border-white/10"
+              >
+                <DropdownMenuItem asChild>
+                  <Link to="/telemetry">Telemetry Ghost Replay</Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/pitwall">Pit-Wall Strategy</Link>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </div>
+
+          {/* 4. 3D Lab */}
+          <div className="relative flex items-center h-full">
+            <Link
+              to="/lab"
+              data-testid="hub-nav-item"
+              aria-current={labActive ? 'page' : undefined}
+              className={`relative flex items-center h-full px-3 text-xs font-mono uppercase tracking-wider transition-colors ${
+                labActive
+                  ? 'text-white font-bold active'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              3D Lab
+              {labActive && (
+                <motion.div
+                  layoutId={shouldReduceMotion ? undefined : 'active-hub-indicator'}
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-crimson"
+                  transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                />
+              )}
+            </Link>
+          </div>
+
+          {/* 5. SQL Historian */}
+          <div className="relative flex items-center h-full">
+            <Link
+              to="/historian"
+              data-testid="hub-nav-item"
+              aria-current={historianActive ? 'page' : undefined}
+              className={`relative flex items-center h-full px-3 text-xs font-mono uppercase tracking-wider transition-colors ${
+                historianActive
+                  ? 'text-white font-bold active'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              SQL Historian
+              {historianActive && (
+                <motion.div
+                  layoutId={shouldReduceMotion ? undefined : 'active-hub-indicator'}
+                  className="absolute bottom-0 left-0 right-0 h-[2px] bg-crimson"
+                  transition={{ type: 'spring', stiffness: 400, damping: 35 }}
+                />
+              )}
+            </Link>
+          </div>
         </nav>
 
-        {/* Controls & Indicators */}
-        <div className="navbar-actions">
-          {/* Quick Search Button */}
+        {/* Right Actions */}
+        <div className="flex items-center gap-2">
           {onOpenSearch && (
             <button
               type="button"
-              className="search-nav-btn"
+              className="flex items-center gap-2 px-2.5 py-1.5 rounded bg-surface/80 hover:bg-surface-elevated border border-white/10 hover:border-white/20 text-xs text-neutral-300 font-mono transition-colors"
               onClick={onOpenSearch}
               aria-label="Search database (Ctrl+K)"
               title="Search Archive (Ctrl+K)"
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <circle cx="11" cy="11" r="8"></circle>
-                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-              </svg>
-              <span className="search-nav-label telemetry">SEARCH</span>
-              <kbd className="search-shortcut-kbd telemetry">⌘K</kbd>
+              <Search className="w-3.5 h-3.5 text-neutral-400" />
+              <span className="hidden sm:inline text-xs">Search...</span>
+              <kbd className="hidden sm:inline-flex items-center px-1.5 py-0.5 text-[10px] font-mono text-neutral-400 bg-white/5 border border-white/10 rounded">
+                Ctrl K
+              </kbd>
             </button>
           )}
 
-          {/* System Live Status */}
-          <div className="live-status-pill telemetry">
-            <span className="status-blip"></span>
+          {onOpenShortcuts && (
+            <button
+              type="button"
+              className="flex items-center justify-center w-8 h-8 rounded hover:bg-white/5 text-neutral-400 hover:text-white transition-colors"
+              onClick={onOpenShortcuts}
+              aria-label="Keyboard Shortcuts (?)"
+              title="Keyboard Shortcuts (?)"
+            >
+              <HelpCircle className="w-4 h-4" />
+            </button>
+          )}
+
+          <div className="hidden lg:flex items-center gap-1.5 px-2.5 py-1 rounded bg-white/[0.03] border border-white/5 font-mono text-[10px] text-neutral-400">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
             <span>RACE CONTROL // ONLINE</span>
           </div>
 
           {/* Mobile Menu Toggle */}
           <button
             type="button"
-            className="mobile-toggle-btn"
+            className="md:hidden flex items-center justify-center w-8 h-8 rounded text-neutral-300 hover:text-white"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle navigation menu"
             aria-expanded={mobileMenuOpen}
           >
-            <span className={`bar ${mobileMenuOpen ? 'open' : ''}`}></span>
-            <span className={`bar ${mobileMenuOpen ? 'open' : ''}`}></span>
-            <span className={`bar ${mobileMenuOpen ? 'open' : ''}`}></span>
+            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
       </div>
+
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed inset-x-0 top-14 bg-surface/98 border-b border-white/10 backdrop-blur-xl p-4 flex flex-col gap-3 shadow-2xl z-50">
+          <Link
+            to="/"
+            className={`px-3 py-2 rounded text-sm font-mono uppercase tracking-wider ${
+              homeActive ? 'bg-crimson/20 text-white font-bold' : 'text-neutral-300 hover:bg-white/5'
+            }`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            Home
+          </Link>
+
+          <div>
+            <div className="px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-neutral-500">
+              ARCHIVE
+            </div>
+            <div className="pl-3 flex flex-col gap-1 mt-1 border-l border-white/10 ml-2">
+              <Link
+                to="/seasons"
+                className="px-2 py-1.5 rounded text-xs font-mono text-neutral-300 hover:bg-white/5"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Seasons
+              </Link>
+              <Link
+                to="/standings"
+                className="px-2 py-1.5 rounded text-xs font-mono text-neutral-300 hover:bg-white/5"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Standings
+              </Link>
+              <Link
+                to="/drivers"
+                className="px-2 py-1.5 rounded text-xs font-mono text-neutral-300 hover:bg-white/5"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Drivers
+              </Link>
+              <Link
+                to="/drivers/compare"
+                className="px-2 py-1.5 rounded text-xs font-mono text-neutral-300 hover:bg-white/5"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Driver Comparison
+              </Link>
+              <Link
+                to="/teams"
+                className="px-2 py-1.5 rounded text-xs font-mono text-neutral-300 hover:bg-white/5"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Constructors
+              </Link>
+              <Link
+                to="/circuits"
+                className="px-2 py-1.5 rounded text-xs font-mono text-neutral-300 hover:bg-white/5"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Circuits
+              </Link>
+            </div>
+          </div>
+
+          <div>
+            <div className="px-3 py-1 font-mono text-[10px] uppercase tracking-widest text-neutral-500">
+              TELEMETRY &amp; STRATEGY
+            </div>
+            <div className="pl-3 flex flex-col gap-1 mt-1 border-l border-white/10 ml-2">
+              <Link
+                to="/telemetry"
+                className="px-2 py-1.5 rounded text-xs font-mono text-neutral-300 hover:bg-white/5"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Telemetry Ghost Replay
+              </Link>
+              <Link
+                to="/pitwall"
+                className="px-2 py-1.5 rounded text-xs font-mono text-neutral-300 hover:bg-white/5"
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                Pit-Wall Strategy
+              </Link>
+            </div>
+          </div>
+
+          <Link
+            to="/lab"
+            className={`px-3 py-2 rounded text-sm font-mono uppercase tracking-wider ${
+              labActive ? 'bg-crimson/20 text-white font-bold' : 'text-neutral-300 hover:bg-white/5'
+            }`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            3D Lab
+          </Link>
+
+          <Link
+            to="/historian"
+            className={`px-3 py-2 rounded text-sm font-mono uppercase tracking-wider ${
+              historianActive
+                ? 'bg-crimson/20 text-white font-bold'
+                : 'text-neutral-300 hover:bg-white/5'
+            }`}
+            onClick={() => setMobileMenuOpen(false)}
+          >
+            SQL Historian
+          </Link>
+        </div>
+      )}
     </header>
   );
 };
+
+export default Navigation;
