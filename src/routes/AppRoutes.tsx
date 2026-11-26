@@ -2,6 +2,8 @@ import React, { lazy } from 'react';
 import { Routes, Route, Navigate, useParams } from 'react-router-dom';
 import { Home } from '../features/home/Home';
 import { RouteShell } from '../components/Layout/RouteShell';
+import { ArchiveHub } from '../features/hubs/ArchiveHub';
+import { EngineeringHub } from '../features/hubs/EngineeringHub';
 
 // Secondary routes lazy-loaded on demand
 const SeasonsArchive = lazy(() =>
@@ -52,70 +54,82 @@ export const AppRoutes: React.FC = () => {
           </RouteShell>
         }
       />
-      <Route
-        path="/seasons/:year?"
-        element={
-          <RouteShell fallbackTitle="Seasons Archive Fault" loadingLabel="LOADING SEASONS ARCHIVE...">
-            <SeasonsArchive />
-          </RouteShell>
-        }
-      />
-      <Route
-        path="/teams/:teamId?"
-        element={
-          <RouteShell fallbackTitle="Constructors Vault Fault" loadingLabel="LOADING CONSTRUCTORS...">
-            <TeamsArchive />
-          </RouteShell>
-        }
-      />
-      <Route
-        path="/drivers/compare"
-        element={
-          <RouteShell fallbackTitle="Driver Comparison Fault" loadingLabel="INITIALIZING COMPARISON...">
-            <DriverComparison />
-          </RouteShell>
-        }
-      />
-      <Route
-        path="/drivers/:driverId?"
-        element={
-          <RouteShell fallbackTitle="Drivers Archive Fault" loadingLabel="LOADING DRIVERS...">
-            <DriversArchive />
-          </RouteShell>
-        }
-      />
-      <Route
-        path="/circuits/:circuitId?"
-        element={
-          <RouteShell fallbackTitle="Circuits Archive Fault" loadingLabel="LOADING CIRCUITS GEOMETRY..." disableTransition>
-            <CircuitsArchive />
-          </RouteShell>
-        }
-      />
-      <Route
-        path="/standings"
-        element={
-          <RouteShell fallbackTitle="Standings Vault Fault" loadingLabel="SYNCING LIVE STANDINGS...">
-            <LiveStandings />
-          </RouteShell>
-        }
-      />
-      <Route
-        path="/telemetry/:slug?"
-        element={
-          <RouteShell fallbackTitle="Telemetry Replay Fault" loadingLabel="STREAMING 3D GHOST TELEMETRY..." disableTransition>
-            <TelemetryHub />
-          </RouteShell>
-        }
-      />
-      <Route
-        path="/pitwall"
-        element={
-          <RouteShell fallbackTitle="Pit-Wall Strategy Fault" loadingLabel="PREPARING STRATEGY SIMULATOR...">
-            <PitWallStrategy />
-          </RouteShell>
-        }
-      />
+
+      {/* Archive Hub */}
+      <Route element={<ArchiveHub />}>
+        <Route path="/archive" element={<Navigate replace to="/seasons" />} />
+        <Route
+          path="/seasons/:year?"
+          element={
+            <RouteShell fallbackTitle="Seasons Archive Fault" loadingLabel="LOADING SEASONS ARCHIVE...">
+              <SeasonsArchive />
+            </RouteShell>
+          }
+        />
+        <Route
+          path="/teams/:teamId?"
+          element={
+            <RouteShell fallbackTitle="Constructors Vault Fault" loadingLabel="LOADING CONSTRUCTORS...">
+              <TeamsArchive />
+            </RouteShell>
+          }
+        />
+        <Route
+          path="/drivers/compare"
+          element={
+            <RouteShell fallbackTitle="Driver Comparison Fault" loadingLabel="INITIALIZING COMPARISON...">
+              <DriverComparison />
+            </RouteShell>
+          }
+        />
+        <Route
+          path="/drivers/:driverId?"
+          element={
+            <RouteShell fallbackTitle="Drivers Archive Fault" loadingLabel="LOADING DRIVERS...">
+              <DriversArchive />
+            </RouteShell>
+          }
+        />
+        <Route
+          path="/circuits/:circuitId?"
+          element={
+            <RouteShell fallbackTitle="Circuits Archive Fault" loadingLabel="LOADING CIRCUITS GEOMETRY..." disableTransition>
+              <CircuitsArchive />
+            </RouteShell>
+          }
+        />
+        <Route
+          path="/standings"
+          element={
+            <RouteShell fallbackTitle="Standings Vault Fault" loadingLabel="SYNCING LIVE STANDINGS...">
+              <LiveStandings />
+            </RouteShell>
+          }
+        />
+      </Route>
+
+      {/* Engineering Hub */}
+      <Route element={<EngineeringHub />}>
+        <Route path="/engineering" element={<Navigate replace to="/telemetry" />} />
+        <Route
+          path="/telemetry/:slug?"
+          element={
+            <RouteShell fallbackTitle="Telemetry Replay Fault" loadingLabel="STREAMING 3D GHOST TELEMETRY..." disableTransition>
+              <TelemetryHub />
+            </RouteShell>
+          }
+        />
+        <Route
+          path="/pitwall"
+          element={
+            <RouteShell fallbackTitle="Pit-Wall Strategy Fault" loadingLabel="PREPARING STRATEGY SIMULATOR...">
+              <PitWallStrategy />
+            </RouteShell>
+          }
+        />
+      </Route>
+
+      {/* 3D Lab */}
       <Route
         path="/lab/:teamId?"
         element={
@@ -126,6 +140,8 @@ export const AppRoutes: React.FC = () => {
       />
       <Route path="/cars/:teamId?" element={<CarsRedirect />} />
       <Route path="/garage" element={<Navigate replace to="/lab" />} />
+
+      {/* SQL Historian */}
       <Route
         path="/historian"
         element={
@@ -134,6 +150,8 @@ export const AppRoutes: React.FC = () => {
           </RouteShell>
         }
       />
+
+      {/* Fallback 404 */}
       <Route
         path="*"
         element={
@@ -145,3 +163,5 @@ export const AppRoutes: React.FC = () => {
     </Routes>
   );
 };
+
+export default AppRoutes;
