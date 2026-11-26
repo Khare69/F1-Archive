@@ -10,6 +10,9 @@ export interface CornerMarkerItem {
   gear?: number;
   brakingG?: number | null;
   lateralG?: number | null;
+  brakingDistanceM?: number | null;
+  notes?: string;
+  famousOvertake?: string;
   isOvertakingZone?: boolean;
   isHighDownforce?: boolean;
   isAutoDetected?: boolean;
