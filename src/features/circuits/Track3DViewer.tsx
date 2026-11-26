@@ -6,6 +6,7 @@ import * as THREE from 'three';
 import type { Circuit } from '../../types/f1';
 import { CanvasErrorBoundary } from '../cars/components/CanvasErrorBoundary';
 import { PerfDebugCollector } from '../cars/components/PerfDebugOverlay';
+import { disposeObject3D, attachWebGLContextLossGuard } from '../../utils/webglDisposal';
 import './Track3DViewer.css';
 
 interface Track3DViewerProps {
@@ -64,6 +65,17 @@ const TrackMesh: React.FC<{
       drsGeometry: drsGeo
     };
   }, [points, is3DMode]);
+
+  // Deterministically dispose previous procedural geometries and materials on rebuild/unmount
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+      drsGeometry.dispose();
+      if (meshRef.current) {
+        disposeObject3D(meshRef.current);
+      }
+    };
+  }, [geometry, drsGeometry]);
 
   // Subtle breathing animation for emissive DRS zone
   useFrame(({ clock }) => {
@@ -240,13 +252,11 @@ export const Track3DViewer: React.FC<Track3DViewerProps> = ({
               camera={{ position: [0, 18, 20], fov: 45 }}
               gl={{ antialias: true, alpha: true }}
               onCreated={({ gl }) => {
-                gl.domElement.addEventListener('webglcontextlost', (e) => {
-                  e.preventDefault();
-                  setIsContextLost(true);
-                });
-                gl.domElement.addEventListener('webglcontextrestored', () => {
-                  setIsContextLost(false);
-                });
+                attachWebGLContextLossGuard(
+                  gl.domElement,
+                  () => setIsContextLost(true),
+                  () => setIsContextLost(false)
+                );
               }}
             >
               <TrackInvalidator trigger={`${circuit.id}_${is3DMode}_${selectedTurn}`} />
