@@ -117,16 +117,16 @@ export const CircuitsArchive: React.FC = () => {
 
           <div className="circuit-meta-bar telemetry">
             <span>CIRCUIT ID: #{selectedCircuit.id.toUpperCase()}</span>
-            <span>FIRST GRAND PRIX: {selectedCircuit.firstGP}</span>
+            <span>FIRST GRAND PRIX: {selectedCircuit.firstGP != null ? selectedCircuit.firstGP : 'N/A'}</span>
             <span
-              className={`circuit-type-badge-large type-${selectedCircuit.type.toLowerCase()}`}
+              className={`circuit-type-badge-large type-${selectedCircuit.type ? selectedCircuit.type.toLowerCase() : 'permanent'}`}
               style={{
                 color: accentColor,
                 backgroundColor: `${accentColor}22`,
                 border: `1px solid ${accentColor}55`
               }}
             >
-              {selectedCircuit.type.toUpperCase()} TRACK
+              {(selectedCircuit.type || 'Permanent').toUpperCase()} TRACK
             </span>
             <span className="f1db-sync-pill">
               <span>●</span> F1DB SYNCED (v{meta.f1dbVersion})
@@ -161,14 +161,14 @@ export const CircuitsArchive: React.FC = () => {
         <div className="circuit-stats-grid">
           <StatCard
             label="CIRCUIT LENGTH"
-            value={selectedCircuit.lengthKm}
+            value={selectedCircuit.lengthKm || 'N/A'}
             subtext="Lap Distance"
             accentColor={accentColor}
             isPrimary
           />
           <StatCard
             label="TOTAL CORNERS"
-            value={selectedCircuit.turns}
+            value={selectedCircuit.turns != null ? selectedCircuit.turns : 'N/A'}
             subtext="Numbered Turns"
             accentColor="#00D2FF"
           />
@@ -180,7 +180,7 @@ export const CircuitsArchive: React.FC = () => {
           />
           <StatCard
             label="ELEVATION CHANGE"
-            value={selectedCircuit.elevation ?? 'N/A'}
+            value={selectedCircuit.elevation || 'N/A'}
             subtext="Altitude Delta"
             accentColor="#C0C0C0"
           />
