@@ -23,6 +23,7 @@ interface GhostLapViewer3DProps {
   playbackRef: React.MutableRefObject<PlaybackHandle>;
   currentTime: number;
   isPlaying: boolean;
+  scrubProgress?: number | null;
   onTimeUpdate?: (time: number) => void;
 }
 
@@ -100,8 +101,9 @@ const GhostCars: React.FC<{
   catmull: THREE.CatmullRomCurve3;
   showdown: TelemetryShowdown;
   playbackRef: React.MutableRefObject<PlaybackHandle>;
+  scrubRef: React.MutableRefObject<number | null>;
   onTimeUpdate?: (time: number) => void;
-}> = ({ catmull, showdown, playbackRef, onTimeUpdate }) => {
+}> = ({ catmull, showdown, playbackRef, scrubRef, onTimeUpdate }) => {
   const ghostARef = useRef<THREE.Group>(null);
   const ghostBRef = useRef<THREE.Group>(null);
   const deltaBadgeRef = useRef<HTMLDivElement>(null);
@@ -140,7 +142,8 @@ const GhostCars: React.FC<{
       }
     }
 
-    const t = pb.time;
+    const scrub = scrubRef.current;
+    const t = scrub != null ? scrub * maxLapTime : pb.time;
 
     // Calculate sector-anchored distance fractions for both drivers (Trap 2)
     const dA = getSectorAnchoredDistanceFraction(
@@ -282,10 +285,13 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
   playbackRef,
   currentTime,
   isPlaying,
+  scrubProgress,
   onTimeUpdate
 }) => {
   const orbitRef = useRef<OrbitControlsImpl>(null);
   const [is3DMode, setIs3DMode] = useState<boolean>(true);
+  const scrubRef = useRef<number | null>(scrubProgress ?? null);
+  scrubRef.current = scrubProgress ?? null;
 
   // Build CatmullRom track spline
   const catmull = useMemo(() => {
@@ -346,7 +352,7 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
             }}
           >
             <SceneInvalidator
-              trigger={`${showdown.slug}_${is3DMode}_${isPlaying}_${currentTime}`}
+              trigger={`${showdown.slug}_${is3DMode}_${isPlaying}_${currentTime}_${scrubProgress ?? ''}`}
             />
             <PerfDebugCollector />
 
@@ -363,6 +369,7 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
               catmull={catmull}
               showdown={showdown}
               playbackRef={playbackRef}
+              scrubRef={scrubRef}
               onTimeUpdate={onTimeUpdate}
             />
 

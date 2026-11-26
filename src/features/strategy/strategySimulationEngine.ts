@@ -3,6 +3,9 @@
  * Pure, deterministic, seedable mathematical physics model for race strategy analytics.
  */
 
+import { createMulberry32 } from './strategyMath';
+export { createMulberry32 };
+
 export type TyreCompound = 'soft' | 'medium' | 'hard' | 'intermediate' | 'wet';
 
 export interface TyreCompoundSpecs {
@@ -114,17 +117,6 @@ export interface SimulationOutput {
   safetyCarLapsEncountered: number;
 }
 
-/**
- * Deterministic seedable 32-bit PRNG (Mulberry32)
- */
-export function createMulberry32(seed: number): () => number {
-  return function () {
-    let t = (seed += 0x6D2B79F5);
-    t = Math.imul(t ^ (t >>> 15), t | 1);
-    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 
 /**
  * Format milliseconds into M:SS.sss
@@ -201,8 +193,8 @@ export function runStrategySimulation(
   const vscProb = config.vscProbability ?? 0.25;
   const varianceSpan = config.driverPaceVarianceMs ?? 120;
 
-  // PRNG initialization
-  const prng = config.seed !== undefined ? createMulberry32(config.seed) : Math.random;
+  // PRNG initialization: strictly deterministic Mulberry32
+  const prng = createMulberry32(config.seed !== undefined ? config.seed : 42);
 
   // Validate strategies
   const strategies = config.strategies.length > 0
