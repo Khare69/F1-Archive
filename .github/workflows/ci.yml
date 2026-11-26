@@ -64,6 +64,9 @@ jobs:
       - name: Run ETL Invariant Tests
         run: npx vitest run scripts/etl/__tests__
 
+      - name: Run Telemetry Pack Invariant Tests
+        run: npx vitest run scripts/telemetry/__tests__/telemetryPackInvariants.test.ts
+
       - name: Install Playwright Browsers (Chromium only)
         run: npx playwright install --with-deps chromium
 

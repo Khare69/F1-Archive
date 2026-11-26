@@ -72,6 +72,7 @@ export interface TelemetryShowdown {
   /** 25 equally-divided track mini-sectors */
   miniSectors25: MiniSector[];
   feedAvailability: TelemetryFeedAvailability;
+  provenance?: 'historical_verified' | 'live_openf1' | 'experimental_simulation';
 }
 
 export type TyreCompound = 'SOFT' | 'MEDIUM' | 'HARD' | 'INTERMEDIATE' | 'WET';

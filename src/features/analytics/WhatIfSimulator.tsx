@@ -8,6 +8,7 @@ import {
   type WhatIfScoringOptions
 } from './whatIfScoring';
 import type { SeasonClassificationFile } from '../../types/f1';
+import { ExperimentalBadge } from '../../components/ui/ExperimentalBadge';
 import './WhatIfSimulator.css';
 
 interface WhatIfSimulatorProps {
@@ -89,6 +90,12 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({ year }) => {
           <span className="whatif-subtitle telemetry">
             // RECALCULATING THE {year} WORLD CHAMPIONSHIP UNDER ALTERNATE SCORING RULES
           </span>
+          <div className="mt-2">
+            <ExperimentalBadge
+              label="EXPERIMENTAL // SIMULATION"
+              disclaimer="Hypothetical points recalculation — re-scoring historical championship outcomes under alternate points systems."
+            />
+          </div>
         </div>
 
         {/* Outcome Verdict Badge */}
