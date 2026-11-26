@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import type { ColumnDef } from '@tanstack/react-table';
 import {
   getAllDrivers,
   getDriverById,
@@ -7,10 +8,11 @@ import {
   getSeasonsWonByDriver,
   getF1DBMetadata
 } from '../../data/dataService';
+import type { Driver } from '../../types/f1';
 import { FallbackImage } from '../../components/FallbackImage/FallbackImage';
 import { StatCard } from '../../components/StatCard/StatCard';
 import { usePageMeta } from '../../hooks/usePageMeta';
-import './DriversArchive.css';
+import { TelemetryDataTable } from '../../components/ui/TelemetryDataTable';
 
 type DriverCategory = 'active' | 'champions' | 'all';
 
@@ -22,7 +24,6 @@ export const DriversArchive: React.FC = () => {
 
   const [category, setCategory] = useState<DriverCategory>('active');
   const [searchQuery, setSearchQuery] = useState('');
-  const [displayCount, setDisplayCount] = useState(50);
 
   // Validate driverId or default to the first driver
   const selectedDriver = getDriverById(driverId) || allDrivers[0];
@@ -75,29 +76,16 @@ export const DriversArchive: React.FC = () => {
     );
   }, [allDrivers, category, searchQuery]);
 
-  // Paginated/sliced drivers list for render performance
-  const visibleDrivers = useMemo(() => {
-    if (category !== 'all' && !searchQuery.trim()) {
-      return filteredDrivers;
-    }
-    return filteredDrivers.slice(0, displayCount);
-  }, [filteredDrivers, category, searchQuery, displayCount]);
-
   const handleSelectDriver = (id: string) => {
     navigate(`/drivers/${id}`);
   };
 
-  const handleCategoryChange = (cat: DriverCategory) => {
-    setCategory(cat);
-    setDisplayCount(50);
-  };
-
   const getPositionClass = (pos: number | string) => {
-    if (pos === 1 || pos === 'P1') return 'pos-gold';
-    if (pos === 2 || pos === 'P2') return 'pos-silver';
-    if (pos === 3 || pos === 'P3') return 'pos-bronze';
-    if (pos === 'DNF' || pos === 'DNS' || pos === 'DSQ') return 'pos-danger';
-    return 'pos-standard';
+    if (pos === 1 || pos === 'P1') return 'text-amber-400 bg-amber-400/10 border-amber-400/30';
+    if (pos === 2 || pos === 'P2') return 'text-slate-200 bg-slate-300/10 border-slate-300/30';
+    if (pos === 3 || pos === 'P3') return 'text-amber-600 bg-amber-600/10 border-amber-600/30';
+    if (pos === 'DNF' || pos === 'DNS' || pos === 'DSQ') return 'text-red-400 bg-red-500/10 border-red-500/30';
+    return 'text-slate-300 bg-slate-900 border-white/5';
   };
 
   const formatPositionDisplay = (pos: number | string) => {
@@ -105,193 +93,231 @@ export const DriversArchive: React.FC = () => {
     return pos;
   };
 
-  return (
-    <div className="archive-layout drivers-archive-page">
-      {/* Left Sidebar */}
-      <aside className="archive-sidebar" aria-label="Drivers roster">
-        <div className="sidebar-header telemetry">
-          <span>// DRIVERS ROSTER</span>
-          <span className="sidebar-count">{allDrivers.length} PILOTS</span>
-        </div>
-
-        {/* Head-to-head Quick Link */}
-        <Link 
-          to="/drivers/compare" 
-          className="list-button" 
-          style={{ 
-            borderLeftColor: '#00D2FF', 
-            background: 'rgba(0, 210, 255, 0.08)', 
-            margin: '0.5rem 0.75rem',
-            width: 'calc(100% - 1.5rem)'
-          }}
-        >
-          <span style={{ color: '#00D2FF', fontWeight: 'bold' }}>⚔️ VS COMPARATOR</span>
-          <span className="telemetry" style={{ fontSize: '0.7rem' }}>HEAD-TO-HEAD</span>
-        </Link>
-
-        {/* Category Tabs: Active 2026 / Champions / All */}
-        <div className="driver-filter-tabs">
-          <button
-            type="button"
-            className={`driver-tab-pill telemetry ${category === 'active' ? 'active' : ''}`}
-            onClick={() => handleCategoryChange('active')}
-          >
-            ACTIVE 2026
-          </button>
-          <button
-            type="button"
-            className={`driver-tab-pill telemetry ${category === 'champions' ? 'active' : ''}`}
-            onClick={() => handleCategoryChange('champions')}
-          >
-            CHAMPIONS
-          </button>
-          <button
-            type="button"
-            className={`driver-tab-pill telemetry ${category === 'all' ? 'active' : ''}`}
-            onClick={() => handleCategoryChange('all')}
-          >
-            ALL PILOTS
-          </button>
-        </div>
-
-        {/* Quick Search */}
-        <div className="driver-search-box">
-          <input
-            type="text"
-            className="driver-search-input telemetry"
-            placeholder="Search pilot, #, code..."
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              className="driver-search-clear"
-              onClick={() => setSearchQuery('')}
-              aria-label="Clear search"
+  const driverTableColumns: ColumnDef<Driver, any>[] = useMemo(
+    () => [
+      {
+        accessorKey: 'number',
+        header: '#',
+        size: 50,
+        cell: (info) => {
+          const d = info.row.original;
+          const t = getTeamById(d.teamId);
+          return (
+            <span
+              className="font-telemetry font-bold text-xs"
+              style={{ color: t?.color || '#00D2FF' }}
             >
-              ✕
-            </button>
-          )}
-        </div>
-
-        {/* Drivers List */}
-        <div className="drivers-scroll-list">
-          {visibleDrivers.map((driver) => {
-            const team = getTeamById(driver.teamId);
-            const isSelected = selectedDriver.id === driver.id || selectedDriver.slug === driver.slug;
-
-            return (
-              <button
-                key={driver.id}
-                type="button"
-                className={`list-button ${isSelected ? 'active' : ''}`}
-                onClick={() => handleSelectDriver(driver.id)}
-              >
-                <div className="driver-btn-left">
-                  <span 
-                    className="driver-btn-num telemetry"
-                    style={{ color: team?.color || '#00D2FF' }}
-                  >
-                    {driver.number ? `#${driver.number}` : (driver.code || '—')}
-                  </span>
-                  <span className="driver-btn-name">{driver.name}</span>
-                </div>
-                {driver.isLegend && (
-                  <span className="legend-pill telemetry">
-                    {driver.championships > 0 ? `${driver.championships}x WDC` : 'LEGEND'}
-                  </span>
-                )}
-              </button>
-            );
-          })}
-
-          {/* Load More Button for 'all' mode */}
-          {visibleDrivers.length < filteredDrivers.length && (
-            <button
-              type="button"
-              className="load-more-btn telemetry"
-              onClick={() => setDisplayCount(prev => prev + 50)}
-            >
-              + LOAD MORE PILOTS ({filteredDrivers.length - visibleDrivers.length} REMAINING)
-            </button>
-          )}
-        </div>
-      </aside>
-
-      {/* Main Content Area */}
-      <main className="archive-content">
-        {/* Driver Hero Panel */}
-        <div 
-          className="driver-hero-panel telemetry-panel corner-bracket"
-          style={{ '--driver-brand-color': teamColor } as React.CSSProperties}
-        >
-          <div className="driver-hero-bg-glow"></div>
-
-          <div className="driver-hero-layout">
-            <div className="driver-hero-info">
-              <div className="driver-meta-bar telemetry">
-                <span>PILOT ID: {selectedDriver.code || selectedDriver.id}</span>
-                <span>NATIONALITY: {selectedDriver.country.toUpperCase()}</span>
-                {selectedDriver.isLegend && <span className="legend-tag">HALL OF FAME</span>}
-                <span className="f1db-sync-pill">
-                  <span>●</span> F1DB SYNCED (v{meta.f1dbVersion})
-                </span>
-              </div>
-
-              <div className="driver-headline-row">
-                <div className="driver-giant-number headline">
-                  {selectedDriver.number ? `#${selectedDriver.number}` : (selectedDriver.code || '—')}
-                </div>
-                <div className="driver-names-box">
-                  <h1 className="driver-full-name headline">{selectedDriver.name}</h1>
-                  {driverTeam && (
-                    <Link 
-                      to={`/teams/${driverTeam.id}`} 
-                      className="driver-team-link telemetry"
-                      style={{ color: teamColor }}
-                    >
-                      <span className="team-indicator-dot" style={{ backgroundColor: teamColor }}></span>
-                      <span>{driverTeam.name.toUpperCase()}</span>
-                      <span className="link-arrow">→</span>
-                    </Link>
-                  )}
-                </div>
-              </div>
-
-              {/* Driver Stat Cards */}
-              <div className="driver-stats-row">
-                <StatCard
-                  label="WORLD TITLES"
-                  value={selectedDriver.championships}
-                  subtext="World Championships"
-                  accentColor="#FFD700"
-                  isPrimary={selectedDriver.championships > 0}
-                />
-                <StatCard
-                  label="CAREER VICTORIES"
-                  value={selectedDriver.wins}
-                  subtext="Grand Prix Wins"
-                  accentColor={teamColor}
-                />
-                <StatCard
-                  label="PODIUM FINISHES"
-                  value={selectedDriver.podiums}
-                  subtext="Top 3 Results"
-                  accentColor="#00D2FF"
-                />
-                <StatCard
-                  label="RACE STARTS"
-                  value={selectedDriver.starts || selectedDriver.wins || 0}
-                  subtext={selectedDriver.winRate ? `${selectedDriver.winRate}% Win Rate` : 'Career Starts'}
-                  accentColor="#C0C0C0"
-                />
-              </div>
+              {d.number ? `#${d.number}` : d.code || '—'}
+            </span>
+          );
+        },
+      },
+      {
+        accessorKey: 'name',
+        header: 'PILOT',
+        cell: (info) => {
+          const d = info.row.original;
+          return (
+            <div className="flex flex-col">
+              <span className="font-bold text-slate-100 text-xs tracking-tight">
+                {d.name}
+              </span>
+              <span className="font-telemetry text-[10px] text-slate-500">
+                {d.country}
+              </span>
             </div>
+          );
+        },
+      },
+      {
+        accessorKey: 'championships',
+        header: 'TITLES',
+        size: 65,
+        cell: (info) => {
+          const d = info.row.original;
+          if (d.championships > 0) {
+            return (
+              <span className="font-telemetry text-[10px] font-bold px-1.5 py-0.5 rounded bg-amber-400/15 text-amber-400 border border-amber-400/30">
+                {d.championships}x WDC
+              </span>
+            );
+          }
+          if (d.isLegend) {
+            return (
+              <span className="font-telemetry text-[10px] text-amber-500/80">
+                LEGEND
+              </span>
+            );
+          }
+          return <span className="text-slate-600 font-telemetry">—</span>;
+        },
+      },
+    ],
+    []
+  );
 
-            {/* Driver Portrait */}
-            <div className="driver-portrait-container">
-              <div className="portrait-frame">
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Sidebar / Timing Tower Roster */}
+        <aside className="lg:col-span-4 bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-4 space-y-4" aria-label="Drivers roster">
+          <div className="flex items-center justify-between text-xs font-telemetry border-b border-slate-800/80 pb-3">
+            <span className="text-cyan-400 font-bold">// DRIVERS ROSTER</span>
+            <span className="text-slate-400">{allDrivers.length} PILOTS</span>
+          </div>
+
+          {/* Head-to-head Quick Link */}
+          <Link
+            to="/drivers/compare"
+            className="flex items-center justify-between p-2.5 rounded bg-cyan-500/10 border border-cyan-500/30 hover:bg-cyan-500/20 transition-colors"
+          >
+            <span className="text-cyan-400 font-bold text-xs">⚔️ VS COMPARATOR</span>
+            <span className="font-telemetry text-[11px] text-cyan-300">HEAD-TO-HEAD →</span>
+          </Link>
+
+          {/* Category Tabs: Active 2026 / Champions / All */}
+          <div className="grid grid-cols-3 gap-1 bg-slate-950/60 p-1 rounded border border-slate-800">
+            <button
+              type="button"
+              className={`py-1.5 text-[11px] font-telemetry font-bold rounded transition-colors ${
+                category === 'active'
+                  ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 active'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+              onClick={() => setCategory('active')}
+            >
+              ACTIVE 2026
+            </button>
+            <button
+              type="button"
+              className={`py-1.5 text-[11px] font-telemetry font-bold rounded transition-colors ${
+                category === 'champions'
+                  ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30 active'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+              onClick={() => setCategory('champions')}
+            >
+              CHAMPIONS
+            </button>
+            <button
+              type="button"
+              className={`py-1.5 text-[11px] font-telemetry font-bold rounded transition-colors ${
+                category === 'all'
+                  ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 active'
+                  : 'text-slate-400 hover:text-white'
+              }`}
+              onClick={() => setCategory('all')}
+            >
+              ALL PILOTS
+            </button>
+          </div>
+
+          {/* Quick Search */}
+          <div>
+            <input
+              type="text"
+              className="w-full bg-slate-950/80 border border-slate-800 rounded px-3 py-2 text-xs font-telemetry text-slate-100 placeholder:text-slate-600 focus:outline-none focus:border-cyan-500"
+              placeholder="Search pilot, #, code..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          {/* Timing Tower Table */}
+          <TelemetryDataTable
+            data={filteredDrivers}
+            columns={driverTableColumns}
+            getRowId={(d) => d.id}
+            selectedRowId={selectedDriver.id}
+            getRowTeamColor={(d) => getTeamById(d.teamId)?.color || '#00D2FF'}
+            onRowClick={(d) => handleSelectDriver(d.id)}
+            maxHeightPx={520}
+            rowHeightPx={38}
+            emptyMessage="No matching drivers found"
+            ariaLabel="Drivers Timing Tower"
+          />
+        </aside>
+
+        {/* Main Content Area */}
+        <main className="lg:col-span-8 space-y-6">
+          {/* Driver Hero Panel */}
+          <div
+            className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-6 relative overflow-hidden"
+            style={{ borderLeft: `4px solid ${teamColor}` }}
+          >
+            <div className="flex flex-col md:flex-row justify-between items-start gap-6">
+              <div className="space-y-4 flex-1">
+                <div className="flex items-center gap-3 font-telemetry text-xs text-slate-400 flex-wrap">
+                  <span>PILOT ID: {selectedDriver.code || selectedDriver.id}</span>
+                  <span>•</span>
+                  <span>{selectedDriver.country.toUpperCase()}</span>
+                  {selectedDriver.isLegend && (
+                    <>
+                      <span>•</span>
+                      <span className="text-amber-400 font-bold">HALL OF FAME</span>
+                    </>
+                  )}
+                  <span>•</span>
+                  <span className="text-cyan-400">F1DB SYNCED (v{meta.f1dbVersion})</span>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <span className="text-4xl font-black font-telemetry" style={{ color: teamColor }}>
+                    {selectedDriver.number ? `#${selectedDriver.number}` : selectedDriver.code || '—'}
+                  </span>
+                  <div>
+                    <h1 className="text-3xl font-black text-slate-100 tracking-tight font-headline">
+                      {selectedDriver.name}
+                    </h1>
+                    {driverTeam && (
+                      <Link
+                        to={`/teams/${driverTeam.id}`}
+                        className="inline-flex items-center gap-1.5 font-telemetry text-xs font-bold tracking-wider mt-1 hover:underline"
+                        style={{ color: teamColor }}
+                      >
+                        <span className="w-2 h-2 rounded-full" style={{ backgroundColor: teamColor }} />
+                        <span>{driverTeam.name.toUpperCase()}</span>
+                        <span>→</span>
+                      </Link>
+                    )}
+                  </div>
+                </div>
+
+                {/* Driver Stat Cards */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
+                  <StatCard
+                    label="WORLD TITLES"
+                    value={selectedDriver.championships}
+                    subtext="Championships"
+                    accentColor="#FFD700"
+                    isPrimary={selectedDriver.championships > 0}
+                  />
+                  <StatCard
+                    label="VICTORIES"
+                    value={selectedDriver.wins}
+                    subtext="Grand Prix Wins"
+                    accentColor={teamColor}
+                  />
+                  <StatCard
+                    label="PODIUMS"
+                    value={selectedDriver.podiums}
+                    subtext="Top 3 Results"
+                    accentColor="#00D2FF"
+                  />
+                  <StatCard
+                    label="STARTS"
+                    value={selectedDriver.starts || selectedDriver.wins || 0}
+                    subtext={selectedDriver.winRate ? `${selectedDriver.winRate}% Win Rate` : 'Career Starts'}
+                    accentColor="#C0C0C0"
+                  />
+                </div>
+              </div>
+
+              {/* Driver Portrait */}
+              <div
+                className="w-32 h-32 sm:w-40 sm:h-40 rounded-lg overflow-hidden bg-slate-900 border flex-shrink-0"
+                style={{ borderColor: `${teamColor}55` }}
+              >
                 <FallbackImage
                   src={selectedDriver.imageUrl}
                   alt={selectedDriver.name}
@@ -301,71 +327,77 @@ export const DriversArchive: React.FC = () => {
                   driverCode={selectedDriver.id}
                   driverNumber={selectedDriver.number}
                   championships={selectedDriver.championships}
-                  className="driver-portrait-img"
+                  className="w-full h-full object-cover"
                 />
-                <div className="portrait-backdrop-gradient"></div>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* World Championship Titles (if any) */}
-        {titlesWon.length > 0 && (
-          <section className="driver-section telemetry-panel">
-            <div className="section-title-bar">
-              <span className="section-dot" style={{ backgroundColor: '#FFD700' }}></span>
-              <h2 className="headline">WORLD CHAMPIONSHIP TITLES // {titlesWon.length} CROWNS</h2>
+          {/* World Championship Titles (if any) */}
+          {titlesWon.length > 0 && (
+            <section className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-5 space-y-4">
+              <div className="flex items-center gap-2 border-b border-slate-800/80 pb-3">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-400" />
+                <h2 className="text-sm font-bold tracking-wider text-amber-400 uppercase font-telemetry">
+                  WORLD CHAMPIONSHIP TITLES // {titlesWon.length} CROWNS
+                </h2>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {titlesWon.map((s) => (
+                  <Link
+                    key={s.year}
+                    to={`/seasons/${s.year}`}
+                    className="p-3 rounded bg-slate-950/60 border border-slate-800 hover:border-amber-400/50 transition-colors"
+                  >
+                    <span className="text-xl font-black text-slate-100 font-headline block">{s.year}</span>
+                    <span className="font-telemetry text-xs text-slate-400 mt-1 block truncate">
+                      {s.championTeam}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Race Results & Career Telemetry */}
+          <section className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-5 space-y-4">
+            <div className="flex items-center gap-2 border-b border-slate-800/80 pb-3">
+              <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: teamColor }} />
+              <h2 className="text-sm font-bold tracking-wider text-slate-200 uppercase font-telemetry">
+                {selectedDriver.isLegend
+                  ? 'CAREER ALL-TIME BENCHMARKS'
+                  : 'RECENT GRAND PRIX RESULTS & CLASSIFICATIONS'}
+              </h2>
             </div>
 
-            <div className="titles-grid">
-              {titlesWon.map((s) => (
-                <Link key={s.year} to={`/seasons/${s.year}`} className="title-card">
-                  <span className="title-year headline">{s.year}</span>
-                  <span className="title-team telemetry">{s.championTeam}</span>
-                </Link>
-              ))}
+            <div className="space-y-2">
+              {selectedDriver.raceFinishes.length > 0 ? (
+                selectedDriver.raceFinishes.map((finish, idx) => (
+                  <div
+                    key={idx}
+                    className="flex items-center justify-between p-3 rounded bg-slate-950/50 border border-slate-800/60 hover:bg-white/[0.02] transition-colors"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-telemetry text-xs text-slate-500">ROUND #{idx + 1}</span>
+                      <span className="font-bold text-slate-200 text-sm">{finish.race}</span>
+                    </div>
+                    <div className={`px-2.5 py-1 rounded text-xs font-telemetry font-bold border ${getPositionClass(finish.position)}`}>
+                      {formatPositionDisplay(finish.position)}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="p-4 rounded bg-slate-950/40 border border-slate-800/60 text-center">
+                  <span className="font-telemetry text-xs text-slate-500">
+                    // Career statistics indexed from F1DB historical records
+                  </span>
+                </div>
+              )}
             </div>
           </section>
-        )}
-
-        {/* Race Results & Career Telemetry */}
-        <section className="driver-section telemetry-panel">
-          <div className="section-title-bar">
-            <span className="section-dot" style={{ backgroundColor: teamColor }}></span>
-            <h2 className="headline">
-              {selectedDriver.isLegend 
-                ? 'CAREER ALL-TIME BENCHMARKS' 
-                : 'RECENT GRAND PRIX RESULTS & CLASSIFICATIONS'}
-            </h2>
-          </div>
-
-          <div className="results-container">
-            {selectedDriver.raceFinishes.length > 0 ? (
-              selectedDriver.raceFinishes.map((finish, idx) => (
-                <div key={idx} className="result-row-card">
-                  <div className="result-meta">
-                    <span className="result-index telemetry">ROUND #{idx + 1}</span>
-                    <span className="result-event headline">{finish.race}</span>
-                  </div>
-                  <div className={`result-position-badge headline ${getPositionClass(finish.position)}`}>
-                    {formatPositionDisplay(finish.position)}
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className="result-row-card" style={{ opacity: 0.7 }}>
-                <div className="result-meta">
-                  <span className="result-index telemetry">// CLASSIFICATION</span>
-                  <span className="result-event headline">Career statistics indexed from F1DB historical records</span>
-                </div>
-                <div className="result-position-badge headline pos-standard">
-                  INDEXED
-                </div>
-              </div>
-            )}
-          </div>
-        </section>
-      </main>
+        </main>
+      </div>
     </div>
   );
 };

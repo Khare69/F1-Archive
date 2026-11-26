@@ -1,9 +1,11 @@
 import React, { useMemo, useRef, useEffect, lazy, Suspense } from 'react';
 import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom';
+import type { ColumnDef } from '@tanstack/react-table';
 import { getAllSeasons, getSeasonByYear, getTeamById, getF1DBMetadata } from '../../data/dataService';
+import type { Season } from '../../types/f1';
 import { StatCard } from '../../components/StatCard/StatCard';
 import { usePageMeta } from '../../hooks/usePageMeta';
-import './SeasonsArchive.css';
+import { TelemetryDataTable } from '../../components/ui/TelemetryDataTable';
 
 const SeasonProgressionChart = lazy(() =>
   import('./components/SeasonProgressionChart').then(m => ({ default: m.SeasonProgressionChart }))
@@ -55,25 +57,31 @@ export const SeasonsArchive: React.FC = () => {
 
   const currentDecade = useMemo(() => {
     const yr = selectedSeason.year;
-    return `${Math.floor(yr / 10) * 10}s`;
+    const dec = DECADES.find(d => yr >= d.startYear && yr <= (d.targetYear || d.startYear + 9));
+    return dec?.label || '2020s';
   }, [selectedSeason.year]);
 
-  // Scroll active timeline node into view
   useEffect(() => {
     if (timelineTrackRef.current) {
-      const activeNode = timelineTrackRef.current.querySelector('.timeline-node.active');
+      const activeNode = timelineTrackRef.current.querySelector('.timeline-node.active') as HTMLElement;
       if (activeNode) {
-        activeNode.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+        const container = timelineTrackRef.current;
+        const scrollLeft = activeNode.offsetLeft - container.offsetWidth / 2 + activeNode.offsetWidth / 2;
+        if (typeof container.scrollTo === 'function') {
+          container.scrollTo({ left: scrollLeft, behavior: 'smooth' });
+        } else {
+          container.scrollLeft = scrollLeft;
+        }
       }
     }
   }, [selectedSeason.year]);
 
   const handleSelectSeason = (year: number) => {
-    navigate(`/seasons/${year}${viewMode !== 'overview' ? `?view=${viewMode}` : ''}`);
+    navigate(`/seasons/${year}`);
   };
 
   const handleJumpDecade = (targetYear: number) => {
-    handleSelectSeason(targetYear);
+    navigate(`/seasons/${targetYear}`);
   };
 
   const handleSetView = (newView: 'overview' | 'chart' | 'whatif') => {
@@ -85,257 +93,316 @@ export const SeasonsArchive: React.FC = () => {
     }
   };
 
-  return (
-    <div className="archive-layout seasons-archive-page">
-      {/* Left Sidebar */}
-      <aside className="archive-sidebar" aria-label="Seasons list">
-        <div className="sidebar-header telemetry">
-          <span>// SELECT CAMPAIGN</span>
-          <span className="sidebar-count">{seasons.length} SEASONS</span>
-        </div>
-        {seasons.map((season) => (
-          <button
-            key={season.year}
-            type="button"
-            className={`list-button ${selectedSeason.year === season.year ? 'active' : ''}`}
-            onClick={() => handleSelectSeason(season.year)}
-          >
-            <span className="season-year-text">{season.year}</span>
-            <span className="season-champ-tag telemetry">
-              {season.championDriver.split(' ').pop()}
-            </span>
-          </button>
-        ))}
-      </aside>
-
-      {/* Main Content Area */}
-      <main className="archive-content">
-        {/* Interactive Championship Timeline */}
-        <section className="championship-timeline-panel telemetry-panel">
-          <div className="timeline-header telemetry">
-            <span>// CHAMPIONSHIP CHRONOLOGY TIMELINE (1950 - 2026)</span>
-            <span>CLICK NODE TO INSPECT ERA</span>
-          </div>
-
-          {/* Decade Jump Selector */}
-          <div className="decade-jump-bar telemetry">
-            <span className="decade-jump-label">// JUMP ERA:</span>
-            {DECADES.map(d => (
-              <button
-                key={d.label}
-                type="button"
-                className={`decade-pill ${currentDecade === d.label ? 'active' : ''}`}
-                onClick={() => handleJumpDecade(d.targetYear)}
-              >
-                {d.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="timeline-scroll-wrapper">
-            <div className="timeline-track" ref={timelineTrackRef}>
-              {chronologicalSeasons.map((s) => {
-                const team = getTeamById(s.championTeamId || undefined);
-                const nodeColor = team?.color || '#00D2FF';
-                const isSelected = selectedSeason.year === s.year;
-
-                return (
-                  <button
-                    key={s.year}
-                    type="button"
-                    className={`timeline-node ${isSelected ? 'active' : ''}`}
-                    onClick={() => handleSelectSeason(s.year)}
-                    style={{ '--node-color': nodeColor } as React.CSSProperties}
-                    title={`${s.year}: ${s.championDriver} (${s.championTeam})`}
-                  >
-                    {isSelected && (
-                      <span className="timeline-champ-hover telemetry">
-                        {s.championDriver.split(' ').pop()}
-                      </span>
-                    )}
-                    <span
-                      className="timeline-dot"
-                      style={{
-                        backgroundColor: nodeColor,
-                        boxShadow: isSelected ? `0 0 16px ${nodeColor}` : undefined
-                      }}
-                    />
-                    <span className="timeline-year-label telemetry">{s.year}</span>
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-        </section>
-
-        {/* Season Header */}
-        <div className="season-hero-panel telemetry-panel corner-bracket">
-          <div className="season-header-meta telemetry">
-            <span>FIA FORMULA ONE WORLD CHAMPIONSHIP</span>
-            <div style={{ display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-              <span className="season-status-tag">OFFICIALLY INDEXED</span>
-              <span className="f1db-sync-pill">
-                <span>●</span> F1DB SYNCED (v{meta.f1dbVersion})
+  const seasonColumns: ColumnDef<Season, any>[] = useMemo(
+    () => [
+      {
+        accessorKey: 'year',
+        header: 'YEAR',
+        size: 70,
+        cell: (info) => (
+          <span className="font-telemetry font-black text-sm text-slate-100">
+            {Number(info.getValue())}
+          </span>
+        ),
+      },
+      {
+        accessorKey: 'championDriver',
+        header: 'CHAMPION',
+        cell: (info) => {
+          const s = info.row.original;
+          return (
+            <div className="flex flex-col">
+              <span className="font-bold text-slate-100 text-xs">
+                {s.championDriver}
+              </span>
+              <span className="font-telemetry text-[10px] text-slate-500">
+                {s.championTeam}
               </span>
             </div>
+          );
+        },
+      },
+      {
+        accessorKey: 'races',
+        header: 'GPS',
+        size: 55,
+        cell: (info) => (
+          <span className="font-telemetry font-bold text-xs text-slate-400">
+            {Number(info.getValue())}
+          </span>
+        ),
+      },
+    ],
+    []
+  );
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        {/* Left Sidebar / Timing Tower */}
+        <aside className="lg:col-span-4 bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-4 space-y-4" aria-label="Seasons list">
+          <div className="flex items-center justify-between text-xs font-telemetry border-b border-slate-800/80 pb-3">
+            <span className="text-cyan-400 font-bold">// SELECT CAMPAIGN</span>
+            <span className="text-slate-400">{seasons.length} SEASONS</span>
           </div>
 
-          <div className="season-title-row">
-            <h1 className="season-year-hero headline">{selectedSeason.year}</h1>
-            <div className="season-quick-stats">
-              <div className="quick-stat-badge">
-                <span className="telemetry">CALENDAR</span>
-                <span className="headline">{selectedSeason.races} GRANDS PRIX</span>
+          <TelemetryDataTable
+            data={seasons}
+            columns={seasonColumns}
+            getRowId={(s) => String(s.year)}
+            selectedRowId={selectedSeason.year}
+            getRowTeamColor={(s) => getTeamById(s.championTeamId || undefined)?.color || '#00D2FF'}
+            onRowClick={(s) => handleSelectSeason(s.year)}
+            maxHeightPx={560}
+            rowHeightPx={38}
+            emptyMessage="No seasons found"
+            ariaLabel="Seasons Timing Tower"
+          />
+        </aside>
+
+        {/* Main Content Area */}
+        <main className="lg:col-span-8 space-y-6">
+          {/* Interactive Championship Timeline */}
+          <section className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-5 space-y-3">
+            <div className="flex justify-between items-center text-xs font-telemetry text-slate-400 border-b border-slate-800/80 pb-2">
+              <span className="text-cyan-400 font-bold">// CHAMPIONSHIP CHRONOLOGY TIMELINE (1950 - 2026)</span>
+              <span>CLICK NODE TO INSPECT ERA</span>
+            </div>
+
+            {/* Decade Jump Selector */}
+            <div className="flex items-center gap-1.5 flex-wrap font-telemetry text-xs">
+              <span className="text-slate-500 mr-1">// JUMP ERA:</span>
+              {DECADES.map(d => (
+                <button
+                  key={d.label}
+                  type="button"
+                  className={`px-2 py-1 rounded border transition-colors ${
+                    currentDecade === d.label
+                      ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300 font-bold'
+                      : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white'
+                  }`}
+                  onClick={() => handleJumpDecade(d.targetYear)}
+                >
+                  {d.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="overflow-x-auto scrollbar-thin py-2">
+              <div className="flex items-center gap-3 min-w-max px-2" ref={timelineTrackRef}>
+                {chronologicalSeasons.map((s) => {
+                  const team = getTeamById(s.championTeamId || undefined);
+                  const nodeColor = team?.color || '#00D2FF';
+                  const isSelected = selectedSeason.year === s.year;
+
+                  return (
+                    <button
+                      key={s.year}
+                      type="button"
+                      className={`timeline-node flex flex-col items-center gap-1 p-1 rounded transition-transform ${
+                        isSelected ? 'scale-110 active' : 'opacity-70 hover:opacity-100'
+                      }`}
+                      onClick={() => handleSelectSeason(s.year)}
+                      title={`${s.year}: ${s.championDriver} (${s.championTeam})`}
+                    >
+                      <span
+                        className="w-3.5 h-3.5 rounded-full transition-all"
+                        style={{
+                          backgroundColor: nodeColor,
+                          boxShadow: isSelected ? `0 0 12px ${nodeColor}` : undefined
+                        }}
+                      />
+                      <span className="font-telemetry text-[10px] text-slate-400 font-bold">{s.year}</span>
+                    </button>
+                  );
+                })}
               </div>
+            </div>
+          </section>
+
+          {/* Season Header */}
+          <div className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-800/80 pb-3">
+              <span className="font-telemetry text-xs text-slate-400">FIA FORMULA ONE WORLD CHAMPIONSHIP</span>
+              <div className="flex items-center gap-2 font-telemetry text-xs">
+                <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                  OFFICIALLY INDEXED
+                </span>
+                <span className="text-cyan-400">F1DB SYNCED (v{meta.f1dbVersion})</span>
+              </div>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <h1 className="text-4xl font-black text-slate-100 tracking-tight font-headline">
+                {selectedSeason.year}
+              </h1>
+              <div className="text-right">
+                <span className="font-telemetry text-[10px] text-slate-500 block uppercase">CALENDAR</span>
+                <span className="text-lg font-black text-slate-200 font-headline">{selectedSeason.races} GRANDS PRIX</span>
+              </div>
+            </div>
+
+            {/* View Mode Navigation Tabs */}
+            <div className="flex items-center gap-2 border-t border-slate-800/80 pt-4 flex-wrap">
+              <button
+                type="button"
+                className={`px-3 py-1.5 rounded text-xs font-telemetry font-bold tracking-wider transition-colors ${
+                  viewMode === 'overview'
+                    ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 active'
+                    : 'bg-slate-950/60 border border-slate-800 text-slate-400 hover:text-white'
+                }`}
+                onClick={() => handleSetView('overview')}
+              >
+                [ OVERVIEW & RECORDS ]
+              </button>
+              <button
+                type="button"
+                className={`px-3 py-1.5 rounded text-xs font-telemetry font-bold tracking-wider transition-colors ${
+                  viewMode === 'chart'
+                    ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 active'
+                    : 'bg-slate-950/60 border border-slate-800 text-slate-400 hover:text-white'
+                }`}
+                onClick={() => handleSetView('chart')}
+              >
+                📈 [ PROGRESSION CHART ]
+              </button>
+              <button
+                type="button"
+                className={`px-3 py-1.5 rounded text-xs font-telemetry font-bold tracking-wider transition-colors ${
+                  viewMode === 'whatif'
+                    ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 active'
+                    : 'bg-slate-950/60 border border-slate-800 text-slate-400 hover:text-white'
+                }`}
+                onClick={() => handleSetView('whatif')}
+              >
+                ⚡ [ 'WHAT-IF' SIMULATOR ]
+              </button>
             </div>
           </div>
 
-          {/* View Mode Navigation Tabs */}
-          <div className="season-view-tabs telemetry">
-            <button
-              type="button"
-              className={`view-tab-btn ${viewMode === 'overview' ? 'active' : ''}`}
-              onClick={() => handleSetView('overview')}
-            >
-              [ OVERVIEW & RECORDS ]
-            </button>
-            <button
-              type="button"
-              className={`view-tab-btn ${viewMode === 'chart' ? 'active' : ''}`}
-              onClick={() => handleSetView('chart')}
-            >
-              📈 [ PROGRESSION CHART ]
-            </button>
-            <button
-              type="button"
-              className={`view-tab-btn ${viewMode === 'whatif' ? 'active' : ''}`}
-              onClick={() => handleSetView('whatif')}
-            >
-              ⚡ [ 'WHAT-IF' SIMULATOR ]
-            </button>
-          </div>
-        </div>
-
-        {/* Conditional View Rendering */}
-        {viewMode === 'chart' && (
-          <Suspense
-            fallback={
-              <div className="telemetry-panel chart-loading-panel">
-                <div className="loading-spinner"></div>
-                <span className="telemetry">// LOADING 100% VECTOR SVG PROGRESSION...</span>
-              </div>
-            }
-          >
-            <SeasonProgressionChart year={selectedSeason.year} />
-          </Suspense>
-        )}
-
-        {viewMode === 'whatif' && (
-          <Suspense
-            fallback={
-              <div className="telemetry-panel chart-loading-panel">
-                <div className="loading-spinner"></div>
-                <span className="telemetry">// INITIALIZING WHAT-IF ENGINE...</span>
-              </div>
-            }
-          >
-            <WhatIfSimulator year={selectedSeason.year} />
-          </Suspense>
-        )}
-
-        {viewMode === 'overview' && (
-          <>
-            {/* Championship Podium Summary */}
-            <div className="champions-grid">
-              <div className="champion-card champion-driver">
-                <div className="champ-label telemetry">WORLD DRIVERS' CHAMPION</div>
-                <div className="champ-name headline">{selectedSeason.championDriver}</div>
-                {selectedSeason.championDriverId ? (
-                  <Link to={`/drivers/${selectedSeason.championDriverId}`} className="champ-link telemetry">
-                    VIEW DRIVER PROFILE →
-                  </Link>
-                ) : (
-                  <span className="champ-link-disabled telemetry">LEGACY RECORD</span>
-                )}
-              </div>
-
-              <div className="champion-card champion-team">
-                <div className="champ-label telemetry">CONSTRUCTORS' CHAMPION</div>
-                <div className="champ-name headline">{selectedSeason.championTeam}</div>
-                {selectedSeason.championTeamId ? (
-                  <Link to={`/teams/${selectedSeason.championTeamId}`} className="champ-link telemetry">
-                    VIEW CONSTRUCTOR PROFILE →
-                  </Link>
-                ) : (
-                  <span className="champ-link-disabled telemetry">PRE-1958 INAUGURAL ERA</span>
-                )}
-              </div>
-            </div>
-
-            {/* Notable Events & Milestones */}
-            <div className="season-details-grid">
-              <section className="season-detail-panel telemetry-panel">
-                <div className="section-title-bar">
-                  <span className="section-dot" style={{ backgroundColor: '#00D2FF' }}></span>
-                  <h2 className="headline">ERA MILESTONES & DEFINING EVENTS</h2>
+          {/* Conditional View Rendering */}
+          {viewMode === 'chart' && (
+            <Suspense
+              fallback={
+                <div className="p-12 text-center text-slate-500 font-telemetry text-xs">
+                  // LOADING 100% VECTOR SVG PROGRESSION...
                 </div>
-                <ul className="events-list">
-                  {selectedSeason.notableEvents.map((event, idx) => (
-                    <li key={idx} className="event-item">
-                      <span className="event-marker telemetry">// 0{idx + 1}</span>
-                      <span className="event-text">{event}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
+              }
+            >
+              <SeasonProgressionChart year={selectedSeason.year} />
+            </Suspense>
+          )}
 
-              <section className="season-detail-panel telemetry-panel">
-                <div className="section-title-bar">
-                  <span className="section-dot" style={{ backgroundColor: '#FF1E1E' }}></span>
-                  <h2 className="headline">HISTORICAL RECORDS & BENCHMARKS</h2>
+          {viewMode === 'whatif' && (
+            <Suspense
+              fallback={
+                <div className="p-12 text-center text-slate-500 font-telemetry text-xs">
+                  // INITIALIZING WHAT-IF ENGINE...
                 </div>
-                <ul className="events-list">
-                  {selectedSeason.recordsBroken.map((record, idx) => (
-                    <li key={idx} className="event-item">
-                      <span className="event-marker telemetry" style={{ color: '#FF1E1E' }}>// REC</span>
-                      <span className="event-text">{record}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            </div>
+              }
+            >
+              <WhatIfSimulator year={selectedSeason.year} />
+            </Suspense>
+          )}
 
-            {/* Summary Stats Row */}
-            <div className="season-stats-row">
-              <StatCard
-                label="CHAMPION PILOT"
-                value={selectedSeason.championDriver.split(' ').pop() || 'TBD'}
-                subtext={selectedSeason.championDriver}
-                accentColor="#FFD700"
-                isPrimary
-              />
-              <StatCard
-                label="CHAMPION CONSTRUCTOR"
-                value={selectedSeason.championTeam.split(' ')[0] || 'TBD'}
-                subtext={selectedSeason.championTeam}
-                accentColor="#00D2FF"
-              />
-              <StatCard
-                label="ROUNDS CONTESTED"
-                value={selectedSeason.races}
-                subtext="Championship Grands Prix"
-                accentColor="#00E701"
-              />
-              <StatCard
-                label="ERA CHRONOLOGY"
-                value={`${selectedSeason.year}`}
-                subtext={`Season #${selectedSeason.year - 1949} of ${seasons.length}`}
-                accentColor="#FFFFFF"
-              />
-            </div>
-          </>
-        )}
-      </main>
+          {viewMode === 'overview' && (
+            <>
+              {/* Championship Podium Summary */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-5 border-l-4 border-l-amber-400 space-y-2">
+                  <div className="font-telemetry text-xs text-amber-400 font-bold tracking-wider">WORLD DRIVERS' CHAMPION</div>
+                  <div className="text-2xl font-black text-slate-100 font-headline">{selectedSeason.championDriver}</div>
+                  {selectedSeason.championDriverId ? (
+                    <Link to={`/drivers/${selectedSeason.championDriverId}`} className="font-telemetry text-xs text-cyan-400 hover:underline block pt-1">
+                      VIEW DRIVER PROFILE →
+                    </Link>
+                  ) : (
+                    <span className="font-telemetry text-xs text-slate-500 block pt-1">LEGACY RECORD</span>
+                  )}
+                </div>
+
+                <div className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-5 border-l-4 border-l-cyan-400 space-y-2">
+                  <div className="font-telemetry text-xs text-cyan-400 font-bold tracking-wider">CONSTRUCTORS' CHAMPION</div>
+                  <div className="text-2xl font-black text-slate-100 font-headline">{selectedSeason.championTeam}</div>
+                  {selectedSeason.championTeamId ? (
+                    <Link to={`/teams/${selectedSeason.championTeamId}`} className="font-telemetry text-xs text-cyan-400 hover:underline block pt-1">
+                      VIEW CONSTRUCTOR PROFILE →
+                    </Link>
+                  ) : (
+                    <span className="font-telemetry text-xs text-slate-500 block pt-1">PRE-1958 INAUGURAL ERA</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Notable Events & Milestones */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <section className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-5 space-y-3">
+                  <div className="flex items-center gap-2 border-b border-slate-800/80 pb-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
+                    <h2 className="text-xs font-bold tracking-wider text-slate-200 uppercase font-telemetry">
+                      ERA MILESTONES &amp; DEFINING EVENTS
+                    </h2>
+                  </div>
+                  <ul className="space-y-2 text-xs font-telemetry text-slate-300">
+                    {selectedSeason.notableEvents.map((event, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <span className="text-cyan-400 font-bold flex-shrink-0">// 0{idx + 1}</span>
+                        <span>{event}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                <section className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-5 space-y-3">
+                  <div className="flex items-center gap-2 border-b border-slate-800/80 pb-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
+                    <h2 className="text-xs font-bold tracking-wider text-slate-200 uppercase font-telemetry">
+                      HISTORICAL RECORDS &amp; BENCHMARKS
+                    </h2>
+                  </div>
+                  <ul className="space-y-2 text-xs font-telemetry text-slate-300">
+                    {selectedSeason.recordsBroken.map((record, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <span className="text-red-400 font-bold flex-shrink-0">// REC</span>
+                        <span>{record}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              </div>
+
+              {/* Summary Stats Row */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <StatCard
+                  label="CHAMPION PILOT"
+                  value={selectedSeason.championDriver.split(' ').pop() || 'TBD'}
+                  subtext={selectedSeason.championDriver}
+                  accentColor="#FFD700"
+                  isPrimary
+                />
+                <StatCard
+                  label="CHAMPION CONSTRUCTOR"
+                  value={selectedSeason.championTeam.split(' ')[0] || 'TBD'}
+                  subtext={selectedSeason.championTeam}
+                  accentColor="#00D2FF"
+                />
+                <StatCard
+                  label="ROUNDS CONTESTED"
+                  value={selectedSeason.races}
+                  subtext="Championship Grands Prix"
+                  accentColor="#00E701"
+                />
+                <StatCard
+                  label="ERA CHRONOLOGY"
+                  value={`${selectedSeason.year}`}
+                  subtext={`Season #${selectedSeason.year - 1949} of ${seasons.length}`}
+                  accentColor="#FFFFFF"
+                />
+              </div>
+            </>
+          )}
+        </main>
+      </div>
     </div>
   );
 };

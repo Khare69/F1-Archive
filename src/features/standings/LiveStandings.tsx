@@ -7,7 +7,6 @@ import {
 import { useDocumentTitle } from '../../hooks/usePageMeta';
 import { LiveStatusBadge } from './LiveStatusBadge';
 import { StandingsTable } from './StandingsTable';
-import './LiveStandings.css';
 
 export const LiveStandings: React.FC = () => {
   useDocumentTitle('Live Standings & Calendar');
@@ -58,47 +57,61 @@ export const LiveStandings: React.FC = () => {
   }, [schedule]);
 
   return (
-    <div className="live-standings-page">
-      <div className="standings-container">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="space-y-6">
         {/* Top Header Panel */}
-        <div className="standings-header-panel telemetry-panel corner-bracket">
-          <div className="standings-meta telemetry">
+        <div className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
             <LiveStatusBadge
               source={activeSource}
               updatedAt={activeUpdatedAt}
               isFetching={isFetching}
             />
-            <span className="season-badge headline">{seasonLabel} FIA WORLD CHAMPIONSHIP</span>
+            <span className="font-telemetry text-xs text-slate-400 border border-slate-700/60 px-2.5 py-0.5 rounded">
+              {seasonLabel} FIA WORLD CHAMPIONSHIP
+            </span>
           </div>
 
-          <h1 className="standings-title headline">
-            CHAMPIONSHIP <span className="text-gradient-cyan">STANDINGS &amp; CALENDAR</span>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight font-headline">
+            CHAMPIONSHIP <span className="text-cyan-400">STANDINGS &amp; CALENDAR</span>
           </h1>
 
-          <p className="standings-subtitle">
+          <p className="text-sm text-slate-400 mt-1 max-w-3xl">
             Real-time classifications for the FIA Formula One World Championship. Track points,
             podiums, constructor standings, and the official Grand Prix calendar.
           </p>
 
           {/* Navigation Mode Tabs */}
-          <div className="standings-tab-bar">
+          <div className="flex items-center gap-2 mt-5 border-t border-slate-800/80 pt-4 flex-wrap">
             <button
               type="button"
-              className={`standings-tab headline ${activeTab === 'wdc' ? 'active' : ''}`}
+              className={`px-4 py-2 rounded text-xs font-telemetry font-bold tracking-wider uppercase transition-colors ${
+                activeTab === 'wdc'
+                  ? 'active bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
+                  : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+              }`}
               onClick={() => setActiveTab('wdc')}
             >
               <span>🏆 DRIVERS (WDC)</span>
             </button>
             <button
               type="button"
-              className={`standings-tab headline ${activeTab === 'wcc' ? 'active' : ''}`}
+              className={`px-4 py-2 rounded text-xs font-telemetry font-bold tracking-wider uppercase transition-colors ${
+                activeTab === 'wcc'
+                  ? 'active bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
+                  : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+              }`}
               onClick={() => setActiveTab('wcc')}
             >
               <span>🏎️ CONSTRUCTORS (WCC)</span>
             </button>
             <button
               type="button"
-              className={`standings-tab headline ${activeTab === 'schedule' ? 'active' : ''}`}
+              className={`px-4 py-2 rounded text-xs font-telemetry font-bold tracking-wider uppercase transition-colors ${
+                activeTab === 'schedule'
+                  ? 'active bg-cyan-500/20 text-cyan-400 border border-cyan-500/40'
+                  : 'text-slate-400 hover:text-white bg-slate-900/60 border border-slate-800'
+              }`}
               onClick={() => setActiveTab('schedule')}
             >
               <span>📅 RACE CALENDAR</span>
@@ -135,31 +148,31 @@ export const LiveStandings: React.FC = () => {
 
         {/* Next Grand Prix Countdown Banner */}
         {nextRace && (
-          <div className="next-race-banner telemetry-panel">
-            <div className="next-race-badge telemetry">
-              <span className="status-blip"></span>
-              <span>NEXT GRAND PRIX // ROUND #{nextRace.round}</span>
+          <div className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <div className="flex items-center gap-2 text-cyan-400 font-telemetry text-xs mb-1">
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                <span>NEXT GRAND PRIX // ROUND #{nextRace.round}</span>
+              </div>
+              <h2 className="text-xl font-black text-slate-100 tracking-tight">{nextRace.raceName}</h2>
+              <span className="font-telemetry text-xs text-slate-400">
+                📍 {nextRace.circuitName} ({nextRace.locality}, {nextRace.country})
+              </span>
             </div>
-            <div className="next-race-details">
-              <div className="race-name-box">
-                <h2 className="next-race-title headline">{nextRace.raceName}</h2>
-                <span className="next-race-circuit telemetry">
-                  📍 {nextRace.circuitName} ({nextRace.locality}, {nextRace.country})
-                </span>
-              </div>
-              <div className="next-race-date-box">
-                <span className="telemetry label">OFFICIAL RACE DATE</span>
-                <span className="headline date-val">{nextRace.date}</span>
-              </div>
+            <div className="bg-slate-950/60 border border-slate-800 px-4 py-2 rounded text-right">
+              <span className="font-telemetry text-[10px] text-slate-500 block uppercase">OFFICIAL RACE DATE</span>
+              <span className="font-telemetry font-bold text-sm text-slate-200">{nextRace.date}</span>
             </div>
           </div>
         )}
 
         {/* Loading Spinner */}
         {isLoading ? (
-          <div className="standings-loading telemetry-panel">
-            <div className="loading-spinner"></div>
-            <span className="headline">SYNCHRONIZING TELEMETRY STANDINGS...</span>
+          <div className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-12 text-center space-y-3">
+            <div className="w-8 h-8 border-2 border-cyan-400 border-t-transparent rounded-full animate-spin mx-auto" />
+            <span className="font-telemetry text-xs text-slate-400 tracking-wider block">
+              SYNCHRONIZING TELEMETRY STANDINGS...
+            </span>
           </div>
         ) : (
           <>
@@ -183,17 +196,20 @@ export const LiveStandings: React.FC = () => {
 
             {/* Official Race Calendar */}
             {activeTab === 'schedule' && (
-              <div className="schedule-grid">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {schedule.map((race) => (
-                  <div key={race.round} className="schedule-card telemetry-panel corner-bracket">
-                    <div className="schedule-card-header telemetry">
-                      <span className="round-badge">ROUND #{race.round}</span>
-                      <span className="race-date">{race.date}</span>
+                  <div
+                    key={race.round}
+                    className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-4 space-y-2"
+                  >
+                    <div className="flex justify-between items-center text-xs font-telemetry text-slate-400 border-b border-slate-800/60 pb-2">
+                      <span className="font-bold text-cyan-400">ROUND #{race.round}</span>
+                      <span>{race.date}</span>
                     </div>
 
-                    <h3 className="schedule-race-title headline">{race.raceName}</h3>
-                    <div className="schedule-circuit-name telemetry">📍 {race.circuitName}</div>
-                    <div className="schedule-location telemetry">
+                    <h3 className="font-black text-slate-100 text-base">{race.raceName}</h3>
+                    <div className="font-telemetry text-xs text-slate-400">📍 {race.circuitName}</div>
+                    <div className="font-telemetry text-[11px] text-slate-500">
                       {race.locality}, {race.country}
                     </div>
                   </div>
