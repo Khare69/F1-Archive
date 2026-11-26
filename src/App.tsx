@@ -1,5 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, Navigate, useParams } from 'react-router-dom';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { defaultShouldDehydrateQuery } from '@tanstack/react-query';
 import { queryClient, queryPersister, QUERY_PERSIST_BUSTER } from './lib/queryClient';
@@ -16,13 +16,17 @@ import { TeamsArchive } from './features/teams/TeamsArchive';
 import { DriversArchive } from './features/drivers/DriversArchive';
 import { DriverComparison } from './features/drivers/DriverComparison';
 import { CircuitsArchive } from './features/circuits/CircuitsArchive';
-import { Garage } from './features/garage/Garage';
 import { LiveStandings } from './features/standings/LiveStandings';
 import { NotFound } from './features/notfound/NotFound';
 import './App.css';
 
 // Code-split / lazy-load heavy modules for optimal initial performance
 const CarsArchive = lazy(() => import('./features/cars/CarsArchive'));
+
+const CarsRedirect: React.FC = () => {
+  const { teamId } = useParams<{ teamId?: string }>();
+  return <Navigate replace to={teamId ? `/lab/${teamId}` : '/lab'} />;
+};
 const TelemetryHub = lazy(() =>
   import('./features/telemetry/TelemetryHub').then((m) => ({ default: m.TelemetryHub }))
 );
@@ -119,9 +123,9 @@ const AppContent: React.FC = () => {
                 }
               />
 
-              {/* Lazy-loaded 3D Cars Archive */}
+              {/* Lazy-loaded 3D Cars / Vehicle Lab Archive */}
               <Route
-                path="/cars/:teamId?"
+                path="/lab/:teamId?"
                 element={
                   <ErrorBoundary fallbackTitle="3D Vehicle Lab Render Fault">
                     <Suspense
@@ -140,6 +144,8 @@ const AppContent: React.FC = () => {
                   </ErrorBoundary>
                 }
               />
+              <Route path="/cars/:teamId?" element={<CarsRedirect />} />
+              <Route path="/garage" element={<Navigate replace to="/lab" />} />
 
               {/* Lazy-loaded 3D Telemetry Ghost-Lap Replay & Strategy */}
               <Route
@@ -208,14 +214,6 @@ const AppContent: React.FC = () => {
               />
 
               <Route
-                path="/garage"
-                element={
-                  <PageTransition>
-                    <Garage />
-                  </PageTransition>
-                }
-              />
-              <Route
                 path="/standings"
                 element={
                   <PageTransition>
@@ -263,15 +261,13 @@ const AppContent: React.FC = () => {
             <span>•</span>
             <Link to="/teams">CONSTRUCTORS</Link>
             <span>•</span>
-            <Link to="/cars">3D CAD LAB</Link>
+            <Link to="/lab">3D CAD LAB</Link>
             <span>•</span>
             <Link to="/circuits">CIRCUITS</Link>
             <span>•</span>
             <Link to="/drivers">DRIVERS</Link>
             <span>•</span>
             <Link to="/drivers/compare">COMPARE</Link>
-            <span>•</span>
-            <Link to="/garage">PADDOCK GARAGE</Link>
           </div>
         </div>
       </footer>

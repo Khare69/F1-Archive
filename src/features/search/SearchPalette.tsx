@@ -152,12 +152,12 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose })
         extra: 'compare drivers head to head h2h teammate gap era normalized stats'
       },
       {
-        id: 'paddock-garage',
-        name: 'Paddock Garage & Audio Experience',
+        id: '3d-evolution-lab',
+        name: '3D Evolution Lab & Vehicle Anatomy',
         category: 'tool' as const,
-        stat: 'Engine Audio Simulator • Radio Comms',
-        path: '/garage',
-        extra: 'garage paddock audio radio engine team sound'
+        stat: 'Aerodynamics • Chassis CAD • 5 Era Models',
+        path: '/lab',
+        extra: '3d lab cars vehicles cad aerodynamics chassis models'
       },
       {
         id: 'live-standings',
