@@ -1,6 +1,5 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
-import { AnimatePresence } from 'framer-motion';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { defaultShouldDehydrateQuery } from '@tanstack/react-query';
 import { queryClient, queryPersister, QUERY_PERSIST_BUSTER } from './lib/queryClient';
@@ -93,9 +92,8 @@ const AppContent: React.FC = () => {
       {/* Main Application Routes with Animated Page Transitions */}
       <div className={`main-viewport ${isWelcomeComplete ? 'viewport-visible' : 'viewport-hidden'}`}>
         <ErrorBoundary fallbackTitle="Archive Module Render Fault">
-          <AnimatePresence mode="wait">
-            <Routes location={location} key={location.pathname}>
-              <Route
+          <Routes>
+            <Route
                 path="/"
                 element={
                   <PageTransition>
@@ -257,7 +255,6 @@ const AppContent: React.FC = () => {
                 }
               />
             </Routes>
-          </AnimatePresence>
         </ErrorBoundary>
       </div>
 
