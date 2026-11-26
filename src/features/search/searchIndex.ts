@@ -1,4 +1,10 @@
 import type FuseType from 'fuse.js';
+import {
+  fetchDriversIndex,
+  fetchConstructorsIndex,
+  fetchSeasonsIndex,
+  fetchCircuitsIndex,
+} from '../../services/archiveDataClient';
 
 export type SearchCategory = 'action' | 'driver' | 'constructor' | 'circuit' | 'season';
 
@@ -24,44 +30,15 @@ export async function loadSearchIndex(): Promise<FuseType<SearchEntity>> {
   if (loadPromise) return loadPromise;
 
   loadPromise = (async () => {
-    const [driversMod, constructorsMod, seasonsMod, circuitsMod, fuseMod] = await Promise.all([
-      import('../../data/generated/drivers.json'),
-      import('../../data/generated/constructors.json'),
-      import('../../data/generated/seasons.json'),
-      import('../../data/generated/circuits.json'),
+    const [drivers, constructors, seasons, circuits, fuseMod] = await Promise.all([
+      fetchDriversIndex(),
+      fetchConstructorsIndex(),
+      fetchSeasonsIndex(),
+      fetchCircuitsIndex(),
       import('fuse.js'),
     ]);
 
     const Fuse = (fuseMod.default || fuseMod) as unknown as typeof FuseType;
-
-    const drivers = (driversMod.default || driversMod) as unknown as Array<{
-      id: string;
-      name: string;
-      code?: string;
-      country?: string;
-      championships?: number;
-      wins?: number;
-      starts?: number;
-    }>;
-    const constructors = (constructorsMod.default || constructorsMod) as unknown as Array<{
-      id: string;
-      name: string;
-      base?: string;
-      principal?: string;
-      championships?: number;
-    }>;
-    const seasons = (seasonsMod.default || seasonsMod) as unknown as Array<{
-      year: number;
-      championDriver?: string;
-      championTeam?: string;
-    }>;
-    const circuits = (circuitsMod.default || circuitsMod) as unknown as Array<{
-      id: string;
-      name: string;
-      city?: string;
-      country?: string;
-      lengthKm?: string | number;
-    }>;
 
     const quickActions: SearchEntity[] = [
       {
