@@ -38,6 +38,100 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     });
   });
 
+  test('Phase 3: 5-hub navigation, legacy redirects, and zero texture noise', async ({ page }) => {
+    await page.goto('/');
+
+    // 1. Assert exactly 5 desktop navigation hub links
+    const hubItems = page.locator('[data-testid="hub-nav-item"]');
+    await expect(hubItems).toHaveCount(5);
+
+    // 2. Assert /garage redirects cleanly to /lab
+    await page.goto('/garage');
+    await expect(page).toHaveURL(/\/lab/);
+
+    // 3. Assert /cars/ferrari redirects cleanly to /lab/ferrari
+    await page.goto('/cars/ferrari');
+    await expect(page).toHaveURL(/\/lab\/ferrari/);
+
+    // 4. Assert 0 elements match legacy carbon or grid overlays
+    const noiseElements = page.locator('.carbon-texture, .bg-grid-overlay');
+    await expect(noiseElements).toHaveCount(0);
+  });
+
+  test('Phase 3: Deep link renders immediately with zero splash overlay', async ({ page }) => {
+    await page.goto('/drivers/VER');
+    await expect(page.locator('#main-content')).toBeVisible();
+
+    // Verify zero welcome splash
+    const splash = page.locator('.welcome-experience, .welcome-splash, .welcome-overlay');
+    await expect(splash).toHaveCount(0);
+  });
+
+  test('Phase 3: cmdk + Fuse.js command palette & "?" shortcuts dialog', async ({ page }) => {
+    await page.goto('/');
+
+    // 1. Press Ctrl+K to open search palette
+    await page.keyboard.press('ControlOrMeta+k');
+    const searchDialog = page.locator('[data-testid="search-palette-dialog"]');
+    await expect(searchDialog).toBeVisible({ timeout: 10000 });
+
+    // 2. Search for "verstap" and verify Max Verstappen appears
+    await page.keyboard.type('verstap', { delay: 50 });
+    await expect(page.locator('text=Max Verstappen').first()).toBeVisible({ timeout: 10000 });
+
+    // 3. Press Escape to close
+    await page.keyboard.press('Escape');
+    await expect(searchDialog).not.toBeVisible();
+
+    // 4. Press ? to open keyboard shortcuts modal
+    await page.keyboard.press('?');
+    const shortcutsDialog = page.locator('[data-testid="keyboard-shortcuts-dialog"]');
+    await expect(shortcutsDialog).toBeVisible({ timeout: 10000 });
+
+    // 5. Press Escape to close
+    await page.keyboard.press('Escape');
+    await expect(shortcutsDialog).not.toBeVisible();
+  });
+
+  test('Phase 3: IndexedDB query persistence with zero localStorage bloat', async ({ page }) => {
+    await page.goto('/standings');
+    await expect(page.locator('.standings-container, .live-standings-page').first()).toBeVisible();
+
+    const f1Cache = await page.evaluate(() => window.localStorage.getItem('F1_QUERY_CACHE'));
+    const offlineCache = await page.evaluate(() => window.localStorage.getItem('REACT_QUERY_OFFLINE_CACHE'));
+
+    expect(f1Cache).toBeNull();
+    expect(offlineCache).toBeNull();
+  });
+
+  test('Phase 3: WebGL canvas DOM element identity preserved across sub-route parameter changes', async ({ page }) => {
+    await page.goto('/lab/ferrari');
+    await expect(page.locator('.cars-archive-container, h1').first()).toBeVisible();
+
+    const canvas = page.locator('canvas').first();
+    await expect(canvas).toBeVisible({ timeout: 15000 });
+
+    // Attach marker to the canvas element
+    await page.evaluate(() => {
+      const el = document.querySelector('canvas');
+      if (el) (window as any).__testCanvasMarker = el;
+    });
+
+    // In-app parameter navigation to /lab/mclaren
+    await page.evaluate(() => {
+      window.history.pushState({}, '', '/lab/mclaren');
+      window.dispatchEvent(new PopStateEvent('popstate'));
+    });
+
+    // Assert same canvas DOM element instance is preserved
+    const isSameCanvas = await page.evaluate(() => {
+      const current = document.querySelector('canvas');
+      return current !== null && current === (window as any).__testCanvasMarker;
+    });
+
+    expect(isSameCanvas).toBe(true);
+  });
+
   test('navigates through all core archive sections with zero uncaught runtime page errors', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (error) => {
@@ -76,20 +170,18 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     await page.goto('/circuits');
     await expect(page.locator('.circuits-archive-page, .archive-layout').first()).toBeVisible();
 
-    // 6. Garage / Paddock Telemetry Bay
+    // 6. Garage / Paddock Telemetry Bay (redirects cleanly to /lab)
     await page.goto('/garage');
-    await expect(page.locator('.garage-container, .garage-page').first()).toBeVisible();
-    await expect(page.locator('#team-select')).toBeVisible();
-    await expect(page.locator('.sim-stats-grid')).toBeVisible();
+    await expect(page).toHaveURL(/\/lab/);
+    await expect(page.locator('.cars-archive-container, h1').first()).toBeVisible();
 
     // 7. Live Standings & Calendar
     await page.goto('/standings');
     await expect(page.locator('.standings-container, .live-standings-page').first()).toBeVisible();
 
     // 8. 3D Cars Lab (SwiftShader WebGL rendering verification)
-    await page.goto('/cars?debug=perf');
+    await page.goto('/lab?debug=perf');
     await expect(page.locator('.cars-archive-container, h1').first()).toBeVisible();
-    // Allow canvas initialization time under software rasterization
     const canvas = page.locator('canvas');
     await expect(canvas.first()).toBeVisible({ timeout: 15000 });
 

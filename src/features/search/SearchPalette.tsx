@@ -1,459 +1,442 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getAllDrivers, getAllTeams, getAllSeasons, getAllCircuits } from '../../data/dataService';
-import './SearchPalette.css';
+import { Command } from 'cmdk';
+import { Search, Zap, User, Shield, Compass, Calendar, ArrowRight, CornerDownLeft } from 'lucide-react';
+import type FuseType from 'fuse.js';
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../../components/ui/dialog';
+import { loadSearchIndex, SearchEntity } from './searchIndex';
 
-interface SearchPaletteProps {
+export interface SearchPaletteProps {
   isOpen: boolean;
   onClose: () => void;
+  onOpenShortcuts?: () => void;
 }
 
-interface SearchItem {
-  id: string;
-  name: string;
-  category: 'driver' | 'team' | 'season' | 'circuit' | 'telemetry' | 'tool';
-  stat: string;
-  path: string;
-  code?: string;
-  extra?: string;
-}
-
-export const SearchPalette: React.FC<SearchPaletteProps> = ({ isOpen, onClose }) => {
+export const SearchPalette: React.FC<SearchPaletteProps> = ({
+  isOpen,
+  onClose,
+  onOpenShortcuts,
+}) => {
   const [query, setQuery] = useState('');
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [fuseInstance, setFuseInstance] = useState<FuseType<SearchEntity> | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Focus input whenever palette opens
+  // Lazy load index ONLY when palette opens
   useEffect(() => {
     if (isOpen) {
       setQuery('');
-      setSelectedIndex(0);
-      setTimeout(() => {
-        inputRef.current?.focus();
-      }, 50);
+      if (!fuseInstance) {
+        setIsLoading(true);
+        loadSearchIndex()
+          .then((fuse) => {
+            setFuseInstance(fuse);
+          })
+          .finally(() => {
+            setIsLoading(false);
+          });
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, fuseInstance]);
 
-  const allItems = useMemo<SearchItem[]>(() => {
-    const drivers = getAllDrivers().map(d => ({
-      id: d.id,
-      name: d.name,
-      category: 'driver' as const,
-      stat: d.championships > 0 
-        ? `${d.championships}x WDC • ${d.wins} Wins` 
-        : `${d.wins} Wins • ${d.starts || 0} Starts`,
-      path: `/drivers/${d.id}`,
-      code: d.code,
-      extra: `${d.country} ${d.code || ''} ${d.slug || ''}`
-    }));
-
-    const teams = getAllTeams().map(t => ({
-      id: t.id,
-      name: t.name,
-      category: 'team' as const,
-      stat: `${t.carName} • ${t.championships} Titles`,
-      path: `/teams/${t.id}`,
-      extra: `${t.principal} ${t.base} ${t.id}`
-    }));
-
-    const seasons = getAllSeasons().map(s => ({
-      id: String(s.year),
-      name: `${s.year} World Championship`,
-      category: 'season' as const,
-      stat: `Champ: ${s.championDriver} (${s.championTeam})`,
-      path: `/seasons/${s.year}`,
-      extra: `${s.championDriver} ${s.championTeam}`
-    }));
-
-    const circuits = getAllCircuits().map(c => ({
-      id: c.id,
-      name: c.name,
-      category: 'circuit' as const,
-      stat: `${c.country} • ${c.lengthKm}`,
-      path: `/circuits/${c.id}`,
-      extra: `${c.city} ${c.country} ${c.type}`
-    }));
-
-    const telemetries: SearchItem[] = [
-      {
-        id: 'telemetry-hub',
-        name: '3D Telemetry Ghost-Lap & Strategy Lab',
-        category: 'telemetry' as const,
-        stat: 'Multi-Channel Ghost Replay • 25 Mini-Sectors',
-        path: '/telemetry',
-        extra: 'ghost lap replay telemetry trace speed throttle brake delta strategy'
-      },
-      {
-        id: 'silverstone-2024-ham-vs-ver',
-        name: 'Silverstone 2024: Hamilton vs. Verstappen',
-        category: 'telemetry' as const,
-        stat: '3D Ghost Lap • British GP Victory Duel',
-        path: '/telemetry/silverstone-2024-ham-vs-ver',
-        extra: 'hamilton verstappen silverstone 2024 ghost replay'
-      },
-      {
-        id: 'monaco-2024-lec-vs-pia',
-        name: 'Monaco 2024: Leclerc vs. Piastri',
-        category: 'telemetry' as const,
-        stat: '3D Ghost Lap • Q3 Pole Position Shootout',
-        path: '/telemetry/monaco-2024-lec-vs-pia',
-        extra: 'leclerc piastri monaco 2024 pole ghost replay'
-      },
-      {
-        id: 'spa-2024-ver-vs-nor',
-        name: 'Spa 2024: Verstappen vs. Norris',
-        category: 'telemetry' as const,
-        stat: '3D Ghost Lap • Eau Rouge & Kemmel Shootout',
-        path: '/telemetry/spa-2024-ver-vs-nor',
-        extra: 'verstappen norris spa 2024 ghost replay'
-      },
-      {
-        id: 'madrid-2026-sim-alo-vs-sai',
-        name: 'Madrid 2026: Alonso vs. Sainz',
-        category: 'telemetry' as const,
-        stat: '3D Ghost Lap • 2026 Active Aero & MOM Duel',
-        path: '/telemetry/madrid-2026-sim-alo-vs-sai',
-        extra: 'alonso sainz madrid 2026 active aero ghost replay'
-      }
-    ];
-
-    const tools: SearchItem[] = [
-      {
-        id: 'pitwall-strategy',
-        name: 'Pit-Wall Strategy & Undercut Simulator',
-        category: 'tool' as const,
-        stat: 'Monte Carlo 10k Permutations • Tyre Cliff Model',
-        path: '/pitwall',
-        extra: 'pit wall strategy undercut monte carlo tyre degradation pit stop simulation worker'
-      },
-      {
-        id: 'historian-lab',
-        name: 'Explainable AI Race Historian & SQL Lab',
-        category: 'tool' as const,
-        stat: 'Natural Language F1DB Text-to-SQL • 16 Presets',
-        path: '/historian',
-        extra: 'historian sql ai f1db natural language query presets text-to-sql copilot'
-      },
-      {
-        id: 'cars-cad-lab',
-        name: '3D Vehicle CAD Lab & 2026 Aero Inspector',
-        category: 'tool' as const,
-        stat: 'Active Aero Straight/Corner Mode • Draco GLB',
-        path: '/cars',
-        extra: 'cars 3d vehicle cad model aero drs wing chassis wireframe'
-      },
-      {
-        id: 'driver-comparison',
-        name: 'Driver Head-to-Head & Era Normalizer',
-        category: 'tool' as const,
-        stat: 'Teammate H2H Gap • Career Points Share %',
-        path: '/drivers/compare',
-        extra: 'compare drivers head to head h2h teammate gap era normalized stats'
-      },
-      {
-        id: 'paddock-garage',
-        name: 'Paddock Garage & Audio Experience',
-        category: 'tool' as const,
-        stat: 'Engine Audio Simulator • Radio Comms',
-        path: '/garage',
-        extra: 'garage paddock audio radio engine team sound'
-      },
-      {
-        id: 'live-standings',
-        name: 'Championship Standings & Race Calendar',
-        category: 'tool' as const,
-        stat: 'WDC & WCC Live Points • Race Schedule',
-        path: '/standings',
-        extra: 'standings championship points calendar schedule race'
-      }
-    ];
-
-    return [...tools, ...telemetries, ...drivers, ...teams, ...seasons, ...circuits];
-  }, []);
-
-  // Filter items based on query
-  const filteredResults = useMemo(() => {
-    if (!query.trim()) {
-      return {
-        tools: allItems.filter(i => i.category === 'tool').slice(0, 3),
-        telemetries: allItems.filter(i => i.category === 'telemetry').slice(0, 3),
-        drivers: allItems.filter(i => i.category === 'driver').slice(0, 4),
-        teams: allItems.filter(i => i.category === 'team').slice(0, 4),
-        seasons: allItems.filter(i => i.category === 'season').slice(0, 4),
-        circuits: allItems.filter(i => i.category === 'circuit').slice(0, 4)
-      };
+  // Compute search results
+  const searchResults = useMemo(() => {
+    if (!fuseInstance || !query.trim()) {
+      return null;
     }
 
-    const clean = query.trim().toLowerCase();
-    const matches = allItems.filter(item =>
-      item.name.toLowerCase().includes(clean) ||
-      item.id.toLowerCase().includes(clean) ||
-      (item.code && item.code.toLowerCase().includes(clean)) ||
-      (item.extra && item.extra.toLowerCase().includes(clean)) ||
-      item.stat.toLowerCase().includes(clean)
-    );
+    const raw = fuseInstance.search(query.trim());
+    const items = raw.map((r) => r.item);
 
     return {
-      tools: matches.filter(i => i.category === 'tool').slice(0, 4),
-      telemetries: matches.filter(i => i.category === 'telemetry').slice(0, 4),
-      drivers: matches.filter(i => i.category === 'driver').slice(0, 5),
-      teams: matches.filter(i => i.category === 'team').slice(0, 5),
-      seasons: matches.filter(i => i.category === 'season').slice(0, 5),
-      circuits: matches.filter(i => i.category === 'circuit').slice(0, 5)
+      actions: items.filter((i) => i.category === 'action').slice(0, 6),
+      drivers: items.filter((i) => i.category === 'driver').slice(0, 6),
+      constructors: items.filter((i) => i.category === 'constructor').slice(0, 6),
+      circuits: items.filter((i) => i.category === 'circuit').slice(0, 6),
+      seasons: items.filter((i) => i.category === 'season').slice(0, 6),
+      totalMatches: items.length,
     };
-  }, [allItems, query]);
+  }, [fuseInstance, query]);
 
-  const flatResults = useMemo(() => {
-    return [
-      ...filteredResults.tools,
-      ...filteredResults.telemetries,
-      ...filteredResults.drivers,
-      ...filteredResults.teams,
-      ...filteredResults.seasons,
-      ...filteredResults.circuits
-    ];
-  }, [filteredResults]);
-
-  // Handle keyboard events (ESC, Arrow keys, Enter)
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        onClose();
-      } else if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setSelectedIndex(prev => (prev + 1) % (flatResults.length || 1));
-      } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setSelectedIndex(prev => (prev - 1 + flatResults.length) % (flatResults.length || 1));
-      } else if (e.key === 'Enter') {
-        e.preventDefault();
-        if (flatResults[selectedIndex]) {
-          navigate(flatResults[selectedIndex].path);
-          onClose();
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isOpen, flatResults, selectedIndex, navigate, onClose]);
-
-  if (!isOpen) return null;
-
-  const handleSelect = (path: string) => {
-    navigate(path);
+  const handleSelect = (item: SearchEntity) => {
     onClose();
+    if (item.action === 'open-shortcuts') {
+      onOpenShortcuts?.();
+      return;
+    }
+    if (item.path) {
+      navigate(item.path);
+    }
   };
 
-  let globalIndexCounter = 0;
+  const handleAskHistorian = () => {
+    onClose();
+    navigate('/historian');
+  };
 
   return (
-    <div
-      className="search-palette-overlay"
-      onClick={onClose}
-      role="dialog"
-      aria-modal="true"
-      aria-label="Search F1 Archive"
-    >
-      <div className="search-palette-modal" onClick={e => e.stopPropagation()}>
-        <div className="search-input-wrapper">
-          <svg className="search-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <circle cx="11" cy="11" r="8"></circle>
-            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-          </svg>
-          <input
-            ref={inputRef}
-            type="text"
-            className="search-palette-input"
-            placeholder="SEARCH ARCHIVE... (DRIVERS, TEAMS, SEASONS, CIRCUITS)"
-            value={query}
-            onChange={e => {
-              setQuery(e.target.value);
-              setSelectedIndex(0);
-            }}
-          />
-          <button type="button" className="search-esc-hint telemetry" onClick={onClose}>
-            ESC
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        className="max-w-2xl p-0 overflow-hidden bg-[#11151E] border-white/10 shadow-2xl rounded-md"
+        data-testid="search-palette-dialog"
+      >
+        <DialogTitle className="sr-only">Search F1 Archive</DialogTitle>
+        <DialogDescription className="sr-only">
+          Search drivers, circuits, constructors, seasons, and telemetry quick actions
+        </DialogDescription>
 
-        <div className="search-results-container">
-          {flatResults.length === 0 ? (
-            <div className="search-empty-state">
-              [ NO TELEMETRY MATCHES FOUND FOR &quot;{query}&quot; ]
-            </div>
-          ) : (
-            <>
-              {filteredResults.tools.length > 0 && (
-                <div className="search-category-group">
-                  <div className="search-category-header telemetry">// ANALYTICS &amp; 3D LABS</div>
-                  {filteredResults.tools.map(item => {
-                    const currentIndex = globalIndexCounter++;
-                    return (
-                      <div
-                        key={item.id}
-                        className={`search-result-item ${selectedIndex === currentIndex ? 'selected' : ''}`}
-                        onClick={() => handleSelect(item.path)}
-                      >
-                        <div className="search-item-left">
-                          <span
-                            className="search-type-badge"
-                            style={{
-                              background: 'rgba(255, 215, 0, 0.15)',
-                              color: '#FFD700',
-                              border: '1px solid rgba(255, 215, 0, 0.4)'
-                            }}
-                          >
-                            MODULE
-                          </span>
-                          <span className="search-item-name">{item.name}</span>
-                        </div>
-                        <div className="search-item-right">
-                          <span className="search-item-stat telemetry">{item.stat}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {filteredResults.telemetries.length > 0 && (
-                <div className="search-category-group">
-                  <div className="search-category-header telemetry">// 3D GHOST TELEMETRY</div>
-                  {filteredResults.telemetries.map(item => {
-                    const currentIndex = globalIndexCounter++;
-                    return (
-                      <div
-                        key={item.id}
-                        className={`search-result-item ${selectedIndex === currentIndex ? 'selected' : ''}`}
-                        onClick={() => handleSelect(item.path)}
-                      >
-                        <div className="search-item-left">
-                          <span className="search-type-badge" style={{ background: 'rgba(0, 210, 255, 0.2)', color: '#00D2FF', border: '1px solid #00D2FF' }}>
-                            GHOST
-                          </span>
-                          <span className="search-item-name">{item.name}</span>
-                        </div>
-                        <div className="search-item-right">
-                          <span className="search-item-stat telemetry">{item.stat}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {filteredResults.drivers.length > 0 && (
-                <div className="search-category-group">
-                  <div className="search-category-header telemetry">// DRIVERS ROSTER</div>
-                  {filteredResults.drivers.map(item => {
-                    const currentIndex = globalIndexCounter++;
-                    return (
-                      <div
-                        key={item.id}
-                        className={`search-result-item ${selectedIndex === currentIndex ? 'selected' : ''}`}
-                        onClick={() => handleSelect(item.path)}
-                      >
-                        <div className="search-item-left">
-                          <span className="search-type-badge badge-driver">PILOT</span>
-                          <span className="search-item-name">{item.name}</span>
-                        </div>
-                        <div className="search-item-right">
-                          <span className="search-item-stat telemetry">{item.stat}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {filteredResults.teams.length > 0 && (
-                <div className="search-category-group">
-                  <div className="search-category-header telemetry">// CONSTRUCTORS</div>
-                  {filteredResults.teams.map(item => {
-                    const currentIndex = globalIndexCounter++;
-                    return (
-                      <div
-                        key={item.id}
-                        className={`search-result-item ${selectedIndex === currentIndex ? 'selected' : ''}`}
-                        onClick={() => handleSelect(item.path)}
-                      >
-                        <div className="search-item-left">
-                          <span className="search-type-badge badge-team">TEAM</span>
-                          <span className="search-item-name">{item.name}</span>
-                        </div>
-                        <div className="search-item-right">
-                          <span className="search-item-stat telemetry">{item.stat}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {filteredResults.seasons.length > 0 && (
-                <div className="search-category-group">
-                  <div className="search-category-header telemetry">// SEASONS VAULT</div>
-                  {filteredResults.seasons.map(item => {
-                    const currentIndex = globalIndexCounter++;
-                    return (
-                      <div
-                        key={item.id}
-                        className={`search-result-item ${selectedIndex === currentIndex ? 'selected' : ''}`}
-                        onClick={() => handleSelect(item.path)}
-                      >
-                        <div className="search-item-left">
-                          <span className="search-type-badge badge-season">SEASON</span>
-                          <span className="search-item-name">{item.name}</span>
-                        </div>
-                        <div className="search-item-right">
-                          <span className="search-item-stat telemetry">{item.stat}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {filteredResults.circuits.length > 0 && (
-                <div className="search-category-group">
-                  <div className="search-category-header telemetry">// RACE CIRCUITS</div>
-                  {filteredResults.circuits.map(item => {
-                    const currentIndex = globalIndexCounter++;
-                    return (
-                      <div
-                        key={item.id}
-                        className={`search-result-item ${selectedIndex === currentIndex ? 'selected' : ''}`}
-                        onClick={() => handleSelect(item.path)}
-                      >
-                        <div className="search-item-left">
-                          <span className="search-type-badge badge-circuit">TRACK</span>
-                          <span className="search-item-name">{item.name}</span>
-                        </div>
-                        <div className="search-item-right">
-                          <span className="search-item-stat telemetry">{item.stat}</span>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-
-        <div className="search-palette-footer telemetry">
-          <div className="search-footer-shortcuts">
-            <span><kbd>↑</kbd><kbd>↓</kbd> NAVIGATE</span>
-            <span><kbd>↵</kbd> SELECT</span>
-            <span><kbd>ESC</kbd> CLOSE</span>
+        <Command
+          shouldFilter={false}
+          className="w-full flex flex-col bg-transparent font-sans"
+        >
+          {/* Search Input Bar */}
+          <div className="flex items-center border-b border-white/10 px-3.5 py-2.5">
+            <Search className="mr-2.5 h-4 w-4 shrink-0 text-neutral-400" />
+            <Command.Input
+              value={query}
+              onValueChange={setQuery}
+              placeholder="SEARCH ARCHIVE... (DRIVERS, TEAMS, CIRCUITS, SEASONS)"
+              className="flex h-9 w-full rounded-md bg-transparent text-sm font-mono text-white outline-none placeholder:text-neutral-500 placeholder:text-xs"
+              autoFocus
+            />
+            {isLoading && (
+              <span className="text-[10px] font-mono text-neutral-400 mr-2 animate-pulse">
+                INDEXING...
+              </span>
+            )}
+            <button
+              type="button"
+              onClick={onClose}
+              className="text-[10px] font-mono text-neutral-400 hover:text-white px-1.5 py-0.5 rounded bg-white/5 border border-white/10 transition-colors"
+            >
+              ESC
+            </button>
           </div>
-          <span>F1 // ARCHIVE COMMAND PALETTE</span>
-        </div>
-      </div>
-    </div>
+
+          {/* Results List */}
+          <Command.List className="max-h-[380px] overflow-y-auto p-2 scrollbar-thin">
+            {/* Zero-query: Quick Actions */}
+            {!query.trim() && (
+              <Command.Group
+                heading="QUICK ACTIONS"
+                className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest [&_[cmdk-group-heading]]:text-neutral-500"
+              >
+                <Command.Item
+                  value="action-compare-ver-ham"
+                  onSelect={() =>
+                    handleSelect({
+                      id: 'action-compare-ver-ham',
+                      category: 'action',
+                      title: 'Compare Max Verstappen vs Lewis Hamilton',
+                      subtitle: 'Head-to-head career telemetry & era comparison',
+                      keywords: '',
+                      path: '/drivers/compare?d1=VER&d2=HAM',
+                    })
+                  }
+                  className="group flex cursor-pointer items-center justify-between rounded px-2.5 py-2 text-xs text-neutral-200 outline-none hover:bg-white/10 data-[selected=true]:bg-white/10 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <Zap className="h-3.5 w-3.5 text-amber-400" />
+                    <div>
+                      <div className="font-semibold text-white">Compare Max Verstappen vs Lewis Hamilton</div>
+                      <div className="text-[11px] text-neutral-400">Head-to-head career telemetry & era comparison</div>
+                    </div>
+                  </div>
+                  <ArrowRight className="h-3 w-3 text-neutral-500 group-hover:text-white" />
+                </Command.Item>
+
+                <Command.Item
+                  value="action-circuit-spa"
+                  onSelect={() =>
+                    handleSelect({
+                      id: 'action-circuit-spa',
+                      category: 'action',
+                      title: 'Open Spa-Francorchamps Circuit',
+                      subtitle: '3D circuit elevation & track geometry',
+                      keywords: '',
+                      path: '/circuits/spa-francorchamps',
+                    })
+                  }
+                  className="group flex cursor-pointer items-center justify-between rounded px-2.5 py-2 text-xs text-neutral-200 outline-none hover:bg-white/10 data-[selected=true]:bg-white/10 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <Compass className="h-3.5 w-3.5 text-blue-400" />
+                    <div>
+                      <div className="font-semibold text-white">Open Spa-Francorchamps Circuit</div>
+                      <div className="text-[11px] text-neutral-400">3D circuit elevation & track geometry</div>
+                    </div>
+                  </div>
+                  <ArrowRight className="h-3 w-3 text-neutral-500 group-hover:text-white" />
+                </Command.Item>
+
+                <Command.Item
+                  value="action-telemetry-replay"
+                  onSelect={() =>
+                    handleSelect({
+                      id: 'action-telemetry-replay',
+                      category: 'action',
+                      title: 'Open Telemetry Ghost-Lap Replay',
+                      subtitle: 'Multi-channel speed, throttle, brake 3D telemetry',
+                      keywords: '',
+                      path: '/telemetry',
+                    })
+                  }
+                  className="group flex cursor-pointer items-center justify-between rounded px-2.5 py-2 text-xs text-neutral-200 outline-none hover:bg-white/10 data-[selected=true]:bg-white/10 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <Zap className="h-3.5 w-3.5 text-cyan-400" />
+                    <div>
+                      <div className="font-semibold text-white">Open Telemetry Ghost-Lap Replay</div>
+                      <div className="text-[11px] text-neutral-400">Multi-channel speed, throttle, brake 3D telemetry</div>
+                    </div>
+                  </div>
+                  <ArrowRight className="h-3 w-3 text-neutral-500 group-hover:text-white" />
+                </Command.Item>
+
+                <Command.Item
+                  value="action-pitwall-strategy"
+                  onSelect={() =>
+                    handleSelect({
+                      id: 'action-pitwall-strategy',
+                      category: 'action',
+                      title: 'Open Pit-Wall Strategy Simulator',
+                      subtitle: 'Monte Carlo undercut & tyre degradation model',
+                      keywords: '',
+                      path: '/pitwall',
+                    })
+                  }
+                  className="group flex cursor-pointer items-center justify-between rounded px-2.5 py-2 text-xs text-neutral-200 outline-none hover:bg-white/10 data-[selected=true]:bg-white/10 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <Shield className="h-3.5 w-3.5 text-emerald-400" />
+                    <div>
+                      <div className="font-semibold text-white">Open Pit-Wall Strategy Simulator</div>
+                      <div className="text-[11px] text-neutral-400">Monte Carlo undercut & tyre degradation model</div>
+                    </div>
+                  </div>
+                  <ArrowRight className="h-3 w-3 text-neutral-500 group-hover:text-white" />
+                </Command.Item>
+
+                <Command.Item
+                  value="action-sql-historian"
+                  onSelect={() =>
+                    handleSelect({
+                      id: 'action-sql-historian',
+                      category: 'action',
+                      title: 'Open SQL Historian',
+                      subtitle: 'Query F1DB with natural language text-to-SQL or CodeMirror',
+                      keywords: '',
+                      path: '/historian',
+                    })
+                  }
+                  className="group flex cursor-pointer items-center justify-between rounded px-2.5 py-2 text-xs text-neutral-200 outline-none hover:bg-white/10 data-[selected=true]:bg-white/10 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <Zap className="h-3.5 w-3.5 text-crimson" />
+                    <div>
+                      <div className="font-semibold text-white">Open SQL Historian</div>
+                      <div className="text-[11px] text-neutral-400">Query F1DB with natural language text-to-SQL or CodeMirror</div>
+                    </div>
+                  </div>
+                  <ArrowRight className="h-3 w-3 text-neutral-500 group-hover:text-white" />
+                </Command.Item>
+
+                <Command.Item
+                  value="action-keyboard-shortcuts"
+                  onSelect={() =>
+                    handleSelect({
+                      id: 'action-keyboard-shortcuts',
+                      category: 'action',
+                      title: 'View Keyboard Shortcuts',
+                      subtitle: 'Command palette, navigation hotkeys, and shortcuts',
+                      keywords: '',
+                      action: 'open-shortcuts',
+                    })
+                  }
+                  className="group flex cursor-pointer items-center justify-between rounded px-2.5 py-2 text-xs text-neutral-200 outline-none hover:bg-white/10 data-[selected=true]:bg-white/10 transition-colors"
+                >
+                  <div className="flex items-center gap-2">
+                    <CornerDownLeft className="h-3.5 w-3.5 text-neutral-400" />
+                    <div>
+                      <div className="font-semibold text-white">View Keyboard Shortcuts</div>
+                      <div className="text-[11px] text-neutral-400">Command palette, navigation hotkeys, and shortcuts (?)</div>
+                    </div>
+                  </div>
+                  <ArrowRight className="h-3 w-3 text-neutral-500 group-hover:text-white" />
+                </Command.Item>
+              </Command.Group>
+            )}
+
+            {/* Non-empty query results */}
+            {query.trim() && searchResults && searchResults.totalMatches === 0 && (
+              <div className="py-8 text-center flex flex-col items-center justify-center gap-3">
+                <div className="font-mono text-xs text-neutral-400">
+                  [ NO TELEMETRY MATCHES FOUND FOR &quot;{query}&quot; ]
+                </div>
+                <button
+                  type="button"
+                  onClick={handleAskHistorian}
+                  className="inline-flex items-center gap-2 px-3 py-1.5 rounded bg-crimson hover:bg-crimson/90 text-white font-mono text-xs font-semibold tracking-wider transition-colors"
+                >
+                  Ask SQL Historian
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
+
+            {query.trim() && searchResults && (
+              <>
+                {searchResults.actions.length > 0 && (
+                  <Command.Group
+                    heading="QUICK ACTIONS"
+                    className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest [&_[cmdk-group-heading]]:text-neutral-500"
+                  >
+                    {searchResults.actions.map((item) => (
+                      <Command.Item
+                        key={item.id}
+                        value={item.id}
+                        onSelect={() => handleSelect(item)}
+                        className="group flex cursor-pointer items-center justify-between rounded px-2.5 py-2 text-xs text-neutral-200 outline-none hover:bg-white/10 data-[selected=true]:bg-white/10 transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Zap className="h-3.5 w-3.5 text-amber-400" />
+                          <div>
+                            <div className="font-semibold text-white">{item.title}</div>
+                            <div className="text-[11px] text-neutral-400">{item.subtitle}</div>
+                          </div>
+                        </div>
+                        <ArrowRight className="h-3 w-3 text-neutral-500 group-hover:text-white" />
+                      </Command.Item>
+                    ))}
+                  </Command.Group>
+                )}
+
+                {searchResults.drivers.length > 0 && (
+                  <Command.Group
+                    heading="DRIVERS"
+                    className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest [&_[cmdk-group-heading]]:text-neutral-500"
+                  >
+                    {searchResults.drivers.map((item) => (
+                      <Command.Item
+                        key={item.id}
+                        value={item.id}
+                        onSelect={() => handleSelect(item)}
+                        className="group flex cursor-pointer items-center justify-between rounded px-2.5 py-2 text-xs text-neutral-200 outline-none hover:bg-white/10 data-[selected=true]:bg-white/10 transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <User className="h-3.5 w-3.5 text-crimson" />
+                          <div>
+                            <div className="font-semibold text-white">{item.title}</div>
+                            <div className="text-[11px] text-neutral-400">{item.subtitle}</div>
+                          </div>
+                        </div>
+                        <span className="font-mono text-[10px] text-neutral-500 uppercase">DRIVER</span>
+                      </Command.Item>
+                    ))}
+                  </Command.Group>
+                )}
+
+                {searchResults.constructors.length > 0 && (
+                  <Command.Group
+                    heading="CONSTRUCTORS"
+                    className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest [&_[cmdk-group-heading]]:text-neutral-500"
+                  >
+                    {searchResults.constructors.map((item) => (
+                      <Command.Item
+                        key={item.id}
+                        value={item.id}
+                        onSelect={() => handleSelect(item)}
+                        className="group flex cursor-pointer items-center justify-between rounded px-2.5 py-2 text-xs text-neutral-200 outline-none hover:bg-white/10 data-[selected=true]:bg-white/10 transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Shield className="h-3.5 w-3.5 text-blue-400" />
+                          <div>
+                            <div className="font-semibold text-white">{item.title}</div>
+                            <div className="text-[11px] text-neutral-400">{item.subtitle}</div>
+                          </div>
+                        </div>
+                        <span className="font-mono text-[10px] text-neutral-500 uppercase">TEAM</span>
+                      </Command.Item>
+                    ))}
+                  </Command.Group>
+                )}
+
+                {searchResults.circuits.length > 0 && (
+                  <Command.Group
+                    heading="CIRCUITS"
+                    className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest [&_[cmdk-group-heading]]:text-neutral-500"
+                  >
+                    {searchResults.circuits.map((item) => (
+                      <Command.Item
+                        key={item.id}
+                        value={item.id}
+                        onSelect={() => handleSelect(item)}
+                        className="group flex cursor-pointer items-center justify-between rounded px-2.5 py-2 text-xs text-neutral-200 outline-none hover:bg-white/10 data-[selected=true]:bg-white/10 transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Compass className="h-3.5 w-3.5 text-emerald-400" />
+                          <div>
+                            <div className="font-semibold text-white">{item.title}</div>
+                            <div className="text-[11px] text-neutral-400">{item.subtitle}</div>
+                          </div>
+                        </div>
+                        <span className="font-mono text-[10px] text-neutral-500 uppercase">CIRCUIT</span>
+                      </Command.Item>
+                    ))}
+                  </Command.Group>
+                )}
+
+                {searchResults.seasons.length > 0 && (
+                  <Command.Group
+                    heading="SEASONS"
+                    className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:text-[10px] [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest [&_[cmdk-group-heading]]:text-neutral-500"
+                  >
+                    {searchResults.seasons.map((item) => (
+                      <Command.Item
+                        key={item.id}
+                        value={item.id}
+                        onSelect={() => handleSelect(item)}
+                        className="group flex cursor-pointer items-center justify-between rounded px-2.5 py-2 text-xs text-neutral-200 outline-none hover:bg-white/10 data-[selected=true]:bg-white/10 transition-colors"
+                      >
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-3.5 w-3.5 text-amber-400" />
+                          <div>
+                            <div className="font-semibold text-white">{item.title}</div>
+                            <div className="text-[11px] text-neutral-400">{item.subtitle}</div>
+                          </div>
+                        </div>
+                        <span className="font-mono text-[10px] text-neutral-500 uppercase">SEASON</span>
+                      </Command.Item>
+                    ))}
+                  </Command.Group>
+                )}
+              </>
+            )}
+          </Command.List>
+
+          {/* Footer Bar */}
+          <div className="flex items-center justify-between border-t border-white/10 px-3.5 py-2 font-mono text-[10px] text-neutral-500 bg-black/20">
+            <div className="flex items-center gap-3">
+              <span className="flex items-center gap-1">
+                <kbd className="px-1 py-0.5 rounded bg-white/5 border border-white/10 text-neutral-300">↑</kbd>
+                <kbd className="px-1 py-0.5 rounded bg-white/5 border border-white/10 text-neutral-300">↓</kbd>
+                NAVIGATE
+              </span>
+              <span className="flex items-center gap-1">
+                <kbd className="px-1 py-0.5 rounded bg-white/5 border border-white/10 text-neutral-300">↵</kbd>
+                SELECT
+              </span>
+              <span className="flex items-center gap-1">
+                <kbd className="px-1 py-0.5 rounded bg-white/5 border border-white/10 text-neutral-300">ESC</kbd>
+                CLOSE
+              </span>
+            </div>
+            <span>F1 // ARCHIVE COMMAND PALETTE</span>
+          </div>
+        </Command>
+      </DialogContent>
+    </Dialog>
   );
 };
+
+export default SearchPalette;
