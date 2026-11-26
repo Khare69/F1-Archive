@@ -358,4 +358,91 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     // Verify Brawn GP shows 2009 (not 1950)
     await expect(page.locator('text=2009').first()).toBeVisible({ timeout: 10000 });
   });
+
+  test('Phase 5: 2D SVG vs. 3D Elevation Mode & Keyboard Shortcuts (C-28, C-29)', async ({ page }) => {
+    await page.goto('/circuits/spa-francorchamps');
+    await expect(page.locator('.circuits-archive-page')).toBeVisible({ timeout: 10000 });
+
+    // Assert real elevation delta and HUD control render
+    await expect(page.locator('text=ELEVATION CHANGE')).toBeVisible();
+    await expect(page.locator('text=103m').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=ELEVATION SCALE:')).toBeVisible();
+
+    // Switch to 2D SVG by pressing '2'
+    await page.keyboard.press('2');
+    const svgMap = page.locator('[data-testid="track-2d-svg"]');
+    await expect(svgMap).toBeVisible({ timeout: 10000 });
+
+    // Assert 0 canvas elements mounted in 2D mode
+    const canvasCount = await page.locator('.circuits-archive-page canvas').count();
+    expect(canvasCount).toBe(0);
+
+    // Switch ribbon color mode to Elevation
+    const elevColorBtn = page.getByRole('button', { name: 'Elevation', exact: true });
+    await elevColorBtn.click();
+
+    // Press '3' to return to 3D elevation mode
+    await page.keyboard.press('3');
+    const canvas = page.locator('.circuits-archive-page canvas');
+    await expect(canvas).toBeVisible({ timeout: 10000 });
+  });
+
+  test('Phase 5: Corner DNA Deep Link & Filter Inspection (C-30, C-31)', async ({ page }) => {
+    // Navigate straight to Turn 3 (Eau Rouge) in 2D mode
+    await page.goto('/circuits/spa-francorchamps?view=2d&corner=3');
+    await expect(page.locator('.circuits-archive-page')).toBeVisible({ timeout: 10000 });
+
+    // Assert Turn 3 telemetry renders immediately
+    await expect(page.locator('text=305 km/h').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=G8').first()).toBeVisible();
+    await expect(page.locator('text=4.8 G').first()).toBeVisible();
+
+    // Toggle Overtake filter
+    const overtakeFilter = page.locator('button', { hasText: /Overtake/i });
+    await overtakeFilter.click();
+
+    // Select Turn 1 (La Source)
+    const turn1Btn = page.locator('button', { hasText: 'La Source' }).first();
+    await expect(turn1Btn).toBeVisible({ timeout: 10000 });
+    await turn1Btn.click({ force: true });
+
+    // Assert Turn 1 metrics render with zero NaN or null text
+    await expect(page.locator('text=68 km/h').first()).toBeVisible();
+    await expect(page.locator('text=5.2 G').first()).toBeVisible();
+
+    const bodyText = await page.locator('.circuits-archive-page').textContent();
+    expect(bodyText).not.toContain('null km');
+    expect(bodyText).not.toContain('NaN');
+  });
+
+  test('Phase 5: 10x Rapid Circuit & Hub Route-Switch WebGL Stability (C-32, F-38)', async ({ page }) => {
+    const webglErrors: string[] = [];
+    page.on('console', (msg) => {
+      const text = msg.text();
+      if (text.includes('THREE.WebGLRenderer: Context Lost') || text.includes('CONTEXT_LOST_WEBGL')) {
+        webglErrors.push(text);
+      }
+    });
+    page.on('pageerror', (err) => webglErrors.push(err.message));
+
+    const routes = [
+      '/circuits/spa-francorchamps',
+      '/circuits/monza',
+      '/circuits/monaco',
+      '/circuits/silverstone',
+      '/circuits/suzuka',
+      '/lab',
+      '/circuits/interlagos',
+      '/telemetry',
+      '/circuits/austin',
+      '/circuits/spa-francorchamps'
+    ];
+
+    for (const r of routes) {
+      await page.goto(r);
+      await expect(page.locator('#main-content, .circuits-archive-page, .telemetry-hub-page, .cars-archive-page').first()).toBeVisible({ timeout: 10000 });
+    }
+
+    expect(webglErrors).toEqual([]);
+  });
 });
