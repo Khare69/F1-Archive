@@ -1,10 +1,23 @@
 import React, { useState, useMemo } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useQueryState, parseAsStringLiteral, parseAsInteger } from 'nuqs';
 import { getAllCircuits, getCircuitById, getF1DBMetadata } from '../../data/dataService';
 import { StatCard } from '../../components/StatCard/StatCard';
 import { Track3DViewer } from './Track3DViewer';
+import { CornerDnaPanel } from './CornerDnaPanel';
+import { useCircuitGeometry } from './circuitGeometryClient';
+import { getCuratedCorners, buildFallbackApexMarkers } from '../../data/circuitCorners';
+import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
 import { usePageMeta } from '../../hooks/usePageMeta';
-import './CircuitsArchive.css';
+import type { RibbonColorMode } from './geometry/circuitRibbonBuilder';
+
+const MODERN_CALENDAR_IDS = new Set([
+  'bahrain', 'jeddah', 'melbourne', 'suzuka', 'shanghai', 'miami',
+  'imola', 'monaco', 'montreal', 'catalunya', 'spielberg', 'silverstone',
+  'hungaroring', 'spa-francorchamps', 'zandvoort', 'monza', 'baku',
+  'marina-bay', 'austin', 'mexico-city', 'interlagos', 'las-vegas',
+  'lusail', 'yas-marina'
+]);
 
 export const CircuitsArchive: React.FC = () => {
   const { circuitId } = useParams<{ circuitId?: string }>();
@@ -12,259 +25,297 @@ export const CircuitsArchive: React.FC = () => {
   const allCircuits = getAllCircuits();
   const meta = getF1DBMetadata();
 
+  // nuqs shareable URL state
+  const [viewMode, setViewMode] = useQueryState(
+    'view',
+    parseAsStringLiteral(['3d', '2d'] as const).withDefault('3d')
+  );
+  const [colorMode, setColorMode] = useQueryState(
+    'color',
+    parseAsStringLiteral(['sectors', 'elevation', 'speed_drs'] as const).withDefault('sectors')
+  );
+  const [cornerParam, setCornerParam] = useQueryState('corner', parseAsInteger);
+
+  const [filterMode, setFilterMode] = useState<'all' | 'overtaking' | 'high_downforce'>('all');
+  const [activeBottomTab, setActiveBottomTab] = useState<'winners' | 'eras'>('winners');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const filteredCircuits = useMemo(() => {
-    if (!searchQuery.trim()) return allCircuits;
+  const selectedCircuit = getCircuitById(circuitId) || allCircuits[0]!;
+
+  // Lazy circuit geometry fetch
+  const { data: geometryData } = useCircuitGeometry(selectedCircuit?.id);
+
+  // Grouped circuits list
+  const { modernCircuits, historicCircuits } = useMemo(() => {
     const clean = searchQuery.trim().toLowerCase();
-    return allCircuits.filter(c =>
-      c.name.toLowerCase().includes(clean) ||
-      c.country.toLowerCase().includes(clean) ||
-      c.city.toLowerCase().includes(clean) ||
-      c.type.toLowerCase().includes(clean)
-    );
+    const filtered = clean
+      ? allCircuits.filter(
+          (c) =>
+            c.name.toLowerCase().includes(clean) ||
+            c.country.toLowerCase().includes(clean) ||
+            c.city.toLowerCase().includes(clean)
+        )
+      : allCircuits;
+
+    return {
+      modernCircuits: filtered.filter((c) => MODERN_CALENDAR_IDS.has(c.id)),
+      historicCircuits: filtered.filter((c) => !MODERN_CALENDAR_IDS.has(c.id))
+    };
   }, [allCircuits, searchQuery]);
 
-  const selectedCircuit = getCircuitById(circuitId) || allCircuits[0];
+  // Curated corners vs. fallback apexes
+  const curatedCorners = useMemo(() => getCuratedCorners(selectedCircuit.id), [selectedCircuit.id]);
+  const isAutoDetected = curatedCorners.length === 0;
 
-  const getTypeColor = (type: string) => {
-    if (type === 'Permanent') return '#00D2FF';
-    if (type === 'Street') return '#FF1E1E';
-    return '#FFD700';
-  };
+  const corners = useMemo(() => {
+    if (curatedCorners.length > 0) return curatedCorners;
+    const coords = geometryData?.coordinates || selectedCircuit.trackCoordinates || [];
+    return buildFallbackApexMarkers(coords);
+  }, [curatedCorners, geometryData?.coordinates, selectedCircuit.trackCoordinates]);
 
-  const accentColor = getTypeColor(selectedCircuit.type);
-
-  // Dynamic route SEO and structured schema
-  usePageMeta({
-    title: `${selectedCircuit.name} (${selectedCircuit.country}) — Grand Prix Circuit Archive`,
-    description: `Explore ${selectedCircuit.name} circuit map, 3D ribbon geometry, official lap record (${selectedCircuit.lapRecord || 'Benchmark'}), pole-to-win conversion rate, and historical layout configurations.`,
-    canonicalPath: `/circuits/${selectedCircuit.id}`,
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@type': 'Place',
-      name: selectedCircuit.name,
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: selectedCircuit.city,
-        addressCountry: selectedCircuit.country
-      }
+  // Safe selected corner handling
+  const selectedCornerNumber = useMemo(() => {
+    if (cornerParam != null && corners.some((c) => c.number === cornerParam)) {
+      return cornerParam;
     }
-  });
+    return corners[0]?.number ?? null;
+  }, [cornerParam, corners]);
 
-  const handleSelectCircuit = (id: string) => {
-    navigate(`/circuits/${id}`);
+  const handleSelectCorner = (num: number | null) => {
+    setCornerParam(num);
   };
 
   const poleRateLabel =
-    selectedCircuit.poleToWinRate !== null && selectedCircuit.poleToWinRate !== undefined
-      ? `${selectedCircuit.poleToWinRate}%`
-      : 'N/A';
-
+    selectedCircuit.poleToWinRate != null ? `${selectedCircuit.poleToWinRate}%` : 'N/A';
   const poleRateSubtext =
     selectedCircuit.racesWithRecordedPole && selectedCircuit.racesWithRecordedPole > 0
       ? `${selectedCircuit.poleToWinCount}/${selectedCircuit.racesWithRecordedPole} recorded GPs`
       : 'Sample size pending';
 
+  usePageMeta({
+    title: `${selectedCircuit.name} (${selectedCircuit.country}) — Grand Prix Circuit Archive`,
+    description: `Explore ${selectedCircuit.name} 3D topography, elevation ribbon, official lap record, and corner DNA telemetry.`,
+    canonicalPath: `/circuits/${selectedCircuit.id}`
+  });
+
   return (
-    <div className="archive-layout circuits-archive-page">
-      {/* Left Sidebar */}
-      <aside className="archive-sidebar" aria-label="Circuits directory">
-        <div className="sidebar-header telemetry">
-          <span>// RACE CIRCUITS</span>
-          <span className="sidebar-count">{allCircuits.length} VENUES</span>
-        </div>
-
-        {/* Quick Search */}
-        <div className="driver-search-box" style={{ padding: '0.5rem 0.75rem', borderBottom: '1px solid var(--color-border)' }}>
-          <input
-            type="text"
-            className="driver-search-input telemetry"
-            placeholder="Search venue or nation..."
-            value={searchQuery}
-            onChange={e => setSearchQuery(e.target.value)}
-          />
-        </div>
-
-        <div className="circuits-scroll-list">
-          {filteredCircuits.map(circuit => (
-            <button
-              key={circuit.id}
-              type="button"
-              className={`list-button ${selectedCircuit.id === circuit.id ? 'active' : ''}`}
-              onClick={() => handleSelectCircuit(circuit.id)}
+    <div className="circuits-archive-page w-full min-h-screen bg-[#07090E] text-slate-200 p-4 lg:p-6 space-y-5 flex flex-col">
+      {/* ── Top Header Strip ── */}
+      <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-[#0B0E14] border border-white/10 rounded-lg">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+          {/* Circuit Selector Dropdown */}
+          <div className="relative">
+            <select
+              value={selectedCircuit.id}
+              onChange={(e) => navigate(`/circuits/${e.target.value}`)}
+              className="bg-[#121620] text-white font-mono text-sm border border-white/20 rounded px-3 py-2 pr-8 focus:outline-none focus:border-sky-500 cursor-pointer"
+              aria-label="Select Grand Prix Circuit"
             >
-              <div className="circuit-btn-left">
-                <span className="circuit-btn-flag">🏁</span>
-                <span className="circuit-btn-name">{circuit.name}</span>
-              </div>
-              <span className={`circuit-type-pill telemetry type-${circuit.type.toLowerCase()}`}>
-                {circuit.type}
-              </span>
-            </button>
-          ))}
-        </div>
-      </aside>
+              <optgroup label="2026 Active Modern Calendar">
+                {modernCircuits.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    🏁 {c.name} ({c.country})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="Classic & Historic Venues">
+                {historicCircuits.map((c) => (
+                  <option key={c.id} value={c.id}>
+                    🏛️ {c.name} ({c.country})
+                  </option>
+                ))}
+              </optgroup>
+            </select>
+          </div>
 
-      {/* Main Content Area */}
-      <main className="archive-content">
-        {/* Circuit Hero Panel */}
-        <div
-          className="circuit-hero-panel telemetry-panel corner-bracket"
-          style={{ '--circuit-brand-color': accentColor } as React.CSSProperties}
-        >
-          <div className="circuit-hero-bg-glow"></div>
-
-          <div className="circuit-meta-bar telemetry">
-            <span>CIRCUIT ID: #{selectedCircuit.id.toUpperCase()}</span>
-            <span>FIRST GRAND PRIX: {selectedCircuit.firstGP}</span>
-            <span
-              className={`circuit-type-badge-large type-${selectedCircuit.type.toLowerCase()}`}
-              style={{
-                color: accentColor,
-                backgroundColor: `${accentColor}22`,
-                border: `1px solid ${accentColor}55`
-              }}
-            >
-              {selectedCircuit.type.toUpperCase()} TRACK
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs font-mono px-2 py-0.5 rounded bg-sky-950/70 text-sky-400 border border-sky-500/30">
+              {selectedCircuit.type ? `${selectedCircuit.type.toUpperCase()} TRACK` : 'PERMANENT TRACK'}
             </span>
-            <span className="f1db-sync-pill">
-              <span>●</span> F1DB SYNCED (v{meta.f1dbVersion})
+            <span className="text-xs font-mono text-slate-400">
+              📍 {selectedCircuit.city}, {selectedCircuit.country}
+            </span>
+            <span className="text-[11px] font-mono text-slate-500 hidden sm:inline">
+              ● F1DB v{meta.f1dbVersion}
             </span>
           </div>
-
-          <div className="circuit-title-row">
-            <h1 className="circuit-full-name headline">{selectedCircuit.name}</h1>
-            <div className="circuit-location-tag telemetry">
-              <span>📍 {selectedCircuit.city}, {selectedCircuit.country}</span>
-            </div>
-          </div>
-
-          <p className="circuit-description">{selectedCircuit.description}</p>
         </div>
 
-        {/* Lap Record Featured Panel */}
-        <div className="lap-record-panel telemetry-panel">
-          <div className="lap-record-left">
-            <span className="telemetry" style={{ color: 'var(--color-text-muted)', fontSize: '0.8rem', letterSpacing: '0.12em' }}>
-              OFFICIAL GRAND PRIX LAP RECORD
-            </span>
-            <div className="lap-record-time headline">{selectedCircuit.lapRecord || 'Benchmark Record'}</div>
-            <div className="lap-record-holder telemetry">SET BY: <strong>{selectedCircuit.lapRecordHolder || 'FIA Homologation Standard'}</strong></div>
-          </div>
-          <div className="lap-record-badge headline">
-            <span>⚡ ALL-TIME BENCHMARK</span>
-          </div>
+        <div className="flex items-center gap-3">
+          <CopyShareLinkButton label="Share Circuit View" />
         </div>
+      </header>
 
-        {/* Circuit Telemetry Metric Cards */}
-        <div className="circuit-stats-grid">
-          <StatCard
-            label="CIRCUIT LENGTH"
-            value={selectedCircuit.lengthKm}
-            subtext="Lap Distance"
-            accentColor={accentColor}
-            isPrimary
-          />
-          <StatCard
-            label="TOTAL CORNERS"
-            value={selectedCircuit.turns}
-            subtext="Numbered Turns"
-            accentColor="#00D2FF"
-          />
-          <StatCard
-            label="POLE-TO-WIN RATE"
-            value={poleRateLabel}
-            subtext={poleRateSubtext}
-            accentColor="#FFD700"
-          />
-          <StatCard
-            label="ELEVATION CHANGE"
-            value={selectedCircuit.elevation ?? 'N/A'}
-            subtext="Altitude Delta"
-            accentColor="#C0C0C0"
-          />
-        </div>
-
-        {/* 3D Topographic Track Ribbon Viewer */}
-        <Track3DViewer
-          circuit={selectedCircuit}
-          accentColor={accentColor}
+      {/* ── Circuit KPIs ── */}
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+        <StatCard
+          label="CIRCUIT LENGTH"
+          value={selectedCircuit.lengthKm || 'N/A'}
+          subtext="Official Distance"
+          accentColor="#00D2FF"
         />
+        <StatCard
+          label="TOTAL TURNS"
+          value={selectedCircuit.turns != null ? selectedCircuit.turns : 'N/A'}
+          subtext="Numbered Corners"
+          accentColor="#38BDF8"
+        />
+        <StatCard
+          label="ELEVATION CHANGE"
+          value={geometryData?.elevationDeltaM ? `${geometryData.elevationDeltaM}m` : selectedCircuit.elevation || 'N/A'}
+          subtext={geometryData?.elevationSource === 'open-meteo-srtm' ? 'Open-Meteo SRTM' : 'Altitude Delta'}
+          accentColor="#FFD700"
+        />
+        <StatCard
+          label="POLE-TO-WIN RATE"
+          value={poleRateLabel}
+          subtext={poleRateSubtext}
+          accentColor="#E10600"
+        />
+        <StatCard
+          label="TOTAL RACES"
+          value={selectedCircuit.totalRaces != null ? selectedCircuit.totalRaces : 'N/A'}
+          subtext={`First GP: ${selectedCircuit.firstGP ?? 'N/A'}`}
+          accentColor="#22C55E"
+        />
+      </div>
 
-        {/* Historical Layout Configurations & Eras */}
-        {selectedCircuit.layoutEras && selectedCircuit.layoutEras.length > 0 && (
-          <section className="circuit-history-panel telemetry-panel corner-bracket">
-            <div className="section-title-bar">
-              <span className="section-dot" style={{ background: '#00D2FF' }}></span>
-              <h2 className="headline">HISTORICAL LAYOUT CONFIGURATIONS & ERAS</h2>
-            </div>
-            <div className="layouts-grid">
-              {selectedCircuit.layoutEras.map(layout => (
+      {/* ── 65% / 35% Desktop Split Viewport (I-03) ── */}
+      <main className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+        {/* Left 65%: 3D Elevation / 2D SVG Viewport */}
+        <div className="lg:col-span-8 flex flex-col">
+          <Track3DViewer
+            circuitName={selectedCircuit.name}
+            coordinates={geometryData?.coordinates || selectedCircuit.trackCoordinates || []}
+            elevationDeltaM={geometryData?.elevationDeltaM ?? null}
+            elevationSource={geometryData?.elevationSource}
+            trackSpanMeters={geometryData?.trackSpanMeters}
+            viewMode={viewMode}
+            onViewModeChange={(m) => setViewMode(m)}
+            colorMode={colorMode}
+            onColorModeChange={(c) => setColorMode(c)}
+            corners={corners}
+            selectedCornerNumber={selectedCornerNumber}
+            onSelectCorner={handleSelectCorner}
+            filterMode={filterMode}
+          />
+        </div>
+
+        {/* Right 35%: Corner DNA Inspector */}
+        <div className="lg:col-span-4 flex flex-col h-[540px]">
+          <CornerDnaPanel
+            circuitName={selectedCircuit.name}
+            corners={corners}
+            isAutoDetected={isAutoDetected}
+            selectedCornerNumber={selectedCornerNumber}
+            onSelectCorner={handleSelectCorner}
+            filterMode={filterMode}
+            onFilterModeChange={setFilterMode}
+          />
+        </div>
+      </main>
+
+      {/* ── Bottom Section: Past Winners & Eras ── */}
+      <section className="bg-[#0B0E14] border border-white/10 rounded-lg p-4">
+        <div className="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+          <div className="flex gap-2">
+            <button
+              type="button"
+              className={`px-3 py-1.5 rounded font-mono text-xs transition-colors ${
+                activeBottomTab === 'winners'
+                  ? 'bg-sky-500 text-black font-bold'
+                  : 'bg-white/5 text-slate-400 hover:text-white'
+              }`}
+              onClick={() => setActiveBottomTab('winners')}
+            >
+              PAST WINNERS
+            </button>
+            <button
+              type="button"
+              className={`px-3 py-1.5 rounded font-mono text-xs transition-colors ${
+                activeBottomTab === 'eras'
+                  ? 'bg-sky-500 text-black font-bold'
+                  : 'bg-white/5 text-slate-400 hover:text-white'
+              }`}
+              onClick={() => setActiveBottomTab('eras')}
+            >
+              LAYOUT ERAS
+            </button>
+          </div>
+
+          <span className="text-[11px] font-mono text-slate-400 hidden sm:inline">
+            Last 10 Editions — Full history available in{' '}
+            <Link to="/historian" className="text-sky-400 hover:underline">
+              SQL Historian ↗
+            </Link>
+          </span>
+        </div>
+
+        {activeBottomTab === 'winners' ? (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left font-mono text-xs" aria-label={`Recent winners at ${selectedCircuit.name}`}>
+              <thead className="bg-black/40 text-slate-400 border-b border-white/10">
+                <tr>
+                  <th className="p-2.5">YEAR</th>
+                  <th className="p-2.5">WINNER</th>
+                  <th className="p-2.5">CONSTRUCTOR</th>
+                  <th className="p-2.5 text-center">GRID</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {selectedCircuit.pastWinners && selectedCircuit.pastWinners.length > 0 ? (
+                  selectedCircuit.pastWinners.slice(0, 10).map((w) => (
+                    <tr key={w.year} className="hover:bg-white/5 transition-colors">
+                      <td className="p-2.5 text-sky-400 font-bold">{w.year}</td>
+                      <td className="p-2.5 text-white font-semibold">{w.driverName}</td>
+                      <td className="p-2.5 text-slate-300">{w.constructorName}</td>
+                      <td className="p-2.5 text-center text-slate-400">P{w.gridPosition ?? 'N/A'}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan={4} className="p-4 text-center text-slate-500">
+                      No historical winners recorded in this layout era.
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {selectedCircuit.layoutEras && selectedCircuit.layoutEras.length > 0 ? (
+              selectedCircuit.layoutEras.map((layout) => (
                 <div
                   key={layout.layoutId}
-                  className={`layout-card ${layout.effective ? 'layout-effective' : ''}`}
+                  className={`p-3 rounded border font-mono text-xs ${
+                    layout.effective ? 'bg-sky-950/20 border-sky-500/50' : 'bg-black/30 border-white/5'
+                  }`}
                 >
-                  <div className="layout-header">
-                    <strong className="headline layout-id-tag">{layout.layoutId}</strong>
+                  <div className="flex items-center justify-between mb-2">
+                    <strong className="text-white">{layout.layoutId}</strong>
                     {layout.effective && (
-                      <span className="telemetry layout-active-badge">CURRENT SPEC</span>
+                      <span className="px-1.5 py-0.5 bg-sky-500 text-black text-[9px] font-bold rounded">
+                        CURRENT
+                      </span>
                     )}
                   </div>
-                  <div className="layout-specs telemetry">
-                    <span>LENGTH: <strong>{layout.lengthKm} km</strong></span>
-                    <span>TURNS: <strong>{layout.turns}</strong></span>
-                    <span>ERAS: <strong>{layout.years}</strong></span>
-                    <span>GRANDS PRIX: <strong>{layout.racesCount} GPs</strong></span>
+                  <div className="space-y-1 text-slate-400 text-[11px]">
+                    <div>Length: <strong className="text-slate-200">{layout.lengthKm} km</strong></div>
+                    <div>Turns: <strong className="text-slate-200">{layout.turns}</strong></div>
+                    <div>Active: <strong className="text-slate-200">{layout.years}</strong></div>
+                    <div>GPs Held: <strong className="text-slate-200">{layout.racesCount}</strong></div>
                   </div>
                 </div>
-              ))}
-            </div>
-          </section>
+              ))
+            ) : (
+              <div className="p-4 text-slate-500 font-mono text-xs">
+                Single historical layout configuration.
+              </div>
+            )}
+          </div>
         )}
-
-        {/* Recent Grand Prix Winners Table */}
-        {selectedCircuit.pastWinners && selectedCircuit.pastWinners.length > 0 && (
-          <section className="circuit-history-panel telemetry-panel corner-bracket">
-            <div className="section-title-bar">
-              <span className="section-dot" style={{ background: '#00E701' }}></span>
-              <h2 className="headline">RECENT GRAND PRIX WINNERS AT THIS VENUE</h2>
-            </div>
-            <div className="table-responsive-wrapper">
-              <table className="f1-table" aria-label={`Recent winners at ${selectedCircuit.name}`}>
-                <thead>
-                  <tr>
-                    <th className="telemetry">YEAR</th>
-                    <th className="telemetry">RACE WINNER</th>
-                    <th className="telemetry">CONSTRUCTOR</th>
-                    <th className="telemetry text-center">STARTING GRID</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {selectedCircuit.pastWinners.slice(0, 8).map(w => (
-                    <tr key={w.year}>
-                      <td className="headline" style={{ color: 'var(--color-accent-primary)' }}>
-                        {w.year}
-                      </td>
-                      <td className="headline">{w.driverName}</td>
-                      <td className="telemetry text-muted">{w.constructorName}</td>
-                      <td className="telemetry text-center">
-                        {w.gridPosition === 1 ? (
-                          <span style={{ color: '#FFD700', fontWeight: 'bold' }}>POLE (P1)</span>
-                        ) : w.gridPosition !== null ? (
-                          `P${w.gridPosition}`
-                        ) : (
-                          '—'
-                        )}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
-      </main>
+      </section>
     </div>
   );
 };

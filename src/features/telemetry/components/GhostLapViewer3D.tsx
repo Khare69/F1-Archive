@@ -7,6 +7,7 @@ import type { TelemetryShowdown } from '../../../types/telemetry';
 import { getSectorAnchoredDistanceFraction } from '../telemetryMath';
 import { CanvasErrorBoundary } from '../../cars/components/CanvasErrorBoundary';
 import { PerfDebugCollector } from '../../cars/components/PerfDebugOverlay';
+import { disposeObject3D, attachWebGLContextLossGuard } from '../../../utils/webglDisposal';
 import './GhostLapViewer3D.css';
 
 export interface PlaybackHandle {
@@ -76,6 +77,12 @@ const MiniSectorTrackRibbon: React.FC<{
     geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
     return geo;
   }, [catmull, showdown]);
+
+  useEffect(() => {
+    return () => {
+      tubeGeometry.dispose();
+    };
+  }, [tubeGeometry]);
 
   return (
     <mesh geometry={tubeGeometry}>
@@ -190,6 +197,13 @@ const GhostCars: React.FC<{
       }
     }
   });
+
+  useEffect(() => {
+    return () => {
+      if (ghostARef.current) disposeObject3D(ghostARef.current);
+      if (ghostBRef.current) disposeObject3D(ghostBRef.current);
+    };
+  }, []);
 
   return (
     <>
@@ -327,6 +341,9 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
             frameloop={isPlaying ? 'always' : 'demand'}
             camera={{ position: [0, 22, 26], fov: 42 }}
             gl={{ antialias: true, alpha: true }}
+            onCreated={({ gl }) => {
+              attachWebGLContextLossGuard(gl.domElement, () => {}, () => {});
+            }}
           >
             <SceneInvalidator
               trigger={`${showdown.slug}_${is3DMode}_${isPlaying}_${currentTime}`}
