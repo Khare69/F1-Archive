@@ -8,6 +8,10 @@
  * 5. Graceful offline fallback
  */
 
+import { z } from 'zod';
+import { fetchValidatedJson } from './httpClient';
+import { OpenF1CarDataPointSchema, UpstreamApiError } from './liveApiSchemas';
+
 export interface OpenF1CarDataPoint {
   date: string;
   driver_number: number;
@@ -143,29 +147,28 @@ export async function fetchOpenF1CarData(
 
   const url = `${OPENF1_BASE_URL}/car_data?${params.toString()}`;
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
-
   try {
-    const res = await fetch(url, { signal: controller.signal });
-    clearTimeout(timeoutId);
-
-    if (!res.ok) {
-      if (res.status === 429) {
-        console.warn('[OpenF1] Rate limit reached (HTTP 429). Using offline fallback.');
-      }
-      throw new Error(`[OpenF1] HTTP Error ${res.status}`);
-    }
-
-    const rawData: OpenF1CarDataPoint[] = await res.json();
+    const rawData = await fetchValidatedJson(
+      url,
+      z.array(OpenF1CarDataPointSchema),
+      { timeoutMs, maxRetries: 0 }
+    );
     const downsampled = downsampleCarData(rawData, MAX_SAMPLES_PER_LAP);
 
     openF1MemoryCache.set(cacheKey, downsampled);
 
     return downsampled;
   } catch (err: unknown) {
-    clearTimeout(timeoutId);
-    if (err instanceof Error && err.name === 'AbortError') {
+    if (err instanceof UpstreamApiError) {
+      if (err.status === 429) {
+        console.warn('[OpenF1] Rate limit reached (HTTP 429). Using offline fallback.');
+      }
+      if (err.code === 'TIMEOUT') {
+        console.warn(`[OpenF1] Request timed out after ${timeoutMs}ms for session ${sessionKey}`);
+      } else {
+        console.warn(`[OpenF1] Failed to fetch car data for session ${sessionKey}:`, err);
+      }
+    } else if (err instanceof Error && err.name === 'AbortError') {
       console.warn(`[OpenF1] Request timed out after ${timeoutMs}ms for session ${sessionKey}`);
     } else {
       console.warn(`[OpenF1] Failed to fetch car data for session ${sessionKey}:`, err);

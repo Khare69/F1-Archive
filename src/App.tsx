@@ -1,17 +1,11 @@
 import React, { useState } from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
-import { defaultShouldDehydrateQuery } from '@tanstack/react-query';
-import { queryClient, queryPersister, QUERY_PERSIST_BUSTER } from './lib/queryClient';
-import { shouldPersistQueryKey } from './lib/idbPersister';
-import { UserPreferencesProvider } from './contexts/UserPreferencesContext';
+import { AppProviders } from './components/Layout/AppProviders';
 import { Navigation } from './components/Navigation/Navigation';
 import { Footer } from './components/Layout/Footer';
 import { AppRoutes } from './routes/AppRoutes';
 import { SearchPalette } from './features/search/SearchPalette';
 import { KeyboardShortcutsModal } from './components/Layout/KeyboardShortcutsModal';
 import { LazyPerfDebugOverlay } from './components/DevTools/LazyPerfDebugOverlay';
-import { TooltipProvider } from './components/ui/tooltip';
 import { useGlobalShortcuts } from './hooks/useGlobalShortcuts';
 import './App.css';
 
@@ -32,7 +26,10 @@ const AppContent: React.FC = () => {
       <SearchPalette
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}
-        onOpenShortcuts={() => { setIsSearchOpen(false); setIsShortcutsOpen(true); }}
+        onOpenShortcuts={() => {
+          setIsSearchOpen(false);
+          setIsShortcutsOpen(true);
+        }}
       />
       <KeyboardShortcutsModal isOpen={isShortcutsOpen} onClose={() => setIsShortcutsOpen(false)} />
       <main id="main-content" className="main-viewport">
@@ -44,25 +41,9 @@ const AppContent: React.FC = () => {
 };
 
 export const App: React.FC = () => (
-  <PersistQueryClientProvider
-    client={queryClient}
-    persistOptions={{
-      persister: queryPersister,
-      buster: QUERY_PERSIST_BUSTER,
-      dehydrateOptions: {
-        shouldDehydrateQuery: (query) =>
-          shouldPersistQueryKey(query.queryKey) && defaultShouldDehydrateQuery(query),
-      },
-    }}
-  >
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <UserPreferencesProvider>
-        <TooltipProvider delayDuration={200}>
-          <AppContent />
-        </TooltipProvider>
-      </UserPreferencesProvider>
-    </BrowserRouter>
-  </PersistQueryClientProvider>
+  <AppProviders>
+    <AppContent />
+  </AppProviders>
 );
 
 export default App;

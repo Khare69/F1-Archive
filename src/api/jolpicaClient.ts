@@ -6,6 +6,12 @@ import type {
   QueryMetadata
 } from '../types/f1';
 import { safeStorage } from '../utils/safeStorage';
+import { fetchValidatedJson } from './httpClient';
+import {
+  JolpicaDriverStandingsEnvelopeSchema,
+  JolpicaConstructorStandingsEnvelopeSchema,
+  JolpicaRaceScheduleEnvelopeSchema
+} from './liveApiSchemas';
 
 const JOLPICA_BASE_URL = 'https://api.jolpi.ca/ergast/f1';
 const CACHE_TTL_MS = 12 * 60 * 60 * 1000; // 12 hours TTL
@@ -129,14 +135,12 @@ export async function fetchDriverStandings(
   }
 
   try {
-    const res = await fetchWithTimeout(`${JOLPICA_BASE_URL}/${year}/driverStandings.json?limit=30`, signal);
-    if (!res.ok) {
-      const err = new Error(`HTTP error ${res.status}`);
-      (err as unknown as { status: number }).status = res.status;
-      throw err;
-    }
+    const json = await fetchValidatedJson(
+      `${JOLPICA_BASE_URL}/${year}/driverStandings.json?limit=30`,
+      JolpicaDriverStandingsEnvelopeSchema,
+      { signal }
+    );
 
-    const json = await res.json();
     const list = json.MRData?.StandingsTable?.StandingsLists?.[0];
     const total = parseInt(json.MRData?.total || '0', 10);
     const rawStandings = list?.DriverStandings || [];
@@ -154,18 +158,18 @@ export async function fetchDriverStandings(
       };
     }
 
-    const standings: LiveDriverStanding[] = rawStandings.map((s: Record<string, unknown>) => {
-      const driver = s.Driver as Record<string, string> | undefined;
-      const constructors = s.Constructors as Array<Record<string, string>> | undefined;
+    const standings: LiveDriverStanding[] = rawStandings.map((s) => {
+      const driver = s.Driver;
+      const constructors = s.Constructors;
       return {
-        position: parseInt(String(s.position), 10) || 0,
-        points: parseFloat(String(s.points)) || 0,
-        wins: parseInt(String(s.wins), 10) || 0,
-        driverId: driver?.driverId || '',
-        driverName: `${driver?.givenName || ''} ${driver?.familyName || ''}`.trim(),
-        driverCode: driver?.code || driver?.familyName?.substring(0, 3)?.toUpperCase() || '',
-        permanentNumber: driver?.permanentNumber || String(s.number || ''),
-        nationality: driver?.nationality || '',
+        position: s.position,
+        points: s.points,
+        wins: s.wins,
+        driverId: driver.driverId,
+        driverName: `${driver.givenName} ${driver.familyName}`.trim(),
+        driverCode: driver.code || driver.familyName.substring(0, 3).toUpperCase(),
+        permanentNumber: driver.permanentNumber != null ? String(driver.permanentNumber) : '',
+        nationality: driver.nationality || '',
         constructorId: constructors?.[0]?.constructorId || '',
         constructorName: constructors?.[0]?.name || ''
       };
@@ -216,14 +220,12 @@ export async function fetchConstructorStandings(
   }
 
   try {
-    const res = await fetchWithTimeout(`${JOLPICA_BASE_URL}/${year}/constructorStandings.json?limit=20`, signal);
-    if (!res.ok) {
-      const err = new Error(`HTTP error ${res.status}`);
-      (err as unknown as { status: number }).status = res.status;
-      throw err;
-    }
+    const json = await fetchValidatedJson(
+      `${JOLPICA_BASE_URL}/${year}/constructorStandings.json?limit=20`,
+      JolpicaConstructorStandingsEnvelopeSchema,
+      { signal }
+    );
 
-    const json = await res.json();
     const list = json.MRData?.StandingsTable?.StandingsLists?.[0];
     const total = parseInt(json.MRData?.total || '0', 10);
     const rawStandings = list?.ConstructorStandings || [];
@@ -240,15 +242,15 @@ export async function fetchConstructorStandings(
       };
     }
 
-    const standings: LiveConstructorStanding[] = rawStandings.map((s: Record<string, unknown>) => {
-      const constructor = s.Constructor as Record<string, string> | undefined;
+    const standings: LiveConstructorStanding[] = rawStandings.map((s) => {
+      const constructor = s.Constructor;
       return {
-        position: parseInt(String(s.position), 10) || 0,
-        points: parseFloat(String(s.points)) || 0,
-        wins: parseInt(String(s.wins), 10) || 0,
-        constructorId: constructor?.constructorId || '',
-        constructorName: constructor?.name || '',
-        nationality: constructor?.nationality || ''
+        position: s.position,
+        points: s.points,
+        wins: s.wins,
+        constructorId: constructor.constructorId,
+        constructorName: constructor.name,
+        nationality: constructor.nationality || ''
       };
     });
 
@@ -297,14 +299,12 @@ export async function fetchSeasonSchedule(
   }
 
   try {
-    const res = await fetchWithTimeout(`${JOLPICA_BASE_URL}/${year}.json`, signal);
-    if (!res.ok) {
-      const err = new Error(`HTTP error ${res.status}`);
-      (err as unknown as { status: number }).status = res.status;
-      throw err;
-    }
+    const json = await fetchValidatedJson(
+      `${JOLPICA_BASE_URL}/${year}.json`,
+      JolpicaRaceScheduleEnvelopeSchema,
+      { signal }
+    );
 
-    const json = await res.json();
     const rawRaces = json.MRData?.RaceTable?.Races || [];
     const total = parseInt(json.MRData?.total || '0', 10);
 
@@ -319,18 +319,18 @@ export async function fetchSeasonSchedule(
       };
     }
 
-    const races: RaceScheduleRound[] = rawRaces.map((r: Record<string, unknown>) => {
-      const circuit = r.Circuit as Record<string, unknown> | undefined;
-      const location = circuit?.Location as Record<string, string> | undefined;
+    const races: RaceScheduleRound[] = rawRaces.map((r) => {
+      const circuit = r.Circuit;
+      const location = circuit.Location;
       return {
         round: parseInt(String(r.round), 10) || 0,
         raceName: String(r.raceName || ''),
-        circuitName: String(circuit?.circuitName || ''),
-        locality: location?.locality || '',
-        country: location?.country || '',
+        circuitName: String(circuit.circuitName || ''),
+        locality: location.locality || '',
+        country: location.country || '',
         date: String(r.date || ''),
-        time: r.time as string | undefined,
-        url: r.url as string | undefined
+        time: r.time != null ? String(r.time) : undefined,
+        url: undefined
       };
     });
 
