@@ -48,16 +48,21 @@ export function useGlobalShortcuts({
 
       // 3. Navigation hotkeys 1-5 when no modal is open and no modifiers held
       if (!isModalOpen && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
+        // On circuits routes, 2 and 3 are reserved for 2D/3D track view toggles (C-28, C-29)
+        const isCircuitsRoute = window.location.pathname.startsWith('/circuits');
+
         switch (e.key) {
           case '1':
             e.preventDefault();
             navigate('/');
             break;
           case '2':
+            if (isCircuitsRoute) break;
             e.preventDefault();
             navigate('/seasons');
             break;
           case '3':
+            if (isCircuitsRoute) break;
             e.preventDefault();
             navigate('/telemetry');
             break;

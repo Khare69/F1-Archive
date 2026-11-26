@@ -42,6 +42,30 @@ const TrackInvalidator: React.FC<{ trigger: unknown }> = ({ trigger }) => {
   return null;
 };
 
+const TrackWebGLGuard: React.FC<{ onLost: () => void; onRestored: () => void }> = ({
+  onLost,
+  onRestored
+}) => {
+  const { gl } = useThree();
+  useEffect(() => {
+    let isUnmounted = false;
+    const cleanup = attachWebGLContextLossGuard(
+      gl.domElement,
+      () => {
+        if (!isUnmounted) onLost();
+      },
+      () => {
+        if (!isUnmounted) onRestored();
+      }
+    );
+    return () => {
+      isUnmounted = true;
+      cleanup();
+    };
+  }, [gl, onLost, onRestored]);
+  return null;
+};
+
 // Scene Content Component
 const ProceduralTrackScene: React.FC<{
   geometries: BuiltCircuitGeometries;
@@ -235,7 +259,16 @@ export const Track3DViewer: React.FC<Track3DViewerProps> = ({
   const activeColorMode = controlledColorMode ?? internalColorMode;
   const activeExaggeration = controlledExaggeration ?? internalExaggeration;
 
-  const setViewMode = onViewModeChange ?? setInternalViewMode;
+  const rawSetViewMode = onViewModeChange ?? setInternalViewMode;
+  const setViewMode = useCallback(
+    (mode: '2d' | '3d') => {
+      if (mode === '3d') {
+        setIsContextLost(false);
+      }
+      rawSetViewMode(mode);
+    },
+    [rawSetViewMode]
+  );
   const setColorMode = onColorModeChange ?? setInternalColorMode;
   const setExaggeration = onExaggerationChange ?? setInternalExaggeration;
 
@@ -344,8 +377,10 @@ export const Track3DViewer: React.FC<Track3DViewerProps> = ({
         return;
       }
       if (e.key === '2') {
+        e.preventDefault();
         setViewMode('2d');
       } else if (e.key === '3') {
+        e.preventDefault();
         setViewMode('3d');
       }
     };
@@ -415,14 +450,11 @@ export const Track3DViewer: React.FC<Track3DViewerProps> = ({
                 dpr={[1, 2]}
                 camera={{ position: [12, 11, 14], fov: 40, near: 0.1, far: 200 }}
                 gl={{ antialias: true, alpha: true }}
-                onCreated={({ gl }) => {
-                  attachWebGLContextLossGuard(
-                    gl.domElement,
-                    () => setIsContextLost(true),
-                    () => setIsContextLost(false)
-                  );
-                }}
               >
+                <TrackWebGLGuard
+                  onLost={() => setIsContextLost(true)}
+                  onRestored={() => setIsContextLost(false)}
+                />
                 <TrackInvalidator
                   trigger={`${resolvedCircuitName}_${activeColorMode}_${activeExaggeration}_${selectedCornerNumber}`}
                 />

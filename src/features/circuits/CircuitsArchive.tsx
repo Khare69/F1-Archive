@@ -99,7 +99,7 @@ export const CircuitsArchive: React.FC = () => {
   });
 
   return (
-    <div className="archive-layout circuits-archive-page w-full min-h-screen bg-[#07090E] text-slate-200 p-4 lg:p-6 space-y-5">
+    <div className="circuits-archive-page w-full min-h-screen bg-[#07090E] text-slate-200 p-4 lg:p-6 space-y-5 flex flex-col">
       {/* ── Top Header Strip ── */}
       <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 bg-[#0B0E14] border border-white/10 rounded-lg">
         <div className="flex flex-col sm:flex-row sm:items-center gap-3">
