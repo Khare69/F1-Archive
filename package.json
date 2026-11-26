@@ -88,7 +88,7 @@
     {
       "name": "Production JS Assets",
       "path": "dist/assets/*.js",
-      "limit": "2.5 MB"
+      "limit": "1.5 MB"
     },
     {
       "name": "Production CSS Assets",

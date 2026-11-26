@@ -30,6 +30,8 @@ export interface ConstructorEmblemConfig {
   accentColor?: string;
 }
 
+export type ConstructorIdentity = ConstructorEmblemConfig;
+
 export interface DriverMetadata {
   id: string;
   code: string;
@@ -375,6 +377,8 @@ export function getConstructorEmblem(teamIdOrName?: string): ConstructorEmblemCo
     accentColor: '#FFFFFF',
   };
 }
+
+export const getConstructorIdentity = getConstructorEmblem;
 
 /**
  * Historical driver registry for exact era & career resolution

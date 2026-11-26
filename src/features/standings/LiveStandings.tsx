@@ -106,6 +106,33 @@ export const LiveStandings: React.FC = () => {
           </div>
         </div>
 
+        {/* Amber Fallback Banner when upstream live API is unavailable */}
+        {activeSource === 'fallback' && (
+          <div
+            role="alert"
+            className="standings-fallback-alert bg-amber-500/10 border border-amber-500/30 rounded p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 font-telemetry text-xs"
+          >
+            <div className="flex items-center gap-2 text-amber-400">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0" />
+              <span>
+                [ ARCHIVE RECOVERY MODE ] Live feed temporarily unavailable. Displaying verified F1DB archive records.
+              </span>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                driversQuery.refetch();
+                constructorsQuery.refetch();
+                scheduleQuery.refetch();
+              }}
+              disabled={isFetching}
+              className="px-3 py-1 bg-amber-500/20 hover:bg-amber-500/30 border border-amber-500/40 text-amber-300 rounded font-semibold uppercase tracking-wider transition-colors disabled:opacity-50"
+            >
+              {isFetching ? 'RECONNECTING...' : 'RETRY FEED'}
+            </button>
+          </div>
+        )}
+
         {/* Next Grand Prix Countdown Banner */}
         {nextRace && (
           <div className="next-race-banner telemetry-panel">
