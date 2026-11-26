@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from 'react';
+import React, { useMemo, useRef, useEffect } from 'react';
 import { useFrame, type ThreeEvent } from '@react-three/fiber';
 import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
@@ -6,6 +6,7 @@ import type { Team } from '../../types/f1';
 import { WindTunnel } from './WindTunnel';
 import { getMaterialRole } from './config/carMaterialMap';
 import { Regulation2026Overlay, type ActiveAeroMode } from './components/Regulation2026Overlay';
+import { disposeObject3D } from '../../utils/webglDisposal';
 
 export interface PartHoverInfo {
   name: string;
@@ -170,6 +171,14 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
 
     return clone;
   }, [scene, team]);
+
+  // Deterministically dispose locally created cloned materials & procedural textures on team change/unmount
+  // (skipGeometries: true protects useGLTF's cached shared BufferGeometry primitives!)
+  useEffect(() => {
+    return () => {
+      disposeObject3D(clonedScene, { skipGeometries: true });
+    };
+  }, [clonedScene]);
 
   // Subtle chassis idle vibration (disabled under prefers-reduced-motion)
   useFrame(({ clock }) => {
