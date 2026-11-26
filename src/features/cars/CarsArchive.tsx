@@ -14,6 +14,7 @@ import { TelemetryLoadingProgress } from './components/TelemetryLoadingProgress'
 import { PerfDebugCollector } from './components/PerfDebugOverlay';
 import { usePageMeta } from '../../hooks/usePageMeta';
 import type { ActiveAeroMode } from './components/Regulation2026Overlay';
+import { ExperimentalBadge } from '../../components/ui/ExperimentalBadge';
 import './CarsArchive.css';
 
 /**
@@ -224,16 +225,19 @@ export const CarsArchive: React.FC = () => {
               </button>
 
               {is2026Inspector && (
-                <button
-                  type="button"
-                  className={`f1-btn aero-mode-btn ${activeAeroMode === 'straight' ? 'mode-straight' : 'mode-corner'}`}
-                  onClick={() => setActiveAeroMode(activeAeroMode === 'corner' ? 'straight' : 'corner')}
-                  title="Toggle Active Aero Mode: Straight (Low Drag) vs Corner (Downforce)"
-                >
-                  <span>
-                    {activeAeroMode === 'straight' ? 'WING: STRAIGHT (LOW DRAG)' : 'WING: CORNER (DOWNFORCE)'}
-                  </span>
-                </button>
+                <>
+                  <ExperimentalBadge compact label="2026 REGULATION SIMULATION" />
+                  <button
+                    type="button"
+                    className={`f1-btn aero-mode-btn ${activeAeroMode === 'straight' ? 'mode-straight' : 'mode-corner'}`}
+                    onClick={() => setActiveAeroMode(activeAeroMode === 'corner' ? 'straight' : 'corner')}
+                    title="Toggle Active Aero Mode: Straight (Low Drag) vs Corner (Downforce)"
+                  >
+                    <span>
+                      {activeAeroMode === 'straight' ? 'WING: STRAIGHT (LOW DRAG)' : 'WING: CORNER (DOWNFORCE)'}
+                    </span>
+                  </button>
+                </>
               )}
             </div>
           </div>

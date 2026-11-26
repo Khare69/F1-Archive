@@ -14,6 +14,7 @@ export function useStrategySimulation(initialConfig?: SimulationConfig) {
 
   const workerRef = useRef<Worker | null>(null);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const latestRequestIdRef = useRef<number>(0);
 
   const startSimulation = useCallback((cfg: SimulationConfig) => {
     // Terminate any previous in-flight worker
@@ -22,17 +23,26 @@ export function useStrategySimulation(initialConfig?: SimulationConfig) {
       workerRef.current = null;
     }
 
+    const currentRequestId = ++latestRequestIdRef.current;
     setIsRunning(true);
     setProgress(0);
 
     // Fallback if Web Workers are unsupported in current runtime (e.g., test environment)
     if (typeof Worker === 'undefined') {
       try {
-        const res = runStrategySimulation(cfg, (p) => setProgress(p));
-        setOutput(res);
+        const res = runStrategySimulation(cfg, (p) => {
+          if (currentRequestId === latestRequestIdRef.current) {
+            setProgress(p);
+          }
+        });
+        if (currentRequestId === latestRequestIdRef.current) {
+          setOutput(res);
+        }
       } finally {
-        setIsRunning(false);
-        setProgress(100);
+        if (currentRequestId === latestRequestIdRef.current) {
+          setIsRunning(false);
+          setProgress(100);
+        }
       }
       return;
     }
@@ -44,27 +54,43 @@ export function useStrategySimulation(initialConfig?: SimulationConfig) {
       workerRef.current = worker;
 
       worker.onmessage = (e: MessageEvent<WorkerOutMessage>) => {
-        if (e.data.type === 'progress') {
-          setProgress(e.data.progress);
-        } else if (e.data.type === 'complete') {
-          setOutput(e.data.output);
-          setIsRunning(false);
-          setProgress(100);
+        const msg = e.data;
+        // Discard stale responses
+        if ('requestId' in msg && msg.requestId && msg.requestId !== latestRequestIdRef.current) {
+          return;
+        }
+
+        if ('type' in msg) {
+          if (msg.type === 'progress') {
+            setProgress(msg.progress);
+          } else if (msg.type === 'complete') {
+            setOutput(msg.output);
+            setIsRunning(false);
+            setProgress(100);
+          }
         }
       };
 
       worker.onerror = (err) => {
         console.error('[useStrategySimulation] Worker error:', err);
-        setIsRunning(false);
+        if (currentRequestId === latestRequestIdRef.current) {
+          setIsRunning(false);
+        }
       };
 
-      worker.postMessage({ type: 'start', config: cfg });
+      worker.postMessage({ type: 'start', config: cfg, requestId: currentRequestId });
     } catch {
       // Inline fallback if worker instantiation fails (e.g., CSP or restricted origin)
-      const res = runStrategySimulation(cfg, (p) => setProgress(p));
-      setOutput(res);
-      setIsRunning(false);
-      setProgress(100);
+      const res = runStrategySimulation(cfg, (p) => {
+        if (currentRequestId === latestRequestIdRef.current) {
+          setProgress(p);
+        }
+      });
+      if (currentRequestId === latestRequestIdRef.current) {
+        setOutput(res);
+        setIsRunning(false);
+        setProgress(100);
+      }
     }
   }, []);
 

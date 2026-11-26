@@ -4,7 +4,12 @@ import {
   interpolateTelemetryAtTime,
   filterGreenFlagLaps,
   calculateFuelCorrection,
-  calculateTyreDegradationSlope
+  calculateTyreDegradationSlope,
+  normalizeDistanceSeries,
+  resampleTelemetryChannel,
+  computeDeltaTimeSeries,
+  inferPackProvenance,
+  type NormalizedTelemetrySample
 } from './telemetryMath';
 import type { TelemetrySample, StintPaceLap } from '../../types/telemetry';
 
@@ -188,6 +193,50 @@ describe('Telemetry Mathematics Engine', () => {
 
       const slope = calculateTyreDegradationSlope(testLaps);
       expect(slope).toBeCloseTo(0.1, 3);
+    });
+  });
+
+  describe('Distance Normalization, Resampling & Deltas', () => {
+    it('normalizes distance series monotonically between 0 and 1', () => {
+      const norm = normalizeDistanceSeries([0, 1500, 3000, 6000]);
+      expect(norm[0]).toBe(0);
+      expect(norm[norm.length - 1]).toBe(1);
+      expect(norm[1]).toBeCloseTo(0.25, 2);
+      expect(norm[2]).toBeCloseTo(0.50, 2);
+    });
+
+    it('resamples channels to uniform sample count and clamps physical bounds', () => {
+      const raw: NormalizedTelemetrySample[] = [
+        { distNorm: 0, timeSec: 0, speedKmh: 420, throttlePct: 150, brakePct: -10, gear: 9 },
+        { distNorm: 1, timeSec: 90, speedKmh: -20, throttlePct: -5, brakePct: 120, gear: -1 }
+      ];
+      const resampled = resampleTelemetryChannel(raw, 10);
+      expect(resampled.length).toBe(10);
+      expect(resampled[0].speedKmh).toBe(390); // clamped to 390
+      expect(resampled[0].throttlePct).toBe(100);
+      expect(resampled[0].brakePct).toBe(0);
+      expect(resampled[0].gear).toBe(8);
+      expect(resampled[9].speedKmh).toBe(0);
+      expect(resampled[9].gear).toBe(0);
+    });
+
+    it('computes delta time series where negative means Driver A is ahead', () => {
+      const a: NormalizedTelemetrySample[] = [
+        { distNorm: 0, timeSec: 0, speedKmh: 200, throttlePct: 100, brakePct: 0, gear: 5 },
+        { distNorm: 1, timeSec: 75.2, speedKmh: 300, throttlePct: 100, brakePct: 0, gear: 8 }
+      ];
+      const b: NormalizedTelemetrySample[] = [
+        { distNorm: 0, timeSec: 0, speedKmh: 200, throttlePct: 100, brakePct: 0, gear: 5 },
+        { distNorm: 1, timeSec: 75.8, speedKmh: 300, throttlePct: 100, brakePct: 0, gear: 8 }
+      ];
+      const delta = computeDeltaTimeSeries(a, b);
+      expect(delta).toEqual([0, -0.6]);
+    });
+
+    it('infers pack provenance accurately', () => {
+      expect(inferPackProvenance('madrid-2026-sim-alo-vs-sai')).toBe('experimental_simulation');
+      expect(inferPackProvenance('silverstone-2024-ham-vs-ver')).toBe('historical_verified');
+      expect(inferPackProvenance('live-openf1-spa')).toBe('live_openf1');
     });
   });
 });

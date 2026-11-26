@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { getCircuitById } from '../../data/dataService';
@@ -10,6 +10,13 @@ import { LiveTelemetryGauges } from './components/LiveTelemetryGauges';
 import { StrategyAnalytics } from './components/StrategyAnalytics';
 import { TimingTower } from './components/TimingTower';
 import { usePageMeta } from '../../hooks/usePageMeta';
+import { ExperimentalBadge } from '../../components/ui/ExperimentalBadge';
+import {
+  fetchTelemetryCatalog,
+  getVisibleTelemetryPacks,
+  fetchTelemetryPack,
+} from './telemetryPackClient';
+import type { TelemetryCatalogItem } from './telemetryPackSchema';
 import './TelemetryHub.css';
 
 interface ShowdownIndexItem {
@@ -41,29 +48,43 @@ export const TelemetryHub: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TelemetryViewTab>('ghost_replay');
   const [playbackTime, setPlaybackTime] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
+  const isDirectlyLinkedToSim = Boolean(slug && (slug.includes('sim') || slug.includes('2026')));
+  const [includeExperimental, setIncludeExperimental] = useState<boolean>(isDirectlyLinkedToSim);
 
-  // Load telemetry index
-  const { data: indexList } = useQuery<ShowdownIndexItem[]>({
-    queryKey: ['telemetry_index'],
-    queryFn: async () => {
-      const res = await fetch('/data/telemetry/index.json');
-      if (!res.ok) throw new Error('Failed to load telemetry index');
-      return res.json();
+  // Auto-opt in if navigated directly to an experimental slug
+  useEffect(() => {
+    if (slug && (slug.includes('sim') || slug.includes('2026'))) {
+      setIncludeExperimental(true);
     }
+  }, [slug]);
+
+  // Load telemetry catalog
+  const { data: indexList } = useQuery<TelemetryCatalogItem[]>({
+    queryKey: ['telemetry-pack-catalog'],
+    queryFn: fetchTelemetryCatalog
   });
 
-  const activeSlug = slug || indexList?.[0]?.slug || 'silverstone-2024-ham-vs-ver';
+  const visiblePacks = useMemo(() => {
+    return getVisibleTelemetryPacks(indexList || [], includeExperimental);
+  }, [indexList, includeExperimental]);
+
+  const activeSlug = slug || visiblePacks?.[0]?.slug || 'silverstone-2024-ham-vs-ver';
 
   // Load active showdown telemetry pack (Tier 1 Precomputed Offline Data)
   const { data: showdown, isLoading } = useQuery<TelemetryShowdown>({
-    queryKey: ['telemetry_showdown', activeSlug],
+    queryKey: ['telemetry-pack', activeSlug],
     queryFn: async () => {
-      const res = await fetch(`/data/telemetry/${activeSlug}.json`);
-      if (!res.ok) throw new Error(`Failed to load telemetry pack: ${activeSlug}`);
-      return res.json();
+      const pack = await fetchTelemetryPack(activeSlug);
+      return pack as unknown as TelemetryShowdown;
     },
     enabled: Boolean(activeSlug)
   });
+
+  const isExperimentalActive = Boolean(
+    activeSlug.includes('sim') ||
+    activeSlug.includes('2026') ||
+    showdown?.provenance === 'experimental_simulation'
+  );
 
   // Load strategy dataset
   const { data: strategyData } = useQuery<StrategySessionData>({
@@ -238,25 +259,60 @@ export const TelemetryHub: React.FC = () => {
             {showdown?.subtitle || 'SECTOR-ANCHORED MULTI-CHANNEL TELEMETRY BENCHMARK'}
           </p>
 
-          {/* Showdown Selector Pills Carousel */}
-          <div className="showdowns-pills-row">
-            {indexList?.map((item) => {
-              const isSelected = item.slug === activeSlug;
-              return (
-                <button
-                  key={item.slug}
-                  type="button"
-                  className={`showdown-pill telemetry ${isSelected ? 'selected' : ''}`}
-                  onClick={() => handleSelectShowdown(item.slug)}
-                >
-                  <span className="pill-dot" style={{ backgroundColor: item.driverAColor }}></span>
-                  <span className="pill-title">{item.driverACode} vs {item.driverBCode}</span>
-                  <span className="pill-circuit">{item.circuitName.split(' ')[0]}</span>
-                </button>
-              );
-            })}
+          {/* Showdown Selector Pills Carousel & Labs Toggle */}
+          <div className="flex flex-col gap-2.5 mt-4">
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+              <span className="font-telemetry text-[11px] uppercase tracking-wider text-neutral-400">
+                SELECT TELEMETRY SHOWDOWN ({visiblePacks.length} AVAILABLE):
+              </span>
+              <button
+                type="button"
+                onClick={() => setIncludeExperimental((prev) => !prev)}
+                className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[4px] border text-[11px] font-telemetry font-bold tracking-wider uppercase transition-colors ${
+                  includeExperimental
+                    ? 'border-[#EAB308]/60 bg-[#EAB308]/20 text-[#FACC15]'
+                    : 'border-white/10 bg-white/5 text-neutral-400 hover:text-white hover:bg-white/10'
+                }`}
+                aria-pressed={includeExperimental}
+              >
+                <span>{includeExperimental ? '✓ EXPERIMENTAL LABS INCLUDED' : '+ INCLUDE EXPERIMENTAL LABS'}</span>
+              </button>
+            </div>
+
+            <div className="showdowns-pills-row">
+              {visiblePacks.map((item) => {
+                const isSelected = item.slug === activeSlug;
+                return (
+                  <button
+                    key={item.slug}
+                    type="button"
+                    className={`showdown-pill telemetry ${isSelected ? 'selected' : ''}`}
+                    onClick={() => handleSelectShowdown(item.slug)}
+                  >
+                    <span className="pill-dot" style={{ backgroundColor: item.driverAColor }}></span>
+                    <span className="pill-title">{item.driverACode} vs {item.driverBCode}</span>
+                    <span className="pill-circuit">{item.circuitName.split(' ')[0]}</span>
+                    {item.provenance === 'experimental_simulation' && (
+                      <span className="ml-1.5 shrink-0">
+                        <ExperimentalBadge compact />
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </section>
+
+        {/* Amber Quarantine Disclaimer Banner when active showdown is experimental */}
+        {isExperimentalActive && (
+          <div className="my-3">
+            <ExperimentalBadge
+              label="EXPERIMENTAL // SIMULATION"
+              disclaimer="Theoretical 2026 active aero & manual override simulation for the Circuito de Madrid. Not official FIA or verified historical telemetry."
+            />
+          </div>
+        )}
 
         {isLoading || !showdown ? (
           <div className="telemetry-loading-banner telemetry-panel corner-bracket">

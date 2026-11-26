@@ -8,6 +8,7 @@ import {
 import { useStrategySimulation } from './useStrategySimulation';
 import { usePageMeta } from '../../hooks/usePageMeta';
 import { exportPosterAsPng } from '../../utils/posterExport';
+import { ExperimentalBadge } from '../../components/ui/ExperimentalBadge';
 import './PitWallStrategy.css';
 
 interface CircuitPreset {
@@ -189,6 +190,12 @@ export const PitWallStrategy: React.FC = () => {
           <p className="pitwall-subtitle telemetry">
             OFF-THREAD MONTE CARLO STOCHASTIC SIMULATION (TYRE CLIFFS, FUEL BURN &amp; SAFETY CARS)
           </p>
+          <div className="mt-2.5">
+            <ExperimentalBadge
+              label="EXPERIMENTAL // SIMULATION"
+              disclaimer="Monte Carlo race strategy model — deterministic seeded projection for pit-wall analysis, not official FIA/team telemetry."
+            />
+          </div>
         </div>
 
         <div className="pitwall-status-pill telemetry">

@@ -6,9 +6,27 @@
  * 3. 107% green-flag outlier filtering (Trap 5)
  * 4. Transparent linear fuel-burn pace correction
  * 5. Ordinary Least Squares (OLS) tyre degradation slope
+ * 6. Distance normalization & uniform resampling (Phase 6)
+ * 7. Multi-driver time delta series computation (Phase 6)
+ * 8. Telemetry pack provenance inference (Phase 6)
  */
 
 import type { TelemetrySample, StintPaceLap } from '../../types/telemetry';
+
+export interface NormalizedTelemetrySample {
+  distNorm: number; // strictly monotonic [0, 1]
+  timeSec: number;
+  speedKmh: number; // clamped [0, 390]
+  throttlePct: number; // clamped [0, 100]
+  brakePct: number; // clamped [0, 100]
+  gear: number; // integer clamped [0, 8]
+  drs?: boolean;
+}
+
+export type TelemetryPackProvenance =
+  | 'historical_verified'
+  | 'live_openf1'
+  | 'experimental_simulation';
 
 /**
  * Maps elapsed lap time to track distance fraction anchored to official S1 / S2 / S3 sector lines.
@@ -176,4 +194,138 @@ export function calculateTyreDegradationSlope(cleanLaps: StintPaceLap[]): number
 
   if (denominator === 0) return 0;
   return Number((numerator / denominator).toFixed(4));
+}
+
+/**
+ * Normalizes an arbitrary sequence of track distance values to strictly monotonic [0, 1].
+ */
+export function normalizeDistanceSeries(distances: number[]): number[] {
+  if (!distances || distances.length === 0) return [];
+  if (distances.length === 1) return [0];
+
+  const min = distances[0];
+  const max = distances[distances.length - 1];
+  const span = max - min;
+
+  if (span <= 0) {
+    return distances.map(() => 0);
+  }
+
+  let prev = 0;
+  return distances.map((d, idx) => {
+    if (idx === 0) return 0;
+    if (idx === distances.length - 1) return 1;
+    const val = (d - min) / span;
+    const clamped = Math.max(prev, Math.min(1, Math.max(0, Number(val.toFixed(6)))));
+    prev = clamped;
+    return clamped;
+  });
+}
+
+/**
+ * Resamples telemetry samples onto a uniform normalized distance grid [0, 1].
+ */
+export function resampleTelemetryChannel(
+  samples: NormalizedTelemetrySample[],
+  targetCount: number
+): NormalizedTelemetrySample[] {
+  if (!samples || samples.length === 0 || targetCount <= 0) return [];
+
+  const clampSample = (s: NormalizedTelemetrySample, distNorm: number): NormalizedTelemetrySample => ({
+    distNorm: Number(distNorm.toFixed(6)),
+    timeSec: Number(s.timeSec.toFixed(3)),
+    speedKmh: Math.max(0, Math.min(390, Math.round(s.speedKmh))),
+    throttlePct: Math.max(0, Math.min(100, Math.round(s.throttlePct))),
+    brakePct: Math.max(0, Math.min(100, Math.round(s.brakePct))),
+    gear: Math.max(0, Math.min(8, Math.round(s.gear))),
+    drs: Boolean(s.drs)
+  });
+
+  if (targetCount === 1 || samples.length === 1) {
+    const base = samples[0];
+    return Array.from({ length: targetCount }, (_, i) =>
+      clampSample(base, targetCount === 1 ? 0 : i / (targetCount - 1))
+    );
+  }
+
+  const result: NormalizedTelemetrySample[] = [];
+  let sampleIdx = 0;
+
+  for (let i = 0; i < targetCount; i++) {
+    const targetDist = i / (targetCount - 1);
+
+    while (sampleIdx < samples.length - 2 && samples[sampleIdx + 1].distNorm <= targetDist) {
+      sampleIdx++;
+    }
+
+    const s0 = samples[sampleIdx];
+    const s1 = samples[sampleIdx + 1] || s0;
+    const span = s1.distNorm - s0.distNorm;
+    const ratio = span > 0 ? Math.max(0, Math.min(1, (targetDist - s0.distNorm) / span)) : 0;
+
+    const timeSec = s0.timeSec + ratio * (s1.timeSec - s0.timeSec);
+    const speed = s0.speedKmh + ratio * (s1.speedKmh - s0.speedKmh);
+    const throttle = s0.throttlePct + ratio * (s1.throttlePct - s0.throttlePct);
+    const brake = s0.brakePct + ratio * (s1.brakePct - s0.brakePct);
+    const gear = ratio > 0.5 ? s1.gear : s0.gear;
+    const drs = ratio > 0.5 ? Boolean(s1.drs) : Boolean(s0.drs);
+
+    result.push({
+      distNorm: Number(targetDist.toFixed(6)),
+      timeSec: Number(timeSec.toFixed(3)),
+      speedKmh: Math.max(0, Math.min(390, Math.round(speed))),
+      throttlePct: Math.max(0, Math.min(100, Math.round(throttle))),
+      brakePct: Math.max(0, Math.min(100, Math.round(brake))),
+      gear: Math.max(0, Math.min(8, Math.round(gear))),
+      drs
+    });
+  }
+
+  return result;
+}
+
+/**
+ * Computes time delta series (Driver A elapsed time - Driver B elapsed time).
+ * Signed convention: negative delta = Driver A is faster / ahead in lap time.
+ */
+export function computeDeltaTimeSeries(
+  driverA: NormalizedTelemetrySample[],
+  driverB: NormalizedTelemetrySample[]
+): number[] {
+  if (!driverA || !driverB || driverA.length === 0 || driverB.length === 0) return [];
+  const len = Math.min(driverA.length, driverB.length);
+  const deltas: number[] = new Array(len);
+
+  for (let i = 0; i < len; i++) {
+    const timeA = driverA[i].timeSec;
+    const timeB = driverB[i].timeSec;
+    deltas[i] = Number((timeA - timeB).toFixed(3));
+  }
+
+  return deltas;
+}
+
+/**
+ * Categorizes telemetry pack provenance based on slug or explicit metadata.
+ * Flags any slug containing 'sim' or '2026' as 'experimental_simulation'.
+ */
+export function inferPackProvenance(
+  slug: string,
+  explicit?: string
+): TelemetryPackProvenance {
+  if (
+    explicit === 'historical_verified' ||
+    explicit === 'live_openf1' ||
+    explicit === 'experimental_simulation'
+  ) {
+    return explicit;
+  }
+  const s = (slug || '').toLowerCase();
+  if (s.includes('sim') || s.includes('2026')) {
+    return 'experimental_simulation';
+  }
+  if (s.includes('live') || s.includes('openf1')) {
+    return 'live_openf1';
+  }
+  return 'historical_verified';
 }

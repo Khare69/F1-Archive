@@ -54,6 +54,16 @@ export const handlers = [
     return new HttpResponse(null, { status: 404 });
   }),
 
+  http.get('*/data/telemetry/:filename', ({ params }) => {
+    const filename = String(params.filename);
+    const filePath = path.resolve(process.cwd(), 'public/data/telemetry', filename);
+    if (fs.existsSync(filePath)) {
+      const content = fs.readFileSync(filePath, 'utf-8');
+      return HttpResponse.json(JSON.parse(content));
+    }
+    return new HttpResponse(null, { status: 404 });
+  }),
+
   http.get('*/data/:filename', ({ params }) => {
     const filename = String(params.filename);
     const filePath = path.resolve(process.cwd(), 'public/data', filename);
