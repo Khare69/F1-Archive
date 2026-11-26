@@ -10,6 +10,7 @@ import { Footer } from './components/Layout/Footer';
 import { AppRoutes } from './routes/AppRoutes';
 import { SearchPalette } from './features/search/SearchPalette';
 import { LazyPerfDebugOverlay } from './components/DevTools/LazyPerfDebugOverlay';
+import { TooltipProvider } from './components/ui/tooltip';
 import './App.css';
 
 const AppContent: React.FC = () => {
@@ -54,7 +55,9 @@ export const App: React.FC = () => {
     >
       <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <UserPreferencesProvider>
-          <AppContent />
+          <TooltipProvider delayDuration={200}>
+            <AppContent />
+          </TooltipProvider>
         </UserPreferencesProvider>
       </BrowserRouter>
     </PersistQueryClientProvider>
