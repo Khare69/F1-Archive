@@ -1,14 +1,13 @@
 import React, { useState, useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { defaultShouldDehydrateQuery } from '@tanstack/react-query';
 import { queryClient, queryPersister, QUERY_PERSIST_BUSTER } from './lib/queryClient';
 import { shouldPersistQueryKey } from './lib/idbPersister';
-import { UserPreferencesProvider, usePreferencesContext } from './contexts/UserPreferencesContext';
+import { UserPreferencesProvider } from './contexts/UserPreferencesContext';
 import { Navigation } from './components/Navigation/Navigation';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
 import { PageTransition } from './components/PageTransition/PageTransition';
-import { WelcomeExperience } from './features/welcome/WelcomeExperience';
 import { SearchPalette } from './features/search/SearchPalette';
 import { PerfDebugOverlay } from './features/cars/components/PerfDebugOverlay';
 import { Home } from './features/home/Home';
@@ -35,25 +34,7 @@ const PitWallStrategy = lazy(() =>
 );
 
 const AppContent: React.FC = () => {
-  const {
-    isFirstVisit,
-    setFirstVisit,
-    hasReducedMotion,
-    isSlowConnection
-  } = usePreferencesContext();
-
-  const location = useLocation();
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-
-  const [isWelcomeComplete, setIsWelcomeComplete] = useState<boolean>(() => {
-    // If returning visitor, reduced motion, or slow network detected, skip intro automatically
-    return !isFirstVisit || hasReducedMotion || isSlowConnection;
-  });
-
-  const handleWelcomeComplete = () => {
-    setIsWelcomeComplete(true);
-    setFirstVisit(false);
-  };
 
   // Keyboard shortcut for Command Palette (Ctrl+K / Cmd+K)
   useEffect(() => {
@@ -73,11 +54,6 @@ const AppContent: React.FC = () => {
       <div className="bg-grid-overlay"></div>
       <div className="carbon-texture"></div>
 
-      {/* Cinematic Welcome Intro Overlay */}
-      {!isWelcomeComplete && (
-        <WelcomeExperience onComplete={handleWelcomeComplete} />
-      )}
-
       {/* Global Navigation Header with Command Palette Trigger */}
       <Navigation onOpenSearch={() => setIsSearchOpen(true)} />
 
@@ -91,17 +67,17 @@ const AppContent: React.FC = () => {
       />
 
       {/* Main Application Routes with Animated Page Transitions */}
-      <div className={`main-viewport ${isWelcomeComplete ? 'viewport-visible' : 'viewport-hidden'}`}>
+      <div className="main-viewport">
         <ErrorBoundary fallbackTitle="Archive Module Render Fault">
           <Routes>
             <Route
-                path="/"
-                element={
-                  <PageTransition>
-                    <Home isVisible={isWelcomeComplete} />
-                  </PageTransition>
-                }
-              />
+              path="/"
+              element={
+                <PageTransition>
+                  <Home />
+                </PageTransition>
+              }
+            />
               <Route
                 path="/seasons/:year?"
                 element={

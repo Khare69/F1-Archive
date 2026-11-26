@@ -11,15 +11,6 @@
   flex-direction: column;
   position: relative;
   z-index: 1;
-  transition: opacity 1.2s ease-in-out;
-}
-
-.viewport-hidden {
-  opacity: 0;
-}
-
-.viewport-visible {
-  opacity: 1;
 }
 
 /* Lazy 3D Loading Fallback */
