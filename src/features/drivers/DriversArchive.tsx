@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useQueryState, parseAsString, parseAsStringLiteral } from 'nuqs';
 import type { ColumnDef } from '@tanstack/react-table';
 import {
   getAllDrivers,
@@ -13,8 +14,7 @@ import { FallbackImage } from '../../components/FallbackImage/FallbackImage';
 import { StatCard } from '../../components/StatCard/StatCard';
 import { usePageMeta } from '../../hooks/usePageMeta';
 import { TelemetryDataTable } from '../../components/ui/TelemetryDataTable';
-
-type DriverCategory = 'active' | 'champions' | 'all';
+import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
 
 export const DriversArchive: React.FC = () => {
   const { driverId } = useParams<{ driverId?: string }>();
@@ -22,8 +22,12 @@ export const DriversArchive: React.FC = () => {
   const allDrivers = getAllDrivers();
   const meta = getF1DBMetadata();
 
-  const [category, setCategory] = useState<DriverCategory>('active');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [filter, setFilter] = useQueryState(
+    'filter',
+    parseAsStringLiteral(['all', '2026', 'champions', 'winners', 'legends', 'active'] as const).withDefault('all')
+  );
+  const [searchQuery, setSearchQuery] = useQueryState('q', parseAsString.withDefault(''));
+  const [sort, setSort] = useQueryState('sort', parseAsString.withDefault('wins:desc'));
 
   // Validate driverId or default to the first driver
   const selectedDriver = getDriverById(driverId) || allDrivers[0];
@@ -55,26 +59,42 @@ export const DriversArchive: React.FC = () => {
 
   // Filter drivers based on category tab & search input
   const filteredDrivers = useMemo(() => {
-    let list = allDrivers;
+    let list = [...allDrivers];
 
-    if (category === 'active') {
-      list = allDrivers.filter(d => d.isActive2026);
-    } else if (category === 'champions') {
-      list = allDrivers.filter(d => d.championships > 0).sort((a, b) => b.championships - a.championships);
+    if (filter === '2026' || filter === 'active') {
+      list = list.filter((d) => d.isActive2026);
+    } else if (filter === 'champions') {
+      list = list.filter((d) => d.championships > 0);
+    } else if (filter === 'winners') {
+      list = list.filter((d) => d.wins > 0);
+    } else if (filter === 'legends') {
+      list = list.filter((d) => d.isLegend || d.championships >= 2);
     }
 
-    if (!searchQuery.trim()) {
-      return list;
+    if (searchQuery.trim()) {
+      const clean = searchQuery.trim().toLowerCase();
+      list = list.filter(
+        (d) =>
+          d.name.toLowerCase().includes(clean) ||
+          d.code?.toLowerCase().includes(clean) ||
+          d.country.toLowerCase().includes(clean) ||
+          String(d.number || '').includes(clean)
+      );
     }
 
-    const clean = searchQuery.trim().toLowerCase();
-    return list.filter(d =>
-      d.name.toLowerCase().includes(clean) ||
-      d.code?.toLowerCase().includes(clean) ||
-      d.country.toLowerCase().includes(clean) ||
-      String(d.number || '').includes(clean)
-    );
-  }, [allDrivers, category, searchQuery]);
+    // Apply sorting
+    if (sort === 'wins:desc') {
+      list.sort((a, b) => b.wins - a.wins);
+    } else if (sort === 'wins:asc') {
+      list.sort((a, b) => a.wins - b.wins);
+    } else if (sort === 'championships:desc' || sort === 'titles:desc') {
+      list.sort((a, b) => b.championships - a.championships);
+    } else if (sort === 'name:asc') {
+      list.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    return list;
+  }, [allDrivers, filter, searchQuery, sort]);
 
   const handleSelectDriver = (id: string) => {
     navigate(`/drivers/${id}`);
@@ -163,7 +183,10 @@ export const DriversArchive: React.FC = () => {
         <aside className="lg:col-span-4 bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-4 space-y-4" aria-label="Drivers roster">
           <div className="flex items-center justify-between text-xs font-telemetry border-b border-slate-800/80 pb-3">
             <span className="text-cyan-400 font-bold">// DRIVERS ROSTER</span>
-            <span className="text-slate-400">{allDrivers.length} PILOTS</span>
+            <div className="flex items-center gap-2">
+              <span className="text-slate-400">{allDrivers.length} PILOTS</span>
+              <CopyShareLinkButton />
+            </div>
           </div>
 
           {/* Head-to-head Quick Link */}
@@ -180,33 +203,33 @@ export const DriversArchive: React.FC = () => {
             <button
               type="button"
               className={`py-1.5 text-[11px] font-telemetry font-bold rounded transition-colors ${
-                category === 'active'
+                filter === '2026' || filter === 'active'
                   ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 active'
                   : 'text-slate-400 hover:text-white'
               }`}
-              onClick={() => setCategory('active')}
+              onClick={() => setFilter('2026')}
             >
               ACTIVE 2026
             </button>
             <button
               type="button"
               className={`py-1.5 text-[11px] font-telemetry font-bold rounded transition-colors ${
-                category === 'champions'
+                filter === 'champions'
                   ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30 active'
                   : 'text-slate-400 hover:text-white'
               }`}
-              onClick={() => setCategory('champions')}
+              onClick={() => setFilter('champions')}
             >
               CHAMPIONS
             </button>
             <button
               type="button"
               className={`py-1.5 text-[11px] font-telemetry font-bold rounded transition-colors ${
-                category === 'all'
+                filter === 'all'
                   ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 active'
                   : 'text-slate-400 hover:text-white'
               }`}
-              onClick={() => setCategory('all')}
+              onClick={() => setFilter('all')}
             >
               ALL PILOTS
             </button>

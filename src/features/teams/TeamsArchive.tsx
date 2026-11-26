@@ -1,5 +1,6 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { useQueryState, parseAsStringLiteral } from 'nuqs';
 import type { ColumnDef } from '@tanstack/react-table';
 import {
   getAllTeams,
@@ -15,8 +16,7 @@ import { FallbackImage } from '../../components/FallbackImage/FallbackImage';
 import { StatCard } from '../../components/StatCard/StatCard';
 import { usePageMeta } from '../../hooks/usePageMeta';
 import { TelemetryDataTable } from '../../components/ui/TelemetryDataTable';
-
-type TeamFilterCategory = 'active' | 'historic' | 'all';
+import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
 
 export const TeamsArchive: React.FC = () => {
   const { teamId } = useParams<{ teamId?: string }>();
@@ -24,7 +24,10 @@ export const TeamsArchive: React.FC = () => {
   const allTeams = getAllTeams();
   const meta = getF1DBMetadata();
 
-  const [filterCategory, setFilterCategory] = useState<TeamFilterCategory>('active');
+  const [grid, setGrid] = useQueryState(
+    'grid',
+    parseAsStringLiteral(['2026', 'historic', 'all', 'active'] as const).withDefault('2026')
+  );
 
   // Validate teamId or default to the first team
   const selectedTeam = getTeamById(teamId) || allTeams[0];
@@ -49,10 +52,10 @@ export const TeamsArchive: React.FC = () => {
   const seasonsWon = getSeasonsWonByTeam(selectedTeam.id);
 
   const visibleTeams = useMemo(() => {
-    if (filterCategory === 'active') return getActive2026Teams();
-    if (filterCategory === 'historic') return getHistoricTeams();
+    if (grid === '2026' || grid === 'active') return getActive2026Teams();
+    if (grid === 'historic') return getHistoricTeams();
     return allTeams;
-  }, [filterCategory, allTeams]);
+  }, [grid, allTeams]);
 
   const handleSelectTeam = (id: string) => {
     navigate(`/teams/${id}`);
@@ -117,7 +120,10 @@ export const TeamsArchive: React.FC = () => {
         <aside className="lg:col-span-4 bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-4 space-y-4" aria-label="Constructors list">
           <div className="flex items-center justify-between text-xs font-telemetry border-b border-slate-800/80 pb-3">
             <span className="text-cyan-400 font-bold">// CONSTRUCTORS</span>
-            <span className="text-slate-400">{visibleTeams.length} TEAMS</span>
+            <div className="flex items-center gap-2">
+              <span className="text-slate-400">{visibleTeams.length} TEAMS</span>
+              <CopyShareLinkButton />
+            </div>
           </div>
 
           {/* Filter Tabs: Active 2026 / Historic / All */}
@@ -125,33 +131,33 @@ export const TeamsArchive: React.FC = () => {
             <button
               type="button"
               className={`py-1.5 text-[11px] font-telemetry font-bold rounded transition-colors ${
-                filterCategory === 'active'
+                grid === '2026' || grid === 'active'
                   ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 active'
                   : 'text-slate-400 hover:text-white'
               }`}
-              onClick={() => setFilterCategory('active')}
+              onClick={() => setGrid('2026')}
             >
               ACTIVE 2026
             </button>
             <button
               type="button"
               className={`py-1.5 text-[11px] font-telemetry font-bold rounded transition-colors ${
-                filterCategory === 'historic'
+                grid === 'historic'
                   ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 active'
                   : 'text-slate-400 hover:text-white'
               }`}
-              onClick={() => setFilterCategory('historic')}
+              onClick={() => setGrid('historic')}
             >
               HISTORIC
             </button>
             <button
               type="button"
               className={`py-1.5 text-[11px] font-telemetry font-bold rounded transition-colors ${
-                filterCategory === 'all'
+                grid === 'all'
                   ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 active'
                   : 'text-slate-400 hover:text-white'
               }`}
-              onClick={() => setFilterCategory('all')}
+              onClick={() => setGrid('all')}
             >
               ALL
             </button>

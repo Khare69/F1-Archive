@@ -1,11 +1,13 @@
 import React, { useMemo, useRef, useEffect, lazy, Suspense } from 'react';
 import { useParams, useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { useQueryState, parseAsStringLiteral } from 'nuqs';
 import type { ColumnDef } from '@tanstack/react-table';
 import { getAllSeasons, getSeasonByYear, getTeamById, getF1DBMetadata } from '../../data/dataService';
 import type { Season } from '../../types/f1';
 import { StatCard } from '../../components/StatCard/StatCard';
 import { usePageMeta } from '../../hooks/usePageMeta';
 import { TelemetryDataTable } from '../../components/ui/TelemetryDataTable';
+import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
 
 const SeasonProgressionChart = lazy(() =>
   import('./components/SeasonProgressionChart').then(m => ({ default: m.SeasonProgressionChart }))
@@ -36,6 +38,21 @@ export const SeasonsArchive: React.FC = () => {
   // Validate year parameter or default to latest season
   const selectedSeason = getSeasonByYear(yearParam) || seasons[0];
   const viewMode = (searchParams.get('view') as 'overview' | 'chart' | 'whatif') || 'overview';
+
+  const [era, setEra] = useQueryState(
+    'era',
+    parseAsStringLiteral([
+      'all',
+      '1950s',
+      '1960s',
+      '1970s',
+      '1980s',
+      '1990s',
+      '2000s',
+      '2010s',
+      '2020s',
+    ] as const).withDefault('all')
+  );
 
   usePageMeta({
     title: `${selectedSeason.year} Season — Formula 1 World Championship`,
@@ -76,11 +93,23 @@ export const SeasonsArchive: React.FC = () => {
     }
   }, [selectedSeason.year]);
 
+  const visibleSeasons = useMemo(() => {
+    if (era === 'all') return seasons;
+    const dec = DECADES.find((d) => d.label.toLowerCase() === era.toLowerCase());
+    if (!dec) return seasons;
+    return seasons.filter(
+      (s) => s.year >= dec.startYear && s.year <= (dec.targetYear || dec.startYear + 9)
+    );
+  }, [seasons, era]);
+
   const handleSelectSeason = (year: number) => {
     navigate(`/seasons/${year}`);
   };
 
-  const handleJumpDecade = (targetYear: number) => {
+  const handleJumpDecade = (targetYear: number, label?: string) => {
+    if (label) {
+      setEra(label.toLowerCase() as any);
+    }
     navigate(`/seasons/${targetYear}`);
   };
 
@@ -143,11 +172,14 @@ export const SeasonsArchive: React.FC = () => {
         <aside className="lg:col-span-4 bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-4 space-y-4" aria-label="Seasons list">
           <div className="flex items-center justify-between text-xs font-telemetry border-b border-slate-800/80 pb-3">
             <span className="text-cyan-400 font-bold">// SELECT CAMPAIGN</span>
-            <span className="text-slate-400">{seasons.length} SEASONS</span>
+            <div className="flex items-center gap-2">
+              <span className="text-slate-400">{visibleSeasons.length} SEASONS</span>
+              <CopyShareLinkButton />
+            </div>
           </div>
 
           <TelemetryDataTable
-            data={seasons}
+            data={visibleSeasons}
             columns={seasonColumns}
             getRowId={(s) => String(s.year)}
             selectedRowId={selectedSeason.year}
@@ -172,16 +204,27 @@ export const SeasonsArchive: React.FC = () => {
             {/* Decade Jump Selector */}
             <div className="flex items-center gap-1.5 flex-wrap font-telemetry text-xs">
               <span className="text-slate-500 mr-1">// JUMP ERA:</span>
+              <button
+                type="button"
+                className={`px-2 py-1 rounded border transition-colors ${
+                  era === 'all'
+                    ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300 font-bold'
+                    : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white'
+                }`}
+                onClick={() => setEra('all')}
+              >
+                ALL
+              </button>
               {DECADES.map(d => (
                 <button
                   key={d.label}
                   type="button"
                   className={`px-2 py-1 rounded border transition-colors ${
-                    currentDecade === d.label
+                    (era !== 'all' ? era.toLowerCase() === d.label.toLowerCase() : currentDecade === d.label)
                       ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300 font-bold'
                       : 'bg-slate-950/60 border-slate-800 text-slate-400 hover:text-white'
                   }`}
-                  onClick={() => handleJumpDecade(d.targetYear)}
+                  onClick={() => handleJumpDecade(d.targetYear, d.label)}
                 >
                   {d.label}
                 </button>

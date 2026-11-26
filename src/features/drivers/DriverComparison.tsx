@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
+import { useQueryStates, parseAsString, parseAsStringLiteral } from 'nuqs';
 import { useQuery } from '@tanstack/react-query';
 import { getAllDrivers, getDriverById, getTeamById } from '../../data/dataService';
 import { usePageMeta } from '../../hooks/usePageMeta';
@@ -9,14 +10,20 @@ import type { RawTeammateH2HRecord } from './comparison/comparisonMetrics';
 import { DriverSelectorBar } from './comparison/DriverSelectorBar';
 import { ComparisonStatTable } from './comparison/ComparisonStatTable';
 import { TeammateH2HPanel } from './comparison/TeammateH2HPanel';
+import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
 
 export const DriverComparison: React.FC = () => {
   const drivers: Driver[] = getAllDrivers();
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
 
-  // Mode: raw career counts vs. era-normalized rates
-  const modeParam = searchParams.get('mode');
-  const mode: 'raw' | 'normalized' = modeParam === 'normalized' ? 'normalized' : 'raw';
+  // nuqs query state for d1, d2, and mode
+  const [params, setParams] = useQueryStates({
+    d1: parseAsString.withDefault('VER'),
+    d2: parseAsString.withDefault('HAM'),
+    mode: parseAsStringLiteral(['raw', 'normalized'] as const).withDefault('raw'),
+  });
+
+  const { d1, d2, mode } = params;
 
   // Defensive Slug Resolution: supports both d1/d2 and legacy a/b query parameters
   const resolveDriver = (queryVal: string | null, fallbackId: string): Driver => {
@@ -31,8 +38,8 @@ export const DriverComparison: React.FC = () => {
     return match || getDriverById(fallbackId) || drivers[0];
   };
 
-  const driverAId = searchParams.get('d1') || searchParams.get('a');
-  const driverBId = searchParams.get('d2') || searchParams.get('b');
+  const driverAId = d1 || searchParams.get('a');
+  const driverBId = d2 || searchParams.get('b');
 
   const driverA = resolveDriver(driverAId, 'VER');
   const driverB = resolveDriver(driverBId, 'HAM');
@@ -88,25 +95,18 @@ export const DriverComparison: React.FC = () => {
   const [copied, setCopied] = useState(false);
   const [isExportingPoster, setIsExportingPoster] = useState(false);
 
-  const updateParams = (newAId: string, newBId: string, newMode: 'raw' | 'normalized') => {
-    setSearchParams(
-      {
-        d1: newAId,
-        d2: newBId,
-        mode: newMode
-      },
-      { replace: true }
-    );
+  const handleSelectA = (newId: string) => setParams({ d1: newId });
+  const handleSelectB = (newId: string) => setParams({ d2: newId });
+  const handleSwap = () => {
+    const nextA = driverB.code || driverB.id;
+    const nextB = driverA.code || driverA.id;
+    setParams({ d1: nextA, d2: nextB });
   };
-
-  const handleSelectA = (newId: string) => updateParams(newId, driverB.id, mode);
-  const handleSelectB = (newId: string) => updateParams(driverA.id, newId, mode);
-  const handleSwap = () => updateParams(driverB.id, driverA.id, mode);
-  const handleModeToggle = (newMode: 'raw' | 'normalized') => updateParams(driverA.id, driverB.id, newMode);
+  const handleModeToggle = (newMode: 'raw' | 'normalized') => setParams({ mode: newMode });
 
   const handleCopyShareLink = async () => {
     const origin = typeof window !== 'undefined' ? window.location.origin : '';
-    const url = `${origin}/drivers/compare?d1=${driverA.id}&d2=${driverB.id}&mode=${mode}`;
+    const url = `${origin}/drivers/compare?d1=${driverA.code || driverA.id}&d2=${driverB.code || driverB.id}&mode=${mode}`;
     try {
       if (navigator.clipboard) {
         await navigator.clipboard.writeText(url);
@@ -143,11 +143,14 @@ export const DriverComparison: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Header Banner */}
       <div className="border border-slate-800 rounded-lg p-6 bg-[#0f172a]/80 backdrop-blur-md">
-        <div className="flex items-center justify-between gap-4 mb-2">
+        <div className="flex items-center justify-between gap-4 mb-2 flex-wrap">
           <span className="font-telemetry text-xs text-cyan-400 tracking-wider">// TELEMETRY COMPARATOR</span>
-          <span className="font-telemetry text-xs text-slate-400 border border-slate-700/80 px-2 py-0.5 rounded">
-            HEAD-TO-HEAD BENCHMARK
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="font-telemetry text-xs text-slate-400 border border-slate-700/80 px-2 py-0.5 rounded">
+              HEAD-TO-HEAD BENCHMARK
+            </span>
+            <CopyShareLinkButton />
+          </div>
         </div>
         <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight font-headline">
           DRIVER <span className="text-cyan-400">HEAD-TO-HEAD</span> COMPARISON
