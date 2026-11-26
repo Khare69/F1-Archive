@@ -1,7 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import type { TelemetryShowdown } from '../../../types/telemetry';
 import { interpolateTelemetryAtTime } from '../telemetryMath';
-import './LiveTelemetryGauges.css';
 
 interface LiveTelemetryGaugesProps {
   showdown: TelemetryShowdown;
@@ -10,7 +9,7 @@ interface LiveTelemetryGaugesProps {
 
 export const LiveTelemetryGauges: React.FC<LiveTelemetryGaugesProps> = ({
   showdown,
-  currentTime
+  currentTime,
 }) => {
   const speedRefA = useRef<HTMLSpanElement>(null);
   const gearRefA = useRef<HTMLSpanElement>(null);
@@ -34,7 +33,9 @@ export const LiveTelemetryGauges: React.FC<LiveTelemetryGaugesProps> = ({
     if (throttleBarA.current) throttleBarA.current.style.width = `${sA.throttle}%`;
     if (brakeBarA.current) brakeBarA.current.style.width = `${sA.brake}%`;
     if (drsRefA.current) {
-      drsRefA.current.className = `gauge-drs-badge telemetry ${sA.drs ? 'drs-on' : 'drs-off'}`;
+      drsRefA.current.className = `rounded px-1.5 py-0.5 text-[10px] font-mono font-bold tracking-wider ${
+        sA.drs ? 'bg-emerald-500 text-black shadow-[0_0_8px_#10B981]' : 'border border-white/10 bg-white/5 text-[#8494AB]'
+      }`;
       drsRefA.current.textContent = sA.drs ? 'DRS OPEN' : 'DRS';
     }
 
@@ -43,48 +44,74 @@ export const LiveTelemetryGauges: React.FC<LiveTelemetryGaugesProps> = ({
     if (throttleBarB.current) throttleBarB.current.style.width = `${sB.throttle}%`;
     if (brakeBarB.current) brakeBarB.current.style.width = `${sB.brake}%`;
     if (drsRefB.current) {
-      drsRefB.current.className = `gauge-drs-badge telemetry ${sB.drs ? 'drs-on' : 'drs-off'}`;
+      drsRefB.current.className = `rounded px-1.5 py-0.5 text-[10px] font-mono font-bold tracking-wider ${
+        sB.drs ? 'bg-emerald-500 text-black shadow-[0_0_8px_#10B981]' : 'border border-white/10 bg-white/5 text-[#8494AB]'
+      }`;
       drsRefB.current.textContent = sB.drs ? 'DRS OPEN' : 'DRS';
     }
   }, [currentTime, showdown]);
 
   return (
-    <div className="telemetry-gauges-grid">
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
       {/* Driver A Gauges */}
       <div
-        className="driver-gauge-card telemetry-panel corner-bracket"
-        style={{ '--accent-color': showdown.driverA.teamColor } as React.CSSProperties}
+        className="rounded-lg border border-white/10 bg-[#11151E] p-4 flex flex-col gap-3 shadow-lg border-l-4"
+        style={{ borderLeftColor: showdown.driverA.teamColor }}
       >
-        <div className="gauge-card-header telemetry">
-          <span className="gauge-color-indicator" style={{ backgroundColor: showdown.driverA.teamColor }}></span>
-          <span className="gauge-driver-name headline">{showdown.driverA.driverName}</span>
-          <span className="gauge-driver-code telemetry">#{showdown.driverA.driverCode}</span>
-          <span ref={drsRefA} className="gauge-drs-badge telemetry drs-off">DRS</span>
+        <div className="flex items-center gap-2">
+          <span
+            className="h-2.5 w-2.5 rounded-full"
+            style={{ backgroundColor: showdown.driverA.teamColor }}
+          />
+          <span className="font-display text-base font-bold text-white">
+            {showdown.driverA.driverName}
+          </span>
+          <span className="font-mono text-xs text-[#8494AB]">
+            #{showdown.driverA.driverCode}
+          </span>
+          <span
+            ref={drsRefA}
+            className="ml-auto rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[10px] font-mono text-[#8494AB]"
+          >
+            DRS
+          </span>
         </div>
 
-        <div className="gauge-main-metrics">
-          <div className="gauge-speed-box">
-            <span ref={speedRefA} className="gauge-speed-val headline">0</span>
-            <span className="gauge-speed-unit telemetry">KM/H</span>
+        <div className="flex items-baseline justify-between border-b border-white/5 pb-2">
+          <div className="flex items-baseline gap-1.5 font-mono">
+            <span ref={speedRefA} className="text-3xl font-extrabold text-white">
+              0
+            </span>
+            <span className="text-xs text-[#8494AB]">KM/H</span>
           </div>
 
-          <div className="gauge-gear-box">
-            <span className="gauge-gear-label telemetry">GEAR</span>
-            <span ref={gearRefA} className="gauge-gear-val headline">1</span>
+          <div className="flex flex-col items-center font-mono">
+            <span className="text-[10px] text-[#8494AB]">GEAR</span>
+            <span ref={gearRefA} className="text-xl font-bold text-white">
+              1
+            </span>
           </div>
         </div>
 
-        <div className="pedal-inputs-group telemetry">
-          <div className="pedal-row">
-            <span className="pedal-label">THROTTLE</span>
-            <div className="pedal-track">
-              <div ref={throttleBarA} className="pedal-fill throttle-fill" style={{ width: '0%' }}></div>
+        <div className="flex flex-col gap-1.5 font-mono text-[11px]">
+          <div className="flex items-center gap-2">
+            <span className="w-16 text-[#8494AB]">THROTTLE</span>
+            <div className="relative h-2 flex-1 rounded bg-white/5 overflow-hidden">
+              <div
+                ref={throttleBarA}
+                className="h-full bg-[#22C55E] transition-[width] duration-75"
+                style={{ width: '0%' }}
+              />
             </div>
           </div>
-          <div className="pedal-row">
-            <span className="pedal-label">BRAKE</span>
-            <div className="pedal-track">
-              <div ref={brakeBarA} className="pedal-fill brake-fill" style={{ width: '0%' }}></div>
+          <div className="flex items-center gap-2">
+            <span className="w-16 text-[#8494AB]">BRAKE</span>
+            <div className="relative h-2 flex-1 rounded bg-white/5 overflow-hidden">
+              <div
+                ref={brakeBarA}
+                className="h-full bg-[#EF4444] transition-[width] duration-75"
+                style={{ width: '0%' }}
+              />
             </div>
           </div>
         </div>
@@ -92,39 +119,63 @@ export const LiveTelemetryGauges: React.FC<LiveTelemetryGaugesProps> = ({
 
       {/* Driver B Gauges */}
       <div
-        className="driver-gauge-card telemetry-panel corner-bracket"
-        style={{ '--accent-color': showdown.driverB.teamColor } as React.CSSProperties}
+        className="rounded-lg border border-white/10 bg-[#11151E] p-4 flex flex-col gap-3 shadow-lg border-l-4"
+        style={{ borderLeftColor: showdown.driverB.teamColor }}
       >
-        <div className="gauge-card-header telemetry">
-          <span className="gauge-color-indicator" style={{ backgroundColor: showdown.driverB.teamColor }}></span>
-          <span className="gauge-driver-name headline">{showdown.driverB.driverName}</span>
-          <span className="gauge-driver-code telemetry">#{showdown.driverB.driverCode}</span>
-          <span ref={drsRefB} className="gauge-drs-badge telemetry drs-off">DRS</span>
+        <div className="flex items-center gap-2">
+          <span
+            className="h-2.5 w-2.5 rounded-full"
+            style={{ backgroundColor: showdown.driverB.teamColor }}
+          />
+          <span className="font-display text-base font-bold text-white">
+            {showdown.driverB.driverName}
+          </span>
+          <span className="font-mono text-xs text-[#8494AB]">
+            #{showdown.driverB.driverCode}
+          </span>
+          <span
+            ref={drsRefB}
+            className="ml-auto rounded border border-white/10 bg-white/5 px-1.5 py-0.5 text-[10px] font-mono text-[#8494AB]"
+          >
+            DRS
+          </span>
         </div>
 
-        <div className="gauge-main-metrics">
-          <div className="gauge-speed-box">
-            <span ref={speedRefB} className="gauge-speed-val headline">0</span>
-            <span className="gauge-speed-unit telemetry">KM/H</span>
+        <div className="flex items-baseline justify-between border-b border-white/5 pb-2">
+          <div className="flex items-baseline gap-1.5 font-mono">
+            <span ref={speedRefB} className="text-3xl font-extrabold text-white">
+              0
+            </span>
+            <span className="text-xs text-[#8494AB]">KM/H</span>
           </div>
 
-          <div className="gauge-gear-box">
-            <span className="gauge-gear-label telemetry">GEAR</span>
-            <span ref={gearRefB} className="gauge-gear-val headline">1</span>
+          <div className="flex flex-col items-center font-mono">
+            <span className="text-[10px] text-[#8494AB]">GEAR</span>
+            <span ref={gearRefB} className="text-xl font-bold text-white">
+              1
+            </span>
           </div>
         </div>
 
-        <div className="pedal-inputs-group telemetry">
-          <div className="pedal-row">
-            <span className="pedal-label">THROTTLE</span>
-            <div className="pedal-track">
-              <div ref={throttleBarB} className="pedal-fill throttle-fill" style={{ width: '0%' }}></div>
+        <div className="flex flex-col gap-1.5 font-mono text-[11px]">
+          <div className="flex items-center gap-2">
+            <span className="w-16 text-[#8494AB]">THROTTLE</span>
+            <div className="relative h-2 flex-1 rounded bg-white/5 overflow-hidden">
+              <div
+                ref={throttleBarB}
+                className="h-full bg-[#22C55E] transition-[width] duration-75"
+                style={{ width: '0%' }}
+              />
             </div>
           </div>
-          <div className="pedal-row">
-            <span className="pedal-label">BRAKE</span>
-            <div className="pedal-track">
-              <div ref={brakeBarB} className="pedal-fill brake-fill" style={{ width: '0%' }}></div>
+          <div className="flex items-center gap-2">
+            <span className="w-16 text-[#8494AB]">BRAKE</span>
+            <div className="relative h-2 flex-1 rounded bg-white/5 overflow-hidden">
+              <div
+                ref={brakeBarB}
+                className="h-full bg-[#EF4444] transition-[width] duration-75"
+                style={{ width: '0%' }}
+              />
             </div>
           </div>
         </div>
@@ -132,3 +183,5 @@ export const LiveTelemetryGauges: React.FC<LiveTelemetryGaugesProps> = ({
     </div>
   );
 };
+
+export default LiveTelemetryGauges;
