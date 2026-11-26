@@ -1,8 +1,10 @@
 import { QueryClient } from '@tanstack/react-query';
-import { createSyncStoragePersister } from '@tanstack/query-sync-storage-persister';
-import { safeStorage } from '../utils/safeStorage';
+import { createIDBPersister, clearLegacyLocalStorageCache } from './idbPersister';
 
-export const QUERY_PERSIST_BUSTER = 'v1';
+export const QUERY_PERSIST_BUSTER = 'f1-archive-idb-v3';
+
+// Clear obsolete localStorage caches on startup
+clearLegacyLocalStorageCache();
 
 /**
  * Checks whether an error is a client error (4xx) that should NOT be retried
@@ -51,7 +53,4 @@ export function createConfiguredQueryClient(): QueryClient {
 
 export const queryClient = createConfiguredQueryClient();
 
-export const queryPersister = createSyncStoragePersister({
-  storage: safeStorage,
-  key: 'F1_QUERY_CACHE',
-});
+export const queryPersister = createIDBPersister();

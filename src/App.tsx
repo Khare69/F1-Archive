@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-do
 import { PersistQueryClientProvider } from '@tanstack/react-query-persist-client';
 import { defaultShouldDehydrateQuery } from '@tanstack/react-query';
 import { queryClient, queryPersister, QUERY_PERSIST_BUSTER } from './lib/queryClient';
+import { shouldPersistQueryKey } from './lib/idbPersister';
 import { UserPreferencesProvider, usePreferencesContext } from './contexts/UserPreferencesContext';
 import { Navigation } from './components/Navigation/Navigation';
 import { ErrorBoundary } from './components/ErrorBoundary/ErrorBoundary';
@@ -311,11 +312,7 @@ export const App: React.FC = () => {
         buster: QUERY_PERSIST_BUSTER,
         dehydrateOptions: {
           shouldDehydrateQuery: (query) => {
-            const key = String(query.queryKey[0] || '');
-            if (key.includes('telemetry') || key.includes('strategy') || key.includes('openf1')) {
-              return false;
-            }
-            return defaultShouldDehydrateQuery(query);
+            return shouldPersistQueryKey(query.queryKey) && defaultShouldDehydrateQuery(query);
           }
         }
       }}
