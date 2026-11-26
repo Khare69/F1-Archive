@@ -79,7 +79,10 @@ export default defineConfig({
           if (id.includes('node_modules/three') || id.includes('node_modules/@react-three')) {
             return 'three-vendor';
           }
-          if (id.includes('node_modules/framer-motion')) {
+          if (id.includes('node_modules/echarts') || id.includes('node_modules/zrender')) {
+            return 'echarts-vendor';
+          }
+          if (id.includes('node_modules/motion')) {
             return 'motion-vendor';
           }
           if (
