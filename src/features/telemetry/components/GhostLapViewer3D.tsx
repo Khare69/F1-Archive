@@ -8,7 +8,6 @@ import { getSectorAnchoredDistanceFraction } from '../telemetryMath';
 import { CanvasErrorBoundary } from '../../cars/components/CanvasErrorBoundary';
 import { PerfDebugCollector } from '../../cars/components/PerfDebugOverlay';
 import { disposeObject3D, attachWebGLContextLossGuard } from '../../../utils/webglDisposal';
-import './GhostLapViewer3D.css';
 
 export interface PlaybackHandle {
   time: number;
@@ -23,6 +22,7 @@ interface GhostLapViewer3DProps {
   playbackRef: React.MutableRefObject<PlaybackHandle>;
   currentTime: number;
   isPlaying: boolean;
+  scrubProgress?: number | null;
   onTimeUpdate?: (time: number) => void;
 }
 
@@ -100,8 +100,9 @@ const GhostCars: React.FC<{
   catmull: THREE.CatmullRomCurve3;
   showdown: TelemetryShowdown;
   playbackRef: React.MutableRefObject<PlaybackHandle>;
+  scrubRef: React.MutableRefObject<number | null>;
   onTimeUpdate?: (time: number) => void;
-}> = ({ catmull, showdown, playbackRef, onTimeUpdate }) => {
+}> = ({ catmull, showdown, playbackRef, scrubRef, onTimeUpdate }) => {
   const ghostARef = useRef<THREE.Group>(null);
   const ghostBRef = useRef<THREE.Group>(null);
   const deltaBadgeRef = useRef<HTMLDivElement>(null);
@@ -140,7 +141,8 @@ const GhostCars: React.FC<{
       }
     }
 
-    const t = pb.time;
+    const scrub = scrubRef.current;
+    const t = scrub != null ? scrub * maxLapTime : pb.time;
 
     // Calculate sector-anchored distance fractions for both drivers (Trap 2)
     const dA = getSectorAnchoredDistanceFraction(
@@ -282,10 +284,13 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
   playbackRef,
   currentTime,
   isPlaying,
+  scrubProgress,
   onTimeUpdate
 }) => {
   const orbitRef = useRef<OrbitControlsImpl>(null);
   const [is3DMode, setIs3DMode] = useState<boolean>(true);
+  const scrubRef = useRef<number | null>(scrubProgress ?? null);
+  scrubRef.current = scrubProgress ?? null;
 
   // Build CatmullRom track spline
   const catmull = useMemo(() => {
@@ -302,19 +307,21 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
   }, []);
 
   return (
-    <div className="ghost-viewer-3d-card telemetry-panel corner-bracket">
+    <div className="rounded-lg border border-white/10 bg-[#11151E] p-4 flex flex-col gap-3 shadow-xl w-full">
       {/* 3D Viewport Controls Bar */}
-      <div className="ghost-viewer-header">
-        <div className="ghost-viewer-title telemetry">
-          <span className="ghost-live-blip"></span>
+      <div className="flex flex-wrap items-center justify-between pb-3 border-b border-white/5 gap-2">
+        <div className="flex items-center gap-2 font-mono text-xs font-bold text-white">
+          <span className="h-2 w-2 rounded-full bg-[#E10600] animate-pulse"></span>
           <span>3D TELEMETRY GHOST-LAP VISUALIZER // {showdown.circuitName.toUpperCase()}</span>
-          <span className="ghost-drawcall-badge telemetry">1 DRAW CALL (25 MINI-SECTORS)</span>
+          <span className="rounded border border-[#38BDF8]/30 bg-[#38BDF8]/10 px-2 py-0.5 text-[10px] text-[#38BDF8]">
+            1 DRAW CALL (25 MINI-SECTORS)
+          </span>
         </div>
 
-        <div className="ghost-header-actions">
+        <div className="flex items-center gap-2">
           <button
             type="button"
-            className="f1-btn f1-btn-secondary telemetry ghost-cam-btn"
+            className="rounded border border-white/10 bg-white/5 px-3 py-1 font-mono text-xs text-[#8494AB] hover:text-white hover:bg-white/10 transition-colors"
             onClick={handleResetCamera}
             title="Recenter track orbit camera"
             aria-label="Recenter camera"
@@ -324,7 +331,11 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
 
           <button
             type="button"
-            className={`f1-btn f1-btn-secondary telemetry ghost-cam-btn ${is3DMode ? 'active' : ''}`}
+            className={`rounded border px-3 py-1 font-mono text-xs transition-colors ${
+              is3DMode
+                ? 'border-[#38BDF8] bg-[#38BDF8]/20 text-white font-bold'
+                : 'border-white/10 bg-white/5 text-[#8494AB] hover:text-white hover:bg-white/10'
+            }`}
             onClick={() => setIs3DMode(!is3DMode)}
             title="Toggle 3D Elevation Topography vs 2D Flat Map"
           >
@@ -334,7 +345,7 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
       </div>
 
       {/* Three.js Canvas with Demand Frameloop */}
-      <div className="ghost-canvas-container">
+      <div className="relative w-full h-[480px] rounded overflow-hidden bg-gradient-to-b from-[#0c121e] to-[#05070c]">
         <CanvasErrorBoundary fallbackTitle="Ghost Lap 3D Viewport Fault" onReset={handleResetCamera}>
           <Canvas
             dpr={[1, 2]}
@@ -346,7 +357,7 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
             }}
           >
             <SceneInvalidator
-              trigger={`${showdown.slug}_${is3DMode}_${isPlaying}_${currentTime}`}
+              trigger={`${showdown.slug}_${is3DMode}_${isPlaying}_${currentTime}_${scrubProgress ?? ''}`}
             />
             <PerfDebugCollector />
 
@@ -363,6 +374,7 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
               catmull={catmull}
               showdown={showdown}
               playbackRef={playbackRef}
+              scrubRef={scrubRef}
               onTimeUpdate={onTimeUpdate}
             />
 
@@ -379,17 +391,17 @@ export const GhostLapViewer3D: React.FC<GhostLapViewer3DProps> = ({
         </CanvasErrorBoundary>
 
         {/* 25 Mini-Sector Legend Overlay */}
-        <div className="ghost-legend-overlay telemetry">
-          <div className="legend-item">
-            <span className="legend-dot" style={{ backgroundColor: showdown.driverA.teamColor }}></span>
+        <div className="absolute bottom-3 left-3 flex items-center gap-4 rounded border border-white/10 bg-[#05070c]/85 px-3 py-1.5 font-mono text-[11px] text-white backdrop-blur-md pointer-events-none">
+          <div className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: showdown.driverA.teamColor }}></span>
             <span>{showdown.driverA.driverCode} ADVANTAGE</span>
           </div>
-          <div className="legend-item">
-            <span className="legend-dot" style={{ backgroundColor: showdown.driverB.teamColor }}></span>
+          <div className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: showdown.driverB.teamColor }}></span>
             <span>{showdown.driverB.driverCode} ADVANTAGE</span>
           </div>
-          <div className="legend-item">
-            <span className="legend-dot" style={{ backgroundColor: '#FFFFFF' }}></span>
+          <div className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full" style={{ backgroundColor: '#FFFFFF' }}></span>
             <span>LEVEL (&lt; 15ms)</span>
           </div>
         </div>

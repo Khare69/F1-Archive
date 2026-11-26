@@ -1,22 +1,17 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { getTeamById } from '../../../data/dataService';
 import type { SeasonClassificationFile } from '../../../types/f1';
-import './SeasonProgressionChart.css';
+import { EChartsWrapper } from '../../../components/charts/EChartsWrapper';
+import {
+  buildFocusPlusContextSeasonOptions,
+  extractSeasonDrivers,
+} from '../seasonChartOptions';
 
 interface SeasonProgressionChartProps {
   year: number;
 }
 
-const FALLBACK_PALETTE = [
-  '#00D2FF', '#FF1E1E', '#FF8000', '#229971', '#0093CC',
-  '#FFD700', '#B6BABD', '#6692FF', '#900000', '#E8002D'
-];
-
 export const SeasonProgressionChart: React.FC<SeasonProgressionChartProps> = ({ year }) => {
-  const [hiddenDrivers, setHiddenDrivers] = useState<Set<string>>(new Set());
-  const [hoveredRound, setHoveredRound] = useState<number | null>(null);
-
   const { data: seasonData, isLoading, error } = useQuery<SeasonClassificationFile>({
     queryKey: ['season_classification', year],
     queryFn: async () => {
@@ -24,313 +19,130 @@ export const SeasonProgressionChart: React.FC<SeasonProgressionChartProps> = ({ 
       if (!res.ok) throw new Error(`Could not load classification for ${year}`);
       return res.json();
     },
-    staleTime: 24 * 60 * 60 * 1000
+    staleTime: 24 * 60 * 60 * 1000,
   });
 
-  const chartData = useMemo(() => {
-    if (!seasonData || !seasonData.standingsProgression || seasonData.standingsProgression.length === 0) {
+  const allDrivers = useMemo(() => {
+    if (!seasonData?.standingsProgression) return [];
+    return extractSeasonDrivers(seasonData.standingsProgression);
+  }, [seasonData]);
+
+  // Default focus to top 3 championship finishers
+  const [focusedDriverIds, setFocusedDriverIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (allDrivers.length > 0) {
+      setFocusedDriverIds(allDrivers.slice(0, 3).map((d) => d.driverId));
+    }
+  }, [allDrivers]);
+
+  const toggleDriverFocus = (driverId: string) => {
+    setFocusedDriverIds((prev) => {
+      if (prev.includes(driverId)) {
+        // Keep at least 1 driver focused
+        if (prev.length <= 1) return prev;
+        return prev.filter((id) => id !== driverId);
+      }
+      // Cap at 4 simultaneously focused drivers
+      if (prev.length >= 4) {
+        return [...prev.slice(1), driverId];
+      }
+      return [...prev, driverId];
+    });
+  };
+
+  const chartOption = useMemo(() => {
+    if (!seasonData?.standingsProgression || seasonData.standingsProgression.length === 0) {
       return null;
     }
-
-    const rounds = seasonData.rounds.filter(r => !r.isCancelled);
-    const progression = seasonData.standingsProgression;
-
-    // Identify top contenders across the season (ever in top 6 or top 8 at any point)
-    const driverSet = new Map<string, { code: string; name: string; teamId: string }>();
-    for (const prog of progression) {
-      for (const d of prog.standings.slice(0, 8)) {
-        if (!driverSet.has(d.driverId)) {
-          driverSet.set(d.driverId, { code: d.driverCode, name: d.driverName, teamId: d.constructorId });
-        }
-      }
-    }
-
-    // Limit to top 10 unique drivers for clarity
-    const selectedDriverIds = Array.from(driverSet.keys()).slice(0, 8);
-
-    // Group teammates to apply dashed stroke differentiation for second teammate
-    const teamDriverCount = new Map<string, number>();
-    const driverDashArray = new Map<string, string | undefined>();
-
-    for (const dId of selectedDriverIds) {
-      const meta = driverSet.get(dId)!;
-      const count = teamDriverCount.get(meta.teamId) || 0;
-      if (count > 0) {
-        driverDashArray.set(dId, '5 4'); // Second teammate gets dashed stroke
-      }
-      teamDriverCount.set(meta.teamId, count + 1);
-    }
-
-    // Compute cumulative trajectory for each selected driver across rounds
-    let maxPts = 10;
-    const series = selectedDriverIds.map((dId, idx) => {
-      const meta = driverSet.get(dId)!;
-      const team = getTeamById(meta.teamId);
-      const color = team?.color || FALLBACK_PALETTE[idx % FALLBACK_PALETTE.length];
-      const strokeDasharray = driverDashArray.get(dId);
-
-      const points: { round: number; points: number; position: number }[] = [];
-
-      for (let rIdx = 0; rIdx < progression.length; rIdx++) {
-        const prog = progression[rIdx];
-        const match = prog.standings.find(s => s.driverId === dId);
-        const prevPts = points.length > 0 ? points[points.length - 1].points : 0;
-        const curPts = match ? match.points : prevPts;
-        const pos = match ? match.position : 20;
-
-        points.push({ round: prog.round, points: curPts, position: pos });
-        if (curPts > maxPts) maxPts = curPts;
-      }
-
-      return {
-        driverId: dId,
-        code: meta.code,
-        name: meta.name,
-        teamId: meta.teamId,
-        color,
-        strokeDasharray,
-        points
-      };
-    });
-
-    return {
-      rounds,
-      series,
-      maxPts: Math.ceil(maxPts * 1.08),
-      totalRounds: rounds.length
-    };
-  }, [seasonData]);
+    return buildFocusPlusContextSeasonOptions(
+      seasonData.standingsProgression,
+      focusedDriverIds,
+      seasonData.rounds
+    );
+  }, [seasonData, focusedDriverIds]);
 
   if (isLoading) {
     return (
-      <div className="chart-loading-panel telemetry-panel">
-        <div className="loading-spinner"></div>
-        <span className="telemetry">// COMPILING {year} PROGRESSION TELEMETRY...</span>
+      <div className="flex h-72 w-full flex-col items-center justify-center rounded border border-white/5 bg-[#11151E] p-6 text-center">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#E10600] border-t-transparent mb-3" />
+        <span className="font-mono text-xs uppercase tracking-widest text-[#8494AB]">
+          // COMPILING {year} PROGRESSION TELEMETRY...
+        </span>
       </div>
     );
   }
 
-  if (error || !chartData || chartData.series.length === 0) {
+  if (error || !chartOption || allDrivers.length === 0) {
     return (
-      <div className="chart-empty-panel telemetry-panel">
-        <span className="telemetry">// NO PROGRESSION CLASSIFICATION DATA AVAILABLE FOR {year}</span>
+      <div className="flex h-64 w-full flex-col items-center justify-center rounded border border-white/5 bg-[#11151E] p-6 text-center">
+        <span className="font-mono text-xs uppercase tracking-widest text-[#8494AB]">
+          // NO PROGRESSION CLASSIFICATION DATA AVAILABLE FOR {year}
+        </span>
       </div>
     );
   }
-
-  const { rounds, series, maxPts, totalRounds } = chartData;
-
-  // SVG Geometry Dimensions
-  const W = 920;
-  const H = 420;
-  const padL = 60;
-  const padR = 30;
-  const padT = 30;
-  const padB = 50;
-
-  const innerW = W - padL - padR;
-  const innerH = H - padT - padB;
-
-  const getX = (roundIndex: number) => {
-    if (totalRounds <= 1) return padL + innerW / 2;
-    return padL + (roundIndex / (totalRounds - 1)) * innerW;
-  };
-
-  const getY = (pts: number) => {
-    return padT + innerH - (pts / maxPts) * innerH;
-  };
-
-  const toggleDriver = (dId: string) => {
-    setHiddenDrivers(prev => {
-      const next = new Set(prev);
-      if (next.has(dId)) next.delete(dId);
-      else next.add(dId);
-      return next;
-    });
-  };
-
-  // Hovered round summary
-  const activeRoundIndex = hoveredRound !== null ? hoveredRound : totalRounds - 1;
-  const activeRoundObj = rounds[activeRoundIndex] || rounds[0];
 
   return (
-    <div className="season-progression-chart-panel telemetry-panel corner-bracket">
-      <div className="chart-title-bar">
-        <div className="chart-title-left">
-          <span className="section-dot" style={{ background: '#00D2FF' }}></span>
-          <h2 className="headline">{year} WORLD CHAMPIONSHIP PROGRESSION</h2>
-          <span className="chart-subtitle telemetry">// CUMULATIVE POINTS RACE-BY-RACE TRAJECTORY</span>
-        </div>
-
-        <div className="chart-legend-row" role="toolbar" aria-label="Toggle driver lines">
-          {series.map(s => {
-            const isHidden = hiddenDrivers.has(s.driverId);
-            return (
-              <button
-                key={s.driverId}
-                type="button"
-                className={`chart-legend-pill telemetry ${isHidden ? 'legend-hidden' : ''}`}
-                onClick={() => toggleDriver(s.driverId)}
-                style={{
-                  '--pill-color': s.color,
-                  borderColor: isHidden ? 'rgba(255,255,255,0.1)' : s.color
-                } as React.CSSProperties}
-                title={`Toggle ${s.name} on chart`}
-              >
-                <span
-                  className="legend-indicator"
-                  style={{
-                    backgroundColor: s.color,
-                    borderStyle: s.strokeDasharray ? 'dashed' : 'solid'
-                  }}
-                />
-                <span className="legend-code">{s.code}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* SVG Canvas */}
-      <div className="svg-container">
-        <svg
-          viewBox={`0 0 ${W} ${H}`}
-          className="progression-svg"
-          role="img"
-          aria-label={`Cumulative championship progression chart for the ${year} season`}
-        >
-          {/* Background Grid Lines */}
-          {[0, 0.25, 0.5, 0.75, 1].map((pct, i) => {
-            const y = padT + innerH - pct * innerH;
-            const ptsVal = Math.round(pct * maxPts);
-            return (
-              <g key={i} className="chart-grid-group">
-                <line x1={padL} y1={y} x2={W - padR} y2={y} stroke="rgba(255, 255, 255, 0.08)" strokeWidth="1" strokeDasharray="3 3" />
-                <text x={padL - 10} y={y + 4} textAnchor="end" fill="rgba(255, 255, 255, 0.4)" fontSize="11" fontFamily="monospace">
-                  {ptsVal}
-                </text>
-              </g>
-            );
-          })}
-
-          {/* Round X-Axis Grid & Labels */}
-          {rounds.map((r, i) => {
-            const x = getX(i);
-            const isHovered = hoveredRound === i;
-            return (
-              <g key={r.round} className="chart-round-col">
-                <line
-                  x1={x}
-                  y1={padT}
-                  x2={x}
-                  y2={padT + innerH}
-                  stroke={isHovered ? 'rgba(0, 210, 255, 0.4)' : 'rgba(255, 255, 255, 0.05)'}
-                  strokeWidth={isHovered ? '1.5' : '1'}
-                />
-                <text
-                  x={x}
-                  y={padT + innerH + 20}
-                  textAnchor="middle"
-                  fill={isHovered ? '#00D2FF' : 'rgba(255, 255, 255, 0.5)'}
-                  fontSize="11"
-                  fontFamily="monospace"
-                >
-                  R{r.round}
-                </text>
-              </g>
-            );
-          })}
-
-          {/* Trajectory Polylines */}
-          {series.map(s => {
-            if (hiddenDrivers.has(s.driverId)) return null;
-
-            const pathD = s.points
-              .map((pt, idx) => `${idx === 0 ? 'M' : 'L'} ${getX(idx).toFixed(1)} ${getY(pt.points).toFixed(1)}`)
-              .join(' ');
-
-            return (
-              <g key={s.driverId} className="driver-series-group">
-                <path
-                  d={pathD}
-                  fill="none"
-                  stroke={s.color}
-                  strokeWidth={s.strokeDasharray ? '2.0' : '2.5'}
-                  strokeDasharray={s.strokeDasharray}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  opacity={0.9}
-                />
-                {/* Data Points */}
-                {s.points.map((pt, pIdx) => {
-                  const cx = getX(pIdx);
-                  const cy = getY(pt.points);
-                  const isHovered = hoveredRound === pIdx;
-                  return (
-                    <circle
-                      key={pIdx}
-                      cx={cx}
-                      cy={cy}
-                      r={isHovered ? 5.5 : 3}
-                      fill={s.color}
-                      stroke="#0D1322"
-                      strokeWidth="1.5"
-                    />
-                  );
-                })}
-              </g>
-            );
-          })}
-
-          {/* Interactive Mouse Capture Columns */}
-          {rounds.map((_, i) => {
-            const colW = innerW / Math.max(1, totalRounds - 1);
-            const x = getX(i) - colW / 2;
-            return (
-              <rect
-                key={i}
-                x={x}
-                y={padT}
-                width={colW}
-                height={innerH}
-                fill="transparent"
-                style={{ cursor: 'pointer' }}
-                onMouseEnter={() => setHoveredRound(i)}
-                onMouseLeave={() => setHoveredRound(null)}
-              />
-            );
-          })}
-        </svg>
-      </div>
-
-      {/* Interactive Round Inspection Card */}
-      <div className="chart-tooltip-panel">
-        <div className="tooltip-header telemetry">
-          <span className="tooltip-round-badge">
-            ROUND {activeRoundObj.round} // {activeRoundObj.name.toUpperCase()}
+    <div className="flex flex-col w-full rounded border border-white/10 bg-[#11151E] p-4">
+      {/* Header Bar */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/5 pb-3">
+        <div>
+          <span className="font-mono text-[10px] uppercase tracking-wider text-[#E10600]">
+            // CHAMPIONSHIP TRAJECTORY
           </span>
-          <span className="text-muted">{activeRoundObj.date}</span>
+          <h3 className="font-display text-lg font-bold tracking-wide text-white">
+            {year} Driver Standings Progression
+          </h3>
         </div>
 
-        <div className="tooltip-standings-grid">
-          {series
-            .filter(s => !hiddenDrivers.has(s.driverId))
-            .map(s => {
-              const pt = s.points[activeRoundIndex] || s.points[s.points.length - 1];
-              return (
-                <div key={s.driverId} className="tooltip-driver-item" style={{ borderLeft: `3px solid ${s.color}` }}>
-                  <div className="tooltip-driver-name">
-                    <strong className="headline">{s.name}</strong>
-                    <span className="telemetry text-muted">[{s.code}]</span>
-                  </div>
-                  <div className="tooltip-pts-val headline" style={{ color: s.color }}>
-                    {pt.points} PTS
-                  </div>
-                </div>
-              );
-            })}
+        <div className="flex items-center gap-2">
+          <span className="font-mono text-[11px] text-[#8494AB]">
+            Click driver pill to focus (max 4):
+          </span>
         </div>
+      </div>
+
+      {/* Driver Focus Selector Pills (I-04 Focus-Plus-Context) */}
+      <div className="flex flex-wrap gap-1.5 py-3 border-b border-white/5">
+        {allDrivers.slice(0, 10).map((d) => {
+          const isFocused = focusedDriverIds.includes(d.driverId);
+          return (
+            <button
+              key={d.driverId}
+              type="button"
+              onClick={() => toggleDriverFocus(d.driverId)}
+              className={`group flex items-center gap-1.5 rounded px-2.5 py-1 font-mono text-xs transition-all ${
+                isFocused
+                  ? 'bg-white/10 text-white font-semibold ring-1 ring-white/20'
+                  : 'bg-white/[0.02] text-[#8494AB] hover:bg-white/[0.05] hover:text-white'
+              }`}
+              title={`${d.driverName} (P${d.finalPosition}, ${d.finalPoints} pts)`}
+            >
+              {/* 3px team color accent bar */}
+              <span
+                className="h-3 w-[3px] rounded-full transition-transform group-hover:scale-y-125"
+                style={{ backgroundColor: d.teamColor }}
+              />
+              <span>{d.driverCode}</span>
+              <span className="text-[10px] text-neutral-500">
+                {isFocused ? '●' : '○'}
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Chart Canvas */}
+      <div className="mt-2 w-full">
+        <EChartsWrapper
+          option={chartOption}
+          height={400}
+          ariaLabel={`${year} Drivers Championship Progression`}
+        />
       </div>
     </div>
   );
 };
+
+export default SeasonProgressionChart;

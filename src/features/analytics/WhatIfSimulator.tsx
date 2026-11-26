@@ -8,6 +8,9 @@ import {
   type WhatIfScoringOptions
 } from './whatIfScoring';
 import type { SeasonClassificationFile } from '../../types/f1';
+import { ExperimentalBadge } from '../../components/ui/ExperimentalBadge';
+import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
+import { useQueryStates, parseAsString } from 'nuqs';
 import './WhatIfSimulator.css';
 
 interface WhatIfSimulatorProps {
@@ -15,13 +18,25 @@ interface WhatIfSimulatorProps {
 }
 
 export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({ year }) => {
+  const [urlParams, setUrlParams] = useQueryStates({
+    scoring: parseAsString,
+  });
+
   const [systemId, setSystemId] = useState<ScoringPresetId>(() => {
+    if (urlParams.scoring && urlParams.scoring in SCORING_PRESETS) {
+      return urlParams.scoring as ScoringPresetId;
+    }
     // Pick an intuitive alternative scoring system
     if (year >= 2010) return '2003_2009'; // modern season tested under 2000s rules
     if (year >= 1991) return 'modern';    // 90s/00s season tested under modern 25-pt rules
     if (year === 1988) return '1961_1990'; // 1988 tested with/without drops
     return 'modern';
   });
+
+  const handleSystemChange = (newSystem: ScoringPresetId) => {
+    setSystemId(newSystem);
+    setUrlParams({ scoring: newSystem });
+  };
 
   const [applyFastestLap, setApplyFastestLap] = useState<boolean>(year >= 2019 && year <= 2024);
   const [includeSprints, setIncludeSprints] = useState<boolean>(true);
@@ -89,16 +104,25 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({ year }) => {
           <span className="whatif-subtitle telemetry">
             // RECALCULATING THE {year} WORLD CHAMPIONSHIP UNDER ALTERNATE SCORING RULES
           </span>
+          <div className="mt-2">
+            <ExperimentalBadge
+              label="EXPERIMENTAL // SIMULATION"
+              disclaimer="Hypothetical points recalculation — re-scoring historical championship outcomes under alternate points systems."
+            />
+          </div>
         </div>
 
-        {/* Outcome Verdict Badge */}
-        <div className={`verdict-badge ${outcomeFlipped ? 'verdict-flipped' : 'verdict-intact'}`}>
-          <span className="verdict-label telemetry">
-            {outcomeFlipped ? '⚡ TITLE OUTCOME FLIPPED' : '✓ TITLE OUTCOME INTACT'}
-          </span>
-          <strong className="headline verdict-champ">
-            {simulatedChampion.driverName.toUpperCase()}
-          </strong>
+        <div className="flex items-center gap-3">
+          {/* Outcome Verdict Badge */}
+          <div className={`verdict-badge ${outcomeFlipped ? 'verdict-flipped' : 'verdict-intact'}`}>
+            <span className="verdict-label telemetry">
+              {outcomeFlipped ? '⚡ TITLE OUTCOME FLIPPED' : '✓ TITLE OUTCOME INTACT'}
+            </span>
+            <strong className="headline verdict-champ">
+              {simulatedChampion.driverName.toUpperCase()}
+            </strong>
+          </div>
+          <CopyShareLinkButton label="Share Scenario" />
         </div>
       </div>
 
@@ -112,7 +136,7 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({ year }) => {
           <select
             id="scoring-preset-select"
             value={systemId}
-            onChange={e => setSystemId(e.target.value as ScoringPresetId)}
+            onChange={e => handleSystemChange(e.target.value as ScoringPresetId)}
             className="f1-select headline"
           >
             {Object.values(SCORING_PRESETS).map(p => (
