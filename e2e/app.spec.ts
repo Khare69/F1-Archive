@@ -276,4 +276,86 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     // Assert zero uncaught exceptions across all pages
     expect(pageErrors).toEqual([]);
   });
+
+  test('Phase 4: Shareable Comparison Deep Link (C-22, C-25)', async ({ page }) => {
+    await page.goto('/drivers/compare?d1=SEN&d2=PRO&mode=normalized');
+    await expect(page.locator('#main-content')).toBeVisible();
+
+    // Assert Ayrton Senna and Alain Prost render
+    await expect(page.locator('h2', { hasText: 'Ayrton Senna' })).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('h2', { hasText: 'Alain Prost' })).toBeVisible({ timeout: 10000 });
+
+    // Assert Teammate H2H section displays McLaren partnership
+    await expect(page.locator('text=TEAMMATE HEAD-TO-HEAD BATTLE').first()).toBeVisible({ timeout: 10000 });
+
+    // Assert zero NaN strings appear anywhere in document body
+    const bodyText = await page.innerText('body');
+    expect(bodyText).not.toContain('NaN');
+  });
+
+  test('Phase 4: Virtualized Drivers Table & URL Filter (C-23, C-25)', async ({ page }) => {
+    await page.goto('/drivers?filter=champions');
+    await expect(page.locator('#main-content')).toBeVisible();
+
+    // Verify champions filter tab is active
+    const championsTab = page.locator('button', { hasText: 'CHAMPIONS' });
+    await expect(championsTab).toHaveClass(/active/);
+
+    // Verify World Champions render inside the virtualized timing-tower table
+    const table = page.locator('table');
+    await expect(table).toBeVisible();
+
+    // Click WINS sort header to toggle sort
+    const winsHeader = page.locator('th', { hasText: 'WINS' });
+    await winsHeader.click();
+
+    // Verify rows rendered and bounded by virtualizer
+    const rowCount = await page.locator('tbody tr').count();
+    expect(rowCount).toBeGreaterThan(0);
+    expect(rowCount).toBeLessThanOrEqual(50);
+  });
+
+  test('Phase 4: Live Standings API Outage Fallback (C-24, F-10)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err.message));
+
+    // Intercept Jolpica with 429
+    await page.route('https://api.jolpi.ca/**', (route) =>
+      route.fulfill({ status: 429, contentType: 'application/json', body: '{"error":"Too Many Requests"}' })
+    );
+
+    await page.goto('/standings');
+    await expect(page.locator('#main-content')).toBeVisible();
+
+    // Verify recovery alert banner renders
+    const alert = page.locator('[role="alert"]');
+    await expect(alert).toBeVisible({ timeout: 10000 });
+    await expect(alert).toContainText('ARCHIVE RECOVERY MODE');
+    await expect(page.locator('button', { hasText: 'RETRY FEED' })).toBeVisible();
+
+    // Zero uncaught runtime page errors
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('Phase 4: 2026 Constructors Grid & Trademark-Safe Badges (C-26)', async ({ page }) => {
+    await page.goto('/teams');
+    await expect(page.locator('#main-content')).toBeVisible();
+
+    // Verify Audi and Cadillac exist on 2026 grid
+    await expect(page.locator('text=Audi').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=Cadillac').first()).toBeVisible({ timeout: 10000 });
+
+    // Switch to Historic Constructors
+    const historicTab = page.locator('button', { hasText: 'HISTORIC' });
+    await historicTab.click();
+    await expect(page).toHaveURL(/\?grid=historic/);
+
+    // Click on Brawn GP or inspect Brawn GP
+    const brawnRow = page.locator('tbody tr', { hasText: 'Brawn' }).first();
+    await expect(brawnRow).toBeVisible({ timeout: 10000 });
+    await brawnRow.click();
+
+    // Verify Brawn GP shows 2009 (not 1950)
+    await expect(page.locator('text=2009').first()).toBeVisible({ timeout: 10000 });
+  });
 });

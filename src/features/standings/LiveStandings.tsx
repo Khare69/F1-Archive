@@ -57,7 +57,7 @@ export const LiveStandings: React.FC = () => {
   }, [schedule]);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="live-standings-page standings-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="space-y-6">
         {/* Top Header Panel */}
         <div className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-6">

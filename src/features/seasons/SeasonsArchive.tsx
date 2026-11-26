@@ -166,7 +166,7 @@ export const SeasonsArchive: React.FC = () => {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="seasons-archive-page archive-layout max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Sidebar / Timing Tower */}
         <aside className="lg:col-span-4 bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-4 space-y-4" aria-label="Seasons list">
@@ -289,7 +289,7 @@ export const SeasonsArchive: React.FC = () => {
             <div className="flex items-center gap-2 border-t border-slate-800/80 pt-4 flex-wrap">
               <button
                 type="button"
-                className={`px-3 py-1.5 rounded text-xs font-telemetry font-bold tracking-wider transition-colors ${
+                className={`season-tab-btn px-3 py-1.5 rounded text-xs font-telemetry font-bold tracking-wider transition-colors ${
                   viewMode === 'overview'
                     ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 active'
                     : 'bg-slate-950/60 border border-slate-800 text-slate-400 hover:text-white'
@@ -300,7 +300,7 @@ export const SeasonsArchive: React.FC = () => {
               </button>
               <button
                 type="button"
-                className={`px-3 py-1.5 rounded text-xs font-telemetry font-bold tracking-wider transition-colors ${
+                className={`season-tab-btn px-3 py-1.5 rounded text-xs font-telemetry font-bold tracking-wider transition-colors ${
                   viewMode === 'chart'
                     ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 active'
                     : 'bg-slate-950/60 border border-slate-800 text-slate-400 hover:text-white'
@@ -311,7 +311,7 @@ export const SeasonsArchive: React.FC = () => {
               </button>
               <button
                 type="button"
-                className={`px-3 py-1.5 rounded text-xs font-telemetry font-bold tracking-wider transition-colors ${
+                className={`season-tab-btn px-3 py-1.5 rounded text-xs font-telemetry font-bold tracking-wider transition-colors ${
                   viewMode === 'whatif'
                     ? 'bg-cyan-500/20 border border-cyan-500/40 text-cyan-300 active'
                     : 'bg-slate-950/60 border border-slate-800 text-slate-400 hover:text-white'

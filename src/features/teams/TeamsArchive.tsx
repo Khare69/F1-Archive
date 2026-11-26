@@ -114,7 +114,7 @@ export const TeamsArchive: React.FC = () => {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div className="teams-archive-page archive-layout max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Sidebar / Timing Tower */}
         <aside className="lg:col-span-4 bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-4 space-y-4" aria-label="Constructors list">

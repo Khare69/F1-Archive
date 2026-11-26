@@ -140,7 +140,7 @@ export const DriverComparison: React.FC = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+    <div className="driver-comparison-page max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
       {/* Header Banner */}
       <div className="border border-slate-800 rounded-lg p-6 bg-[#0f172a]/80 backdrop-blur-md">
         <div className="flex items-center justify-between gap-4 mb-2 flex-wrap">

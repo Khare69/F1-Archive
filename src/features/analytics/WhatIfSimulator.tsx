@@ -80,7 +80,7 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({ year }) => {
   const outcomeFlipped = simulatedChampion.driverId !== originalChampion.driverId;
 
   return (
-    <div className="whatif-simulator-panel telemetry-panel corner-bracket">
+    <div className="what-if-simulator what-if-controls whatif-simulator-panel telemetry-panel corner-bracket">
       {/* Title & Description */}
       <div className="whatif-header-row">
         <div className="whatif-title-group">
