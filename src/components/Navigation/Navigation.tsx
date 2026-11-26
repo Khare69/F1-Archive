@@ -29,10 +29,9 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenSearch }) => {
     { path: '/telemetry', label: 'TELEMETRY' },
     { path: '/seasons', label: 'SEASONS' },
     { path: '/teams', label: 'TEAMS' },
-    { path: '/cars', label: 'CARS (3D)' },
+    { path: '/lab', label: '3D LAB' },
     { path: '/circuits', label: 'CIRCUITS' },
-    { path: '/drivers', label: 'DRIVERS' },
-    { path: '/garage', label: 'GARAGE' }
+    { path: '/drivers', label: 'DRIVERS' }
   ];
 
   const isActive = (path: string) => {

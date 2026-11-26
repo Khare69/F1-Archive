@@ -76,11 +76,10 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     await page.goto('/circuits');
     await expect(page.locator('.circuits-archive-page, .archive-layout').first()).toBeVisible();
 
-    // 6. Garage / Paddock Telemetry Bay
+    // 6. Garage / Paddock Telemetry Bay (redirects cleanly to /lab)
     await page.goto('/garage');
-    await expect(page.locator('.garage-container, .garage-page').first()).toBeVisible();
-    await expect(page.locator('#team-select')).toBeVisible();
-    await expect(page.locator('.sim-stats-grid')).toBeVisible();
+    await expect(page).toHaveURL(/\/lab/);
+    await expect(page.locator('.cars-archive-container, h1').first()).toBeVisible();
 
     // 7. Live Standings & Calendar
     await page.goto('/standings');

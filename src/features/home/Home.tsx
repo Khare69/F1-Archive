@@ -7,11 +7,7 @@ import { OnThisDayWidget } from './components/OnThisDayWidget';
 import { FavoritesWidget } from './components/FavoritesWidget';
 import './Home.css';
 
-interface HomeProps {
-  isVisible?: boolean;
-}
-
-export const Home: React.FC<HomeProps> = ({ isVisible = true }) => {
+export const Home: React.FC = () => {
   const stats = getArchiveStats();
 
   usePageMeta({
@@ -29,7 +25,7 @@ export const Home: React.FC<HomeProps> = ({ isVisible = true }) => {
   });
 
   return (
-    <div className={`f1-home-page ${isVisible ? 'fade-in' : ''}`}>
+    <div className="f1-home-page fade-in">
       {/* Background Gradients */}
       <div className="home-hero-glow"></div>
 
