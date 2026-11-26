@@ -10,6 +10,7 @@ import { TransportControls } from './components/TransportControls';
 import { LiveTelemetryGauges } from './components/LiveTelemetryGauges';
 import { StrategyAnalytics } from './components/StrategyAnalytics';
 import { TimingTower } from './components/TimingTower';
+import { LiveSessionLoader } from './components/LiveSessionLoader';
 import { usePageMeta } from '../../hooks/usePageMeta';
 import { ExperimentalBadge } from '../../components/ui/ExperimentalBadge';
 import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
@@ -18,7 +19,7 @@ import {
   getVisibleTelemetryPacks,
   fetchTelemetryPack,
 } from './telemetryPackClient';
-import type { TelemetryCatalogItem } from './telemetryPackSchema';
+import type { TelemetryCatalogItem, ValidatedTelemetryPack } from './telemetryPackSchema';
 
 type TelemetryViewTab = 'ghost_replay' | 'timing_tower' | 'strategy_pace';
 
@@ -55,6 +56,7 @@ export const TelemetryHub: React.FC = () => {
   const [playbackTime, setPlaybackTime] = useState<number>(0);
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [scrubProgress, setScrubProgress] = useState<number | null>(null);
+  const [customPack, setCustomPack] = useState<ValidatedTelemetryPack | null>(null);
 
   // Load telemetry catalog
   const { data: indexList } = useQuery<TelemetryCatalogItem[]>({
@@ -93,7 +95,8 @@ export const TelemetryHub: React.FC = () => {
     enabled: Boolean(activeSlug),
   });
 
-  const circuit = showdown ? getCircuitById(showdown.circuitId) : undefined;
+  const circuit = (customPack || showdown) ? getCircuitById((customPack || showdown)!.circuitId) : undefined;
+  const activeShowdown = (customPack || showdown) as TelemetryShowdown | undefined;
   const trackCoords: [number, number, number][] =
     circuit?.trackCoordinates && circuit.trackCoordinates.length > 3
       ? circuit.trackCoordinates
@@ -109,8 +112,8 @@ export const TelemetryHub: React.FC = () => {
           [0, 0, 0],
         ];
 
-  const maxDuration = showdown
-    ? Math.max(showdown.driverA.lapTimeSeconds, showdown.driverB.lapTimeSeconds)
+  const maxDuration = activeShowdown
+    ? Math.max(activeShowdown.driverA.lapTimeSeconds, activeShowdown.driverB.lapTimeSeconds)
     : 90.0;
 
   // Mutable Playback Ref for 60 FPS useFrame updates with 0 useState calls
@@ -342,6 +345,9 @@ export const TelemetryHub: React.FC = () => {
               })}
             </div>
           </div>
+
+          {/* On-Demand OpenF1 Session Loader */}
+          <LiveSessionLoader onPackLoaded={(pack) => setCustomPack(pack)} />
         </section>
 
         {/* Amber Quarantine Disclaimer Banner when active showdown is experimental */}
@@ -354,7 +360,7 @@ export const TelemetryHub: React.FC = () => {
           </div>
         )}
 
-        {isLoading || !showdown ? (
+        {isLoading || !activeShowdown ? (
           <div className="flex h-64 w-full flex-col items-center justify-center rounded-lg border border-white/10 bg-[#11151E] p-6 text-center">
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-[#E10600] border-t-transparent mb-3" />
             <span className="font-mono text-xs uppercase tracking-widest text-[#8494AB]">
@@ -367,7 +373,7 @@ export const TelemetryHub: React.FC = () => {
               <div className="flex flex-col gap-5 w-full">
                 {/* 3D Track Ghost Replay Canvas */}
                 <GhostLapViewer3D
-                  showdown={showdown}
+                  showdown={activeShowdown}
                   trackCoordinates={trackCoords}
                   playbackRef={playbackRef}
                   currentTime={playbackTime}
@@ -389,11 +395,11 @@ export const TelemetryHub: React.FC = () => {
                 />
 
                 {/* Live Digital Telemetry Gauges */}
-                <LiveTelemetryGauges showdown={showdown} currentTime={playbackTime} />
+                <LiveTelemetryGauges showdown={activeShowdown} currentTime={playbackTime} />
 
                 {/* 4-Channel Synchronized Telemetry Traces with Bidirectional Scrub */}
                 <TelemetryTraceChart
-                  showdown={showdown}
+                  showdown={activeShowdown}
                   currentTime={playbackTime}
                   duration={maxDuration}
                   onSeek={handleSeek}
@@ -418,7 +424,7 @@ export const TelemetryHub: React.FC = () => {
                 {strategyData ? (
                   <StrategyAnalytics
                     strategyData={strategyData}
-                    circuitName={showdown.circuitName}
+                    circuitName={activeShowdown.circuitName}
                   />
                 ) : (
                   <div className="flex h-48 w-full items-center justify-center rounded border border-white/5 bg-[#11151E] text-xs font-mono text-[#8494AB]">
