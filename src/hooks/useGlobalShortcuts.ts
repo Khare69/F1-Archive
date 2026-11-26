@@ -1,0 +1,83 @@
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
+export interface UseGlobalShortcutsOptions {
+  onToggleSearch: () => void;
+  onOpenShortcuts: () => void;
+  isModalOpen?: boolean;
+}
+
+export function isEditableTarget(target: EventTarget | null): boolean {
+  if (!target || !(target instanceof HTMLElement)) return false;
+  const tagName = target.tagName.toUpperCase();
+  if (['INPUT', 'TEXTAREA', 'SELECT'].includes(tagName)) return true;
+  if (target.isContentEditable) return true;
+  if (target.closest('input, textarea, select, [contenteditable="true"], .cm-content, .cm-editor')) {
+    return true;
+  }
+  return false;
+}
+
+export function useGlobalShortcuts({
+  onToggleSearch,
+  onOpenShortcuts,
+  isModalOpen = false,
+}: UseGlobalShortcutsOptions): void {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // 1. Ctrl+K or Cmd+K always toggles Search Palette
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        onToggleSearch();
+        return;
+      }
+
+      // Check if typing inside form field or CodeMirror editor
+      if (isEditableTarget(e.target)) {
+        return;
+      }
+
+      // 2. '?' opens keyboard shortcuts modal (Shift + / is often ?)
+      if (e.key === '?' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        onOpenShortcuts();
+        return;
+      }
+
+      // 3. Navigation hotkeys 1-5 when no modal is open and no modifiers held
+      if (!isModalOpen && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
+        switch (e.key) {
+          case '1':
+            e.preventDefault();
+            navigate('/');
+            break;
+          case '2':
+            e.preventDefault();
+            navigate('/seasons');
+            break;
+          case '3':
+            e.preventDefault();
+            navigate('/telemetry');
+            break;
+          case '4':
+            e.preventDefault();
+            navigate('/lab');
+            break;
+          case '5':
+            e.preventDefault();
+            navigate('/historian');
+            break;
+          default:
+            break;
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [navigate, onToggleSearch, onOpenShortcuts, isModalOpen]);
+}
+
+export default useGlobalShortcuts;
