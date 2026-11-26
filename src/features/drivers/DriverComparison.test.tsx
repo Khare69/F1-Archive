@@ -2,6 +2,7 @@ import { describe, it, expect } from 'vitest';
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
+import { NuqsTestingAdapter } from 'nuqs/adapters/testing';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DriverComparison } from './DriverComparison';
 
@@ -16,10 +17,14 @@ const createTestQueryClient = () =>
 
 const renderWithRouter = (ui: React.ReactElement, initialEntries = ['/drivers/compare']) => {
   const queryClient = createTestQueryClient();
+  const initialUrl = initialEntries[0] || '/';
+  const search = initialUrl.includes('?') ? initialUrl.slice(initialUrl.indexOf('?')) : '';
   return render(
     <QueryClientProvider client={queryClient}>
       <MemoryRouter initialEntries={initialEntries} future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-        {ui}
+        <NuqsTestingAdapter searchParams={search} hasMemory>
+          {ui}
+        </NuqsTestingAdapter>
       </MemoryRouter>
     </QueryClientProvider>
   );

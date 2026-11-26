@@ -132,7 +132,7 @@ export const ComparisonStatTable: React.FC<ComparisonStatTableProps> = ({
       </div>
 
       {/* Comparative Visual Telemetry Matrix */}
-      <div className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-5">
+      <div className="comparison-matrix-panel bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-5">
         <div className="flex items-center gap-2 mb-6 pb-3 border-b border-slate-800/80">
           <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
           <h2 className="text-sm font-bold tracking-wider text-slate-200 uppercase font-telemetry">
