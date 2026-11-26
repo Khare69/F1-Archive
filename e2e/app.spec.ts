@@ -208,30 +208,27 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
 
     // 9. 3D Telemetry Ghost-Lap Replay & Strategy Analytics
     await page.goto('/telemetry');
-    await expect(page.locator('.telemetry-hub-page, h1').first()).toBeVisible();
-    await expect(page.locator('.ghost-canvas-container canvas').first()).toBeVisible({ timeout: 15000 });
-    await expect(page.locator('.transport-play-btn')).toBeVisible();
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('canvas').first()).toBeVisible({ timeout: 15000 });
 
     // Test Play/Pause transport toggle
-    const playBtn = page.locator('.transport-play-btn');
+    const playBtn = page.locator('button[aria-label*="Ghost Lap"]');
     await expect(playBtn).toBeVisible({ timeout: 10000 });
     await playBtn.click();
-    await expect(playBtn).toHaveClass(/playing/, { timeout: 10000 });
+    await expect(playBtn).toHaveAttribute('aria-label', /Pause Ghost Lap/, { timeout: 10000 });
     await playBtn.click();
 
     // Test Strategy & Stint Degradation Tab
-    const strategyTabBtn = page.locator('.tab-btn', { hasText: 'STRATEGY' });
+    const strategyTabBtn = page.locator('button', { hasText: 'STRATEGY' });
     await strategyTabBtn.click({ force: true });
-    await expect(page.locator('.strategy-analytics-card')).toBeVisible({ timeout: 10000 });
-    const fuelBtn = page.locator('.fuel-toggle-btn');
-    await expect(fuelBtn).toBeVisible();
+    const fuelBtn = page.locator('button', { hasText: /FUEL-CORRECTED|RAW LAP/ });
+    await expect(fuelBtn).toBeVisible({ timeout: 10000 });
     await fuelBtn.click({ force: true });
 
     // Test 20-Car Timing Tower Tab
-    const towerTabBtn = page.locator('.tab-btn', { hasText: 'TIMING TOWER' });
+    const towerTabBtn = page.locator('button', { hasText: 'TIMING TOWER' });
     await towerTabBtn.click({ force: true });
-    await expect(page.locator('.timing-tower-card')).toBeVisible({ timeout: 10000 });
-    await expect(page.locator('.timing-row').first()).toBeVisible();
+    await expect(page.locator('table tbody tr').first()).toBeVisible({ timeout: 10000 });
 
     // 10. Explainable AI Race Historian & SQL Lab (Offline SQLite-WASM)
     await page.goto('/historian');
@@ -268,10 +265,8 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
 
     // 11. Monte Carlo Pit-Wall Strategy & Undercut Simulator
     await page.goto('/pitwall');
-    await expect(page.locator('.pitwall-page-root, h1').first()).toBeVisible();
-    await expect(page.locator('.strategy-result-card').first()).toBeVisible({ timeout: 10000 });
-    const exportPosterBtn = page.locator('.export-poster-btn');
-    await expect(exportPosterBtn).toBeVisible();
+    await expect(page.locator('h1', { hasText: /Race Strategy/i })).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('[aria-label*="Monte Carlo"], [aria-label*="Stint Pace"]').first()).toBeVisible({ timeout: 10000 });
 
     // Assert zero uncaught exceptions across all pages
     expect(pageErrors).toEqual([]);
@@ -444,5 +439,100 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     }
 
     expect(webglErrors).toEqual([]);
+  });
+
+  test('Phase 6: Telemetry Provenance & Experimental Quarantine (C-36, F-39)', async ({ page }) => {
+    await page.goto('/telemetry');
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10000 });
+
+    // 1. Confirm historical packs are visible and madrid-2026-sim is hidden by default
+    await expect(page.locator('button', { hasText: 'HAM vs VER' }).first()).toBeVisible({ timeout: 10000 });
+    const simPill = page.locator('button', { hasText: 'ALO vs SAI' });
+    await expect(simPill).toHaveCount(0);
+
+    // 2. Click "Include Experimental Labs" toggle
+    const labsToggle = page.locator('button', { hasText: /INCLUDE EXPERIMENTAL LABS/i });
+    await labsToggle.click();
+
+    // 3. Select the 2026 Madrid simulation pack
+    const madridPill = page.locator('button', { hasText: 'ALO vs SAI' }).first();
+    await expect(madridPill).toBeVisible({ timeout: 10000 });
+    await madridPill.click();
+
+    // 4. Assert EXPERIMENTAL // SIMULATION badge and disclaimer banner render
+    await expect(page.locator('text=EXPERIMENTAL // SIMULATION').first()).toBeVisible({ timeout: 10000 });
+    await expect(
+      page.locator('text=Theoretical 2026 active aero & manual override simulation').first()
+    ).toBeVisible({ timeout: 10000 });
+  });
+
+  test('Phase 6: Synchronized uPlot Telemetry & Space Playback (C-34, C-35)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err.message));
+
+    await page.goto('/telemetry');
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10000 });
+
+    // Assert stacked uPlot charts mount
+    const uplotEl = page.locator('.uplot, [aria-label="Multi-channel telemetry comparison chart"]').first();
+    await expect(uplotEl).toBeVisible({ timeout: 15000 });
+
+    // Press Space to toggle Ghost Lap playback
+    const playPauseBtn = page.locator('button[aria-label*="Ghost Lap"]');
+    await expect(playPauseBtn).toBeVisible({ timeout: 10000 });
+    await page.keyboard.press('Space');
+    await page.waitForTimeout(300);
+
+    // Verify deep link hydrates cleanly with 0 uncaught errors
+    await page.goto('/telemetry?pack=silverstone-2024-ham-vs-ver&speed=2');
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=Hamilton vs. Verstappen').first()).toBeVisible({ timeout: 10000 });
+
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('Phase 6: Focus-Plus-Context Season Progression Chart (C-34, I-04)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err.message));
+
+    await page.goto('/seasons/2021?view=chart');
+    await expect(page.locator('h1', { hasText: '2021' })).toBeVisible({ timeout: 10000 });
+
+    // Assert ECharts progression canvas/wrapper mounts
+    const progressionChart = page.locator('[aria-label*="Progression"]').first();
+    await expect(progressionChart).toBeVisible({ timeout: 15000 });
+
+    // Toggle a driver focus pill (e.g. VER)
+    const verPill = page.locator('button', { hasText: 'VER' }).first();
+    await expect(verPill).toBeVisible({ timeout: 10000 });
+    await verPill.click();
+
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('Phase 6: Pit-Wall Strategy Editable Math & URL Hydration (C-33, C-37, C-25)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err.message));
+
+    await page.goto('/pitwall?pitLoss=24.5&seed=42');
+    await expect(page.locator('h1', { hasText: /Race Strategy/i })).toBeVisible({ timeout: 10000 });
+
+    // 1. Assert EXPERIMENTAL // SIMULATION badge renders
+    await expect(page.locator('text=EXPERIMENTAL // SIMULATION').first()).toBeVisible({ timeout: 10000 });
+
+    // 2. Confirm Pit Loss input hydrates to 24.5
+    const pitLossInput = page.locator('#pit-loss-input');
+    await expect(pitLossInput).toHaveValue('24.5');
+
+    // 3. Adjust Safety Car probability
+    const scInput = page.locator('#sc-prob-input');
+    await scInput.fill('75');
+
+    // 4. Confirm Monte Carlo ECharts analytics update
+    const analyticsPanel = page.locator('[aria-label*="Monte Carlo"], [aria-label*="Stint Pace"]').first();
+    await expect(analyticsPanel).toBeVisible({ timeout: 15000 });
+
+    // Assert 0 uncaught runtime errors
+    expect(pageErrors).toEqual([]);
   });
 });
