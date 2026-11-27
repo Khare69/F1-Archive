@@ -12,6 +12,8 @@ import { PitWallAnalytics } from './components/PitWallAnalytics';
 import { ExperimentalBadge } from '../../components/ui/ExperimentalBadge';
 import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
 import { usePageMeta } from '../../hooks/usePageMeta';
+import { F1TermTooltip } from '../../components/ui/F1TermTooltip';
+import { InsightBanner } from '../../components/ui/InsightBanner';
 
 export const PitWallStrategy: React.FC = () => {
   const [urlParams, setUrlParams] = useQueryStates({
@@ -186,13 +188,20 @@ export const PitWallStrategy: React.FC = () => {
 
           <div>
             <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-wide text-white">
-              Race Strategy &amp; Undercut Optimizer
+              Race Strategy &amp; <F1TermTooltip termKey="undercut">Undercut</F1TermTooltip> Optimizer
             </h1>
             <p className="font-mono text-xs text-[#8494AB] mt-0.5">
               1,000 PERMUTATIONS PER DISPATCH • SEEDED DETERMINISTIC MULBERRY32 PRNG
             </p>
           </div>
         </section>
+
+        {/* Beginner Insight Banner */}
+        <InsightBanner
+          title="The Undercut & Tyre Degradation"
+          insight="An undercut involves pitting 1–2 laps before the car ahead. Fresh tyres provide instant grip, allowing the driver to set a rapid out-lap and pass their rival when they pit later. Tyre degradation measures how much pace drops per lap."
+          ruleTag="STRATEGY BASICS"
+        />
 
         {/* Quarantine Disclaimer */}
         <ExperimentalBadge disclaimer="Monte Carlo race strategy model — deterministic seeded projection for pit-wall analysis, not official FIA/team telemetry." />

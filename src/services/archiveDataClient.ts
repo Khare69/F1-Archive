@@ -17,7 +17,7 @@ import type {
 
 export type SeasonClassification = SeasonClassificationFile;
 
-function resolveDataUrl(relativePath: string): string {
+export function resolveDataUrl(relativePath: string): string {
   const origin = typeof window !== 'undefined' && window.location?.origin ? window.location.origin : 'http://localhost';
   const cleanPath = relativePath.startsWith('/') ? relativePath : `/${relativePath}`;
   return `${origin}${cleanPath}`;

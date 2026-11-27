@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, useReducedMotion } from 'motion/react';
 import { Search, HelpCircle, Menu, X, ChevronDown } from 'lucide-react';
+import { useExperienceMode } from '../../contexts/ExperienceModeContext';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -47,6 +48,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenSearch, onOpenShor
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const shouldReduceMotion = useReducedMotion();
   const { pathname } = location;
+  const { mode, setMode } = useExperienceMode();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -262,6 +264,56 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenSearch, onOpenShor
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
+          {/* Audience Depth Mode Switcher (Learn | Pro | Dev: C-42) */}
+          <div
+            role="group"
+            aria-label="Audience Depth Mode"
+            className="flex items-center p-0.5 rounded-[4px] bg-[#11151E] border border-white/10 text-[10px] font-mono tracking-wider"
+          >
+            <button
+              type="button"
+              onClick={() => setMode('beginner')}
+              aria-pressed={mode === 'beginner'}
+              data-testid="mode-btn-beginner"
+              title="Learn Mode (Beginner glossary & insights)"
+              className={`px-2 py-1 rounded-[3px] transition-colors ${
+                mode === 'beginner'
+                  ? 'bg-crimson text-white font-bold'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Learn
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('enthusiast')}
+              aria-pressed={mode === 'enthusiast'}
+              data-testid="mode-btn-enthusiast"
+              title="Pro Mode (Telemetry & data-rich analytics)"
+              className={`px-2 py-1 rounded-[3px] transition-colors ${
+                mode === 'enthusiast'
+                  ? 'bg-white/15 text-white font-bold'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Pro
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('developer')}
+              aria-pressed={mode === 'developer'}
+              data-testid="mode-btn-developer"
+              title="Dev Mode (Architecture & inspect query)"
+              className={`px-2 py-1 rounded-[3px] transition-colors ${
+                mode === 'developer'
+                  ? 'bg-white/15 text-white font-bold'
+                  : 'text-neutral-400 hover:text-white'
+              }`}
+            >
+              Dev
+            </button>
+          </div>
+
           {onOpenSearch && (
             <button
               type="button"
@@ -311,6 +363,48 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenSearch, onOpenShor
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="md:hidden fixed inset-x-0 top-14 bg-surface/98 border-b border-white/10 backdrop-blur-xl p-4 flex flex-col gap-3 shadow-2xl z-50">
+          <div className="flex items-center justify-between pb-2 border-b border-white/10">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-neutral-400">
+              Depth Mode
+            </span>
+            <div
+              role="group"
+              aria-label="Mobile Audience Depth Mode"
+              className="flex items-center p-0.5 rounded-[4px] bg-[#11151E] border border-white/10 text-[10px] font-mono tracking-wider"
+            >
+              <button
+                type="button"
+                onClick={() => setMode('beginner')}
+                aria-pressed={mode === 'beginner'}
+                className={`px-2 py-1 rounded-[3px] transition-colors ${
+                  mode === 'beginner' ? 'bg-crimson text-white font-bold' : 'text-neutral-400'
+                }`}
+              >
+                Learn
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('enthusiast')}
+                aria-pressed={mode === 'enthusiast'}
+                className={`px-2 py-1 rounded-[3px] transition-colors ${
+                  mode === 'enthusiast' ? 'bg-white/15 text-white font-bold' : 'text-neutral-400'
+                }`}
+              >
+                Pro
+              </button>
+              <button
+                type="button"
+                onClick={() => setMode('developer')}
+                aria-pressed={mode === 'developer'}
+                className={`px-2 py-1 rounded-[3px] transition-colors ${
+                  mode === 'developer' ? 'bg-white/15 text-white font-bold' : 'text-neutral-400'
+                }`}
+              >
+                Dev
+              </button>
+            </div>
+          </div>
+
           <Link
             to="/"
             className={`px-3 py-2 rounded text-sm font-mono uppercase tracking-wider ${

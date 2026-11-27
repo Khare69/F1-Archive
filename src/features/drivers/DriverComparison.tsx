@@ -11,6 +11,8 @@ import { DriverSelectorBar } from './comparison/DriverSelectorBar';
 import { ComparisonStatTable } from './comparison/ComparisonStatTable';
 import { TeammateH2HPanel } from './comparison/TeammateH2HPanel';
 import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
+import { F1TermTooltip } from '../../components/ui/F1TermTooltip';
+import { InsightBanner } from '../../components/ui/InsightBanner';
 
 export const DriverComparison: React.FC = () => {
   const drivers: Driver[] = getAllDrivers();
@@ -156,10 +158,17 @@ export const DriverComparison: React.FC = () => {
           DRIVER <span className="text-cyan-400">HEAD-TO-HEAD</span> COMPARISON
         </h1>
         <p className="text-sm text-slate-400 mt-1 max-w-3xl">
-          Compare career world championships, Grand Prix victories, era-normalized points share,
-          and mutual teammate battles between any two pilots in Formula 1 history.
+          Compare career world championships, Grand Prix victories, era-normalized points share,{' '}
+          <F1TermTooltip termKey="pole-to-win">pole to win</F1TermTooltip> conversions, and mutual teammate battles between any two pilots in Formula 1 history.
         </p>
       </div>
+
+      {/* Beginner Insight Banner */}
+      <InsightBanner
+        title="Era Normalization in Formula 1"
+        insight="Scoring systems have changed radically from 8 points for a win in 1950 to 25 points today. Era normalization calculates points share relative to available points in that season, allowing direct cross-generational comparison."
+        ruleTag="ERA ANALYSIS"
+      />
 
       {/* Selector & Controls Bar */}
       <DriverSelectorBar

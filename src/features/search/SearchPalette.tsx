@@ -5,6 +5,7 @@ import { Search, Zap, User, Shield, Compass, Calendar, ArrowRight, CornerDownLef
 import type FuseType from 'fuse.js';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '../../components/ui/dialog';
 import { loadSearchIndex, SearchEntity } from './searchIndex';
+import { useExperienceMode } from '../../contexts/ExperienceModeContext';
 
 export interface SearchPaletteProps {
   isOpen: boolean;
@@ -21,6 +22,7 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({
   const [fuseInstance, setFuseInstance] = useState<FuseType<SearchEntity> | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { setMode } = useExperienceMode();
 
   // Lazy load index ONLY when palette opens
   useEffect(() => {
@@ -62,6 +64,18 @@ export const SearchPalette: React.FC<SearchPaletteProps> = ({
     onClose();
     if (item.action === 'open-shortcuts') {
       onOpenShortcuts?.();
+      return;
+    }
+    if (item.action === 'set-mode-beginner') {
+      setMode('beginner');
+      return;
+    }
+    if (item.action === 'set-mode-enthusiast') {
+      setMode('enthusiast');
+      return;
+    }
+    if (item.action === 'set-mode-developer') {
+      setMode('developer');
       return;
     }
     if (item.path) {

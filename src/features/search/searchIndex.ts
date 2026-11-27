@@ -97,6 +97,30 @@ export async function loadSearchIndex(): Promise<FuseType<SearchEntity>> {
         keywords: 'shortcuts hotkeys keyboard help info ?',
         action: 'open-shortcuts',
       },
+      {
+        id: 'action-mode-beginner',
+        category: 'action',
+        title: 'Switch to Beginner (Learn) Mode',
+        subtitle: 'Plain-English insights, F1 terminology glossary tooltips, and guided context',
+        keywords: 'beginner learn novice mode audience glossary insights',
+        action: 'set-mode-beginner',
+      },
+      {
+        id: 'action-mode-enthusiast',
+        category: 'action',
+        title: 'Switch to Enthusiast (Pro) Mode',
+        subtitle: 'Data-dense telemetry, full championship analytics, and pit-wall models',
+        keywords: 'enthusiast pro standard mode analytics telemetry',
+        action: 'set-mode-enthusiast',
+      },
+      {
+        id: 'action-mode-developer',
+        category: 'action',
+        title: 'Switch to Developer (Dev) Mode',
+        subtitle: 'Direct SQL inspector, system architecture explorer, and engine internals',
+        keywords: 'developer dev code sql inspect schema architecture query engine',
+        action: 'set-mode-developer',
+      },
     ];
 
     const driverEntities: SearchEntity[] = drivers.map((d) => ({

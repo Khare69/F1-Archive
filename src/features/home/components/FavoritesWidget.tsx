@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { Star, Plus, X, User, Shield } from 'lucide-react';
 import { safeStorage } from '../../../utils/safeStorage';
 import { getAllDrivers, getAllTeams, getDriverById, getTeamById } from '../../../data/dataService';
 import type { Driver, Team } from '../../../types/f1';
-import './FavoritesWidget.css';
 
 const STORAGE_FAV_DRIVERS = 'f1_favorite_drivers';
 const STORAGE_FAV_TEAMS = 'f1_favorite_teams';
@@ -42,13 +42,11 @@ export const FavoritesWidget: React.FC = () => {
   const [driverSearch, setDriverSearch] = useState<string>('');
   const [teamSearch, setTeamSearch] = useState<string>('');
 
-  // Persist drivers when modified
   const updateDrivers = (newDrivers: string[]) => {
     setFavDriverIds(newDrivers);
     safeStorage.setItem(STORAGE_FAV_DRIVERS, JSON.stringify(newDrivers));
   };
 
-  // Persist teams when modified
   const updateTeams = (newTeams: string[]) => {
     setFavTeamIds(newTeams);
     safeStorage.setItem(STORAGE_FAV_TEAMS, JSON.stringify(newTeams));
@@ -82,7 +80,6 @@ export const FavoritesWidget: React.FC = () => {
     setTeamSearch('');
   };
 
-  // Resolve objects
   const favoriteDrivers = favDriverIds
     .map((id) => getDriverById(id))
     .filter((d): d is Driver => d !== undefined);
@@ -91,7 +88,6 @@ export const FavoritesWidget: React.FC = () => {
     .map((id) => getTeamById(id))
     .filter((t): t is Team => t !== undefined);
 
-  // Filter candidates for adding
   const driverCandidates = allDrivers
     .filter((d) => !favDriverIds.includes(d.id) && (!d.code || !favDriverIds.includes(d.code)))
     .filter(
@@ -99,168 +95,175 @@ export const FavoritesWidget: React.FC = () => {
         d.name.toLowerCase().includes(driverSearch.toLowerCase()) ||
         (d.code && d.code.toLowerCase().includes(driverSearch.toLowerCase()))
     )
-    .slice(0, 8);
+    .slice(0, 6);
 
   const teamCandidates = allTeams
     .filter((t) => !favTeamIds.includes(t.id))
     .filter((t) => t.name.toLowerCase().includes(teamSearch.toLowerCase()))
-    .slice(0, 8);
+    .slice(0, 6);
 
   return (
-    <div className="favorites-widget telemetry-panel corner-bracket">
-      <div className="fav-widget-header telemetry">
-        <div className="fav-header-title">
-          <span className="fav-star-icon">⭐</span>
-          <span>MY PADDOCK FAVORITES // PERSONAL TELEMETRY DASHBOARD</span>
+    <div className="p-4 rounded-[4px] bg-[#11151E] border border-white/8 text-neutral-300">
+      <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-white/8">
+        <div className="flex items-center gap-2">
+          <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+          <h3 className="text-xs font-mono uppercase tracking-wider text-white font-semibold">
+            Paddock Favorites
+          </h3>
         </div>
-        <span className="fav-storage-tag telemetry">PERSISTED VIA SAFESTORAGE</span>
+        <span className="text-[10px] font-mono text-neutral-500 uppercase tracking-widest">
+          Personal Telemetry Watchlist
+        </span>
       </div>
 
-      <div className="fav-columns-grid">
-        {/* Favorite Drivers Column */}
-        <div className="fav-section">
-          <div className="fav-subheading telemetry">
-            <span>BOOKMARKED DRIVERS ({favoriteDrivers.length})</span>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Drivers */}
+        <div>
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider flex items-center gap-1">
+              <User className="w-3 h-3 text-crimson" />
+              <span>Drivers ({favoriteDrivers.length})</span>
+            </span>
             <button
               type="button"
-              className="fav-add-btn telemetry"
               onClick={() => setIsAddingDriver(!isAddingDriver)}
+              className="text-[10px] font-mono uppercase tracking-wider text-crimson hover:text-white transition-colors"
             >
-              {isAddingDriver ? '✕ CANCEL' : '+ ADD DRIVER'}
+              {isAddingDriver ? 'Cancel' : '+ Add Driver'}
             </button>
           </div>
 
           {isAddingDriver && (
-            <div className="fav-picker-dropdown">
+            <div className="mb-2 p-2 rounded-[3px] bg-[#181D28] border border-white/10">
               <input
                 type="text"
-                className="fav-picker-input telemetry"
-                placeholder="Search driver by name or code..."
+                placeholder="Search name or code..."
                 value={driverSearch}
                 onChange={(e) => setDriverSearch(e.target.value)}
+                className="w-full px-2 py-1 bg-[#11151E] border border-white/10 text-xs text-white rounded font-mono outline-none mb-1.5"
                 autoFocus
               />
-              <div className="fav-candidates-list">
+              <div className="flex flex-col gap-1 max-h-36 overflow-y-auto">
                 {driverCandidates.map((d) => (
                   <button
                     key={d.id}
                     type="button"
-                    className="fav-candidate-item"
                     onClick={() => addDriver(d.id)}
+                    className="flex items-center justify-between p-1 text-xs text-left text-neutral-300 hover:text-white hover:bg-white/5 rounded"
                   >
-                    <span className="candidate-code telemetry">{d.code || d.id.slice(0, 3).toUpperCase()}</span>
-                    <span className="candidate-name">{d.name}</span>
-                    <span className="candidate-team telemetry">{d.teamId}</span>
+                    <span>{d.name}</span>
+                    <span className="font-mono text-[10px] text-neutral-500">
+                      {d.code || d.id.slice(0, 3).toUpperCase()}
+                    </span>
                   </button>
                 ))}
               </div>
             </div>
           )}
 
-          <div className="fav-items-grid">
-            {favoriteDrivers.map((driver) => (
-              <Link
-                key={driver.id}
-                to={`/drivers/${driver.id}`}
-                className="fav-card fav-driver-card"
+          <div className="grid grid-cols-1 gap-1.5">
+            {favoriteDrivers.map((d) => (
+              <div
+                key={d.id}
+                className="flex items-center justify-between p-2 rounded-[3px] bg-[#181D28] border border-white/6 hover:border-white/12 transition-colors"
               >
-                <div className="fav-card-top">
-                  <span className="fav-badge telemetry">{driver.code || driver.id.slice(0, 3).toUpperCase()}</span>
+                <Link to={`/drivers/${d.id}`} className="flex items-center gap-2 group flex-1">
+                  <span className="text-[10px] font-mono font-bold text-crimson bg-crimson/10 px-1.5 py-0.5 rounded border border-crimson/20">
+                    {d.code || d.id.slice(0, 3).toUpperCase()}
+                  </span>
+                  <span className="text-xs text-white group-hover:text-crimson transition-colors font-medium">
+                    {d.name}
+                  </span>
+                </Link>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono text-neutral-400">
+                    {d.championships > 0 ? `${d.championships}x WDC` : `${d.wins}W`}
+                  </span>
                   <button
                     type="button"
-                    className="fav-remove-btn"
-                    onClick={(e) => removeDriver(driver.id, e)}
-                    title="Remove from favorites"
-                    aria-label={`Remove ${driver.name} from favorites`}
+                    onClick={(e) => removeDriver(d.id, e)}
+                    aria-label={`Remove ${d.name}`}
+                    className="text-neutral-500 hover:text-white p-0.5"
                   >
-                    ✕
+                    <X className="w-3 h-3" />
                   </button>
                 </div>
-                <div className="fav-card-name headline">{driver.name}</div>
-                <div className="fav-card-meta telemetry">
-                  <span>{driver.country}</span>
-                  <span>
-                    {driver.championships > 0 ? `🏆 ${driver.championships}WDC` : `${driver.wins} WINS`}
-                  </span>
-                </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>
 
-        {/* Favorite Constructors Column */}
-        <div className="fav-section">
-          <div className="fav-subheading telemetry">
-            <span>BOOKMARKED CONSTRUCTORS ({favoriteTeams.length})</span>
+        {/* Constructors */}
+        <div>
+          <div className="flex items-center justify-between gap-2 mb-2">
+            <span className="text-[10px] font-mono text-neutral-400 uppercase tracking-wider flex items-center gap-1">
+              <Shield className="w-3 h-3 text-cyan-400" />
+              <span>Constructors ({favoriteTeams.length})</span>
+            </span>
             <button
               type="button"
-              className="fav-add-btn telemetry"
               onClick={() => setIsAddingTeam(!isAddingTeam)}
+              className="text-[10px] font-mono uppercase tracking-wider text-crimson hover:text-white transition-colors"
             >
-              {isAddingTeam ? '✕ CANCEL' : '+ ADD TEAM'}
+              {isAddingTeam ? 'Cancel' : '+ Add Team'}
             </button>
           </div>
 
           {isAddingTeam && (
-            <div className="fav-picker-dropdown">
+            <div className="mb-2 p-2 rounded-[3px] bg-[#181D28] border border-white/10">
               <input
                 type="text"
-                className="fav-picker-input telemetry"
-                placeholder="Search team name..."
+                placeholder="Search team..."
                 value={teamSearch}
                 onChange={(e) => setTeamSearch(e.target.value)}
+                className="w-full px-2 py-1 bg-[#11151E] border border-white/10 text-xs text-white rounded font-mono outline-none mb-1.5"
                 autoFocus
               />
-              <div className="fav-candidates-list">
+              <div className="flex flex-col gap-1 max-h-36 overflow-y-auto">
                 {teamCandidates.map((t) => (
                   <button
                     key={t.id}
                     type="button"
-                    className="fav-candidate-item"
                     onClick={() => addTeam(t.id)}
+                    className="flex items-center justify-between p-1 text-xs text-left text-neutral-300 hover:text-white hover:bg-white/5 rounded"
                   >
-                    <span
-                      className="candidate-color-dot"
-                      style={{ backgroundColor: t.color }}
-                    ></span>
-                    <span className="candidate-name">{t.name}</span>
-                    <span className="candidate-team telemetry">{t.base}</span>
+                    <span>{t.name}</span>
+                    <span className="font-mono text-[10px] text-neutral-500">{t.base}</span>
                   </button>
                 ))}
               </div>
             </div>
           )}
 
-          <div className="fav-items-grid">
-            {favoriteTeams.map((team) => (
-              <Link
-                key={team.id}
-                to={`/cars/${team.id}`}
-                className="fav-card fav-team-card"
-                style={{ '--team-color': team.color } as React.CSSProperties}
+          <div className="grid grid-cols-1 gap-1.5">
+            {favoriteTeams.map((t) => (
+              <div
+                key={t.id}
+                className="flex items-center justify-between p-2 rounded-[3px] bg-[#181D28] border border-white/6 hover:border-white/12 transition-colors"
               >
-                <div className="fav-card-top">
+                <Link to="/teams" className="flex items-center gap-2 group flex-1">
                   <span
-                    className="fav-team-indicator"
-                    style={{ backgroundColor: team.color }}
-                  ></span>
-                  <span className="fav-badge telemetry">{team.carName}</span>
+                    className="w-2 h-2 rounded-full shrink-0"
+                    style={{ backgroundColor: t.color || '#E10600' }}
+                  />
+                  <span className="text-xs text-white group-hover:text-crimson transition-colors font-medium">
+                    {t.name}
+                  </span>
+                </Link>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono text-neutral-400">
+                    {t.championships > 0 ? `${t.championships} Titles` : t.base}
+                  </span>
                   <button
                     type="button"
-                    className="fav-remove-btn"
-                    onClick={(e) => removeTeam(team.id, e)}
-                    title="Remove from favorites"
-                    aria-label={`Remove ${team.name} from favorites`}
+                    onClick={(e) => removeTeam(t.id, e)}
+                    aria-label={`Remove ${t.name}`}
+                    className="text-neutral-500 hover:text-white p-0.5"
                   >
-                    ✕
+                    <X className="w-3 h-3" />
                   </button>
                 </div>
-                <div className="fav-card-name headline">{team.name}</div>
-                <div className="fav-card-meta telemetry">
-                  <span>{team.base}</span>
-                  <span>{team.championships} TITLES</span>
-                </div>
-              </Link>
+              </div>
             ))}
           </div>
         </div>

@@ -7,6 +7,8 @@ import {
 import { useDocumentTitle } from '../../hooks/usePageMeta';
 import { LiveStatusBadge } from './LiveStatusBadge';
 import { StandingsTable } from './StandingsTable';
+import { F1TermTooltip } from '../../components/ui/F1TermTooltip';
+import { InsightBanner } from '../../components/ui/InsightBanner';
 
 export const LiveStandings: React.FC = () => {
   useDocumentTitle('Live Standings & Calendar');
@@ -78,7 +80,7 @@ export const LiveStandings: React.FC = () => {
 
           <p className="text-sm text-slate-400 mt-1 max-w-3xl">
             Real-time classifications for the FIA Formula One World Championship. Track points,
-            podiums, constructor standings, and the official Grand Prix calendar.
+            podiums, <F1TermTooltip termKey="constructors-title">constructor standings</F1TermTooltip>, and the official Grand Prix calendar.
           </p>
 
           {/* Navigation Mode Tabs */}
@@ -118,6 +120,13 @@ export const LiveStandings: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Beginner Insight Banner */}
+        <InsightBanner
+          title="Understanding Championship Points"
+          insight="The World Drivers' Championship (WDC) awards points to the top 10 finishers (25-18-15-12-10-8-6-4-2-1). The World Constructors' Championship (WCC) sums points from both team cars and dictates commercial prize distributions."
+          ruleTag="POINTS & TITLES"
+        />
 
         {/* Amber Fallback Banner when upstream live API is unavailable */}
         {activeSource === 'fallback' && (

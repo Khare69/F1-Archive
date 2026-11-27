@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import './OnThisDayWidget.css';
+import { Calendar, Trophy, Award, ChevronRight } from 'lucide-react';
+import { resolveDataUrl } from '../../../services/archiveDataClient';
 
 interface HistoricalRace {
   year: number;
@@ -47,7 +48,7 @@ export const OnThisDayWidget: React.FC = () => {
 
   useEffect(() => {
     let isMounted = true;
-    fetch('/data/historical-events.json')
+    fetch(resolveDataUrl('/data/historical-events.json'))
       .then((res) => {
         if (!res.ok) throw new Error('Failed to load historical events');
         return res.json();
@@ -70,12 +71,8 @@ export const OnThisDayWidget: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="on-this-day-panel telemetry-panel corner-bracket">
-        <div className="otd-header telemetry">
-          <span className="otd-blip"></span>
-          <span>HISTORICAL ARCHIVE CHRONOLOGY</span>
-        </div>
-        <div className="otd-loading telemetry">ACCESSING 77 YEARS OF F1 CHRONOLOGY...</div>
+      <div className="p-4 rounded-[4px] bg-[#11151E] border border-white/8 text-neutral-400 font-mono text-xs animate-pulse">
+        ACCESSING 77 YEARS OF F1 CHRONOLOGY...
       </div>
     );
   }
@@ -91,7 +88,6 @@ export const OnThisDayWidget: React.FC = () => {
   const todayMMDD = `-${String(currentMonth).padStart(2, '0')}-${String(currentDay).padStart(2, '0')}`;
   const todayDoy = getDayOfYear(currentMonth, currentDay);
 
-  // 1. Check exact matches for today
   const exactRaces = data.races.filter((r) => r.date && r.date.endsWith(todayMMDD));
   const exactBirthdays = data.birthdays.filter((b) => b.birthDate && b.birthDate.endsWith(todayMMDD));
 
@@ -103,11 +99,10 @@ export const OnThisDayWidget: React.FC = () => {
   let matchingBirthdays: HistoricalBirthday[] = [];
 
   if (hasExact) {
-    displayTitle = `ON THIS DAY IN F1 // ${MONTH_NAMES[currentMonth - 1].toUpperCase()} ${currentDay}`;
+    displayTitle = `ON THIS DAY // ${MONTH_NAMES[currentMonth - 1].toUpperCase()} ${currentDay}`;
     matchingRaces = exactRaces;
     matchingBirthdays = exactBirthdays;
   } else {
-    // 2. Fallback: Find closest historical event within ±7 days
     isFallback = true;
     let closestDiff = 999;
     let closestRace: HistoricalRace | null = null;
@@ -147,82 +142,108 @@ export const OnThisDayWidget: React.FC = () => {
       const parts = closestRace.date.split('-');
       const m = parseInt(parts[1], 10);
       const d = parseInt(parts[2], 10);
-      displayTitle = `THIS WEEK IN F1 HISTORY // ${MONTH_NAMES[m - 1].toUpperCase()} ${d}`;
+      displayTitle = `HISTORICAL MILESTONE // ${MONTH_NAMES[m - 1].toUpperCase()} ${d}`;
     } else if (closestBirthday) {
       matchingBirthdays = [closestBirthday];
       const parts = closestBirthday.birthDate.split('-');
       const m = parseInt(parts[1], 10);
       const d = parseInt(parts[2], 10);
-      displayTitle = `THIS WEEK IN F1 HISTORY // ${MONTH_NAMES[m - 1].toUpperCase()} ${d}`;
+      displayTitle = `HISTORICAL MILESTONE // ${MONTH_NAMES[m - 1].toUpperCase()} ${d}`;
     }
   }
 
   return (
-    <div className="on-this-day-panel telemetry-panel corner-bracket">
-      <div className="otd-header telemetry">
-        <span className={`otd-blip ${isFallback ? 'otd-blip-fallback' : 'otd-blip-live'}`}></span>
-        <span className="otd-title-tag">{displayTitle}</span>
-        {isFallback && <span className="otd-fallback-pill telemetry">CHRONOLOGY HIGHLIGHT</span>}
+    <div className="p-4 rounded-[4px] bg-[#11151E] border border-white/8 text-neutral-300">
+      <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-white/8">
+        <div className="flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-crimson animate-pulse" />
+          <h3 className="text-xs font-mono uppercase tracking-wider text-white font-semibold">
+            {displayTitle}
+          </h3>
+        </div>
+        {isFallback && (
+          <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-white/5 text-neutral-400 border border-white/8">
+            Nearest Event
+          </span>
+        )}
       </div>
 
-      <div className="otd-events-grid">
-        {/* Race Events */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
         {matchingRaces.slice(0, 2).map((race) => (
-          <div key={`${race.year}_${race.round}`} className="otd-event-card">
-            <div className="otd-card-type telemetry">
-              <span className="otd-icon">🏁</span>
-              <span>GRAND PRIX RACE FINISH // {race.year}</span>
-            </div>
-            <h4 className="otd-event-name headline">{race.name}</h4>
-            <div className="otd-event-details telemetry">
-              {race.winnerName ? (
-                <div>
-                  <span className="otd-label">WINNER: </span>
-                  <span className="otd-value-highlight">{race.winnerName}</span>
-                  {race.winnerConstructor && (
-                    <span className="otd-value-muted"> ({race.winnerConstructor})</span>
-                  )}
-                </div>
-              ) : (
-                <div>ROUND {race.round} OF {race.year} CHAMPIONSHIP</div>
-              )}
-              <div className="otd-date-tag">
-                RECORDED DATE: {race.date} • CIRCUIT: {race.circuitId.toUpperCase()}
+          <div
+            key={`${race.year}_${race.round}`}
+            className="p-3 rounded-[3px] bg-[#181D28] border border-white/6 hover:border-white/12 transition-colors flex flex-col justify-between"
+          >
+            <div>
+              <div className="flex items-center gap-1.5 text-[10px] font-mono text-neutral-400 uppercase tracking-wider mb-1">
+                <Trophy className="w-3 h-3 text-crimson" />
+                <span>GRAND PRIX // {race.year}</span>
+              </div>
+              <h4 className="text-sm font-semibold text-white tracking-tight mb-2">
+                {race.name}
+              </h4>
+              <div className="text-xs text-neutral-300 mb-2 font-mono">
+                {race.winnerName ? (
+                  <span>
+                    WINNER: <strong className="text-white">{race.winnerName}</strong>
+                    {race.winnerConstructor && (
+                      <span className="text-neutral-400"> ({race.winnerConstructor})</span>
+                    )}
+                  </span>
+                ) : (
+                  <span>ROUND {race.round} OF {race.year}</span>
+                )}
               </div>
             </div>
-            <Link to="/seasons" className="otd-link telemetry">
-              VIEW {race.year} SEASON ARCHIVE →
+            <Link
+              to="/seasons"
+              className="inline-flex items-center gap-1 text-[11px] font-mono text-crimson hover:text-white uppercase tracking-wider transition-colors pt-1 border-t border-white/5"
+            >
+              <span>{race.year} Season Archive</span>
+              <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
         ))}
 
-        {/* Driver Birthdays */}
         {matchingBirthdays.slice(0, 2).map((driver) => {
           const birthYear = parseInt(driver.birthDate.slice(0, 4), 10);
           const age = isNaN(birthYear) ? null : currentYear - birthYear;
 
           return (
-            <div key={driver.id} className="otd-event-card otd-driver-card">
-              <div className="otd-card-type telemetry">
-                <span className="otd-icon">🎂</span>
-                <span>DRIVER BIRTHDAY // {driver.country.toUpperCase()}</span>
-              </div>
-              <h4 className="otd-event-name headline">{driver.name}</h4>
-              <div className="otd-event-details telemetry">
-                <div>
+            <div
+              key={driver.id}
+              className="p-3 rounded-[3px] bg-[#181D28] border border-white/6 hover:border-white/12 transition-colors flex flex-col justify-between"
+            >
+              <div>
+                <div className="flex items-center gap-1.5 text-[10px] font-mono text-neutral-400 uppercase tracking-wider mb-1">
+                  <Award className="w-3 h-3 text-amber-400" />
+                  <span>DRIVER BIRTHDAY // {driver.country.toUpperCase()}</span>
+                </div>
+                <h4 className="text-sm font-semibold text-white tracking-tight mb-2">
+                  {driver.name}
+                </h4>
+                <div className="text-xs text-neutral-300 mb-2 font-mono">
                   {driver.championships > 0 ? (
-                    <span className="otd-champ-badge">🏆 {driver.championships}X WORLD CHAMPION</span>
+                    <span className="text-amber-300 font-semibold">
+                      🏆 {driver.championships}x World Champion
+                    </span>
                   ) : (
-                    <span>FORMULA 1 RACING DRIVER</span>
+                    <span>Formula 1 Racing Driver</span>
                   )}
-                  {driver.wins > 0 && <span className="otd-wins-badge"> • {driver.wins} WINS</span>}
-                </div>
-                <div className="otd-date-tag">
-                  BORN {driver.birthDate} {age ? `(${age} YEARS AGO)` : ''}
+                  {driver.wins > 0 && (
+                    <span className="text-neutral-400"> • {driver.wins} wins</span>
+                  )}
+                  <div className="text-[10px] text-neutral-400 mt-0.5">
+                    Born {driver.birthDate} {age ? `(${age} years ago)` : ''}
+                  </div>
                 </div>
               </div>
-              <Link to={`/drivers/${driver.id}`} className="otd-link telemetry">
-                VIEW DRIVER CAREER TELEMETRY →
+              <Link
+                to={`/drivers/${driver.id}`}
+                className="inline-flex items-center gap-1 text-[11px] font-mono text-crimson hover:text-white uppercase tracking-wider transition-colors pt-1 border-t border-white/5"
+              >
+                <span>Driver Telemetry</span>
+                <ChevronRight className="w-3 h-3" />
               </Link>
             </div>
           );
