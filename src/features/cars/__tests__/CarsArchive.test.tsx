@@ -43,6 +43,10 @@ vi.mock('@react-three/drei', () => ({
     return <div data-testid="mock-camera-controls" />;
   }),
   ContactShadows: () => <div data-testid="mock-contact-shadows" />,
+  Environment: ({ children }: { children?: React.ReactNode }) => (
+    <div data-testid="mock-environment">{children}</div>
+  ),
+  Lightformer: () => <div data-testid="mock-lightformer" />,
   useGLTF: mockUseGLTF,
 }));
 

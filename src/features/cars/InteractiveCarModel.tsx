@@ -46,6 +46,8 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
   modelUrl = eraSpec?.modelPath ?? DEFAULT_MODEL_URL,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
+  const frontFlapRef = useRef<THREE.Object3D | null>(null);
+  const rearFlapRef = useRef<THREE.Object3D | null>(null);
 
   // Load the authentic CAD F1 Chassis GLB model with self-hosted Draco decoder
   const { scene } = useGLTF(modelUrl, '/draco/');
@@ -56,8 +58,17 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
     const liveryTextures = getTeamLiveryTextures(team);
     const materials = createEraCarMaterials({ team, eraSpec, liveryTextures });
 
+    frontFlapRef.current = null;
+    rearFlapRef.current = null;
+
     // Map each child mesh according to its authentic CAD sub-assembly / Blender zone
     clone.traverse((child) => {
+      if (child.name === 'front_wing_active_flap') {
+        frontFlapRef.current = child;
+      } else if (child.name === 'rear_wing_active_flap') {
+        rearFlapRef.current = child;
+      }
+
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
         mesh.castShadow = true;
@@ -92,13 +103,33 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
     };
   }, [clonedScene, materials, liveryTextures]);
 
-  // Subtle chassis idle vibration (disabled under prefers-reduced-motion)
-  useFrame(({ clock }) => {
+  // Subtle chassis idle vibration & 2026 active aerodynamics flap articulation
+  useFrame(({ clock }, delta) => {
     if (!groupRef.current) return;
     if (!showAero && !hasReducedMotion) {
       groupRef.current.position.y = Math.sin(clock.getElapsedTime() * 1.5) * 0.015;
     } else {
       groupRef.current.position.y = 0;
+    }
+
+    // Articulate 2026 active aero flaps between Z-Mode (Corner) and X-Mode (Straight)
+    if (eraSpec?.id === '2026_active_aero') {
+      const isStraight = activeAeroMode === 'straight';
+      const targetPitch = isStraight ? -0.32 : 0.0;
+      if (frontFlapRef.current) {
+        frontFlapRef.current.rotation.y = THREE.MathUtils.lerp(
+          frontFlapRef.current.rotation.y,
+          targetPitch,
+          Math.min(1, delta * 8)
+        );
+      }
+      if (rearFlapRef.current) {
+        rearFlapRef.current.rotation.y = THREE.MathUtils.lerp(
+          rearFlapRef.current.rotation.y,
+          targetPitch,
+          Math.min(1, delta * 8)
+        );
+      }
     }
   });
 

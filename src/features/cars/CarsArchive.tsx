@@ -7,7 +7,7 @@ import type CameraControlsImpl from 'camera-controls';
 import * as THREE from 'three';
 import { getAllTeams, getTeamById } from '../../data/dataService';
 import { InteractiveCarModel, type PartHoverInfo } from './InteractiveCarModel';
-import { CameraTrackingLight } from './CameraTrackingLight';
+import { CarStudioLighting } from './components/CarStudioLighting';
 import { usePreferencesContext } from '../../contexts/UserPreferencesContext';
 import { CanvasErrorBoundary } from './components/CanvasErrorBoundary';
 import { PerfDebugCollector } from './components/PerfDebugOverlay';
@@ -162,11 +162,7 @@ export const CarsArchive: React.FC = () => {
                   }}
                 >
                   <PerfDebugCollector />
-                  <ambientLight intensity={0.6} />
-                  <CameraTrackingLight intensity={2.0} castShadow />
-                  <directionalLight position={[0, 8, 0]} intensity={1.0} color="#FFFFFF" />
-                  <pointLight position={[-6, 4, -5]} intensity={1.2} color="#00D2FF" />
-                  <pointLight position={[6, 2, -4]} intensity={0.8} color={selectedTeam.color} />
+                  <CarStudioLighting selectedTeamColor={selectedTeam.color} />
 
                   <CameraControls
                     ref={controlsRef}
@@ -184,6 +180,7 @@ export const CarsArchive: React.FC = () => {
                   <Suspense fallback={null}>
                     <InteractiveCarModel
                       team={selectedTeam}
+                      eraSpec={eraSpec}
                       showAero={showAero}
                       hasReducedMotion={hasReducedMotion}
                       onHoverPart={setHoveredPart}
