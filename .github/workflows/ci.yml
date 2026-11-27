@@ -55,6 +55,9 @@ jobs:
       - name: Run Unit Tests (MSW Offline Suite)
         run: npm test
 
+      - name: Verify 3D Era Car Models & Budgets
+        run: npm run models:verify
+
       - name: Build Production Bundle
         run: npm run build
 

@@ -33,7 +33,7 @@ interface InteractiveCarModelProps {
 }
 
 const ASSETS_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ASSETS_BASE_URL) || '/';
-const MODEL_URL = `${ASSETS_BASE_URL.replace(/\/$/, '')}/models/f1_chassis.glb`;
+const DEFAULT_MODEL_URL = `${ASSETS_BASE_URL.replace(/\/$/, '')}/models/2024_ground_effect.glb`;
 
 export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
   team,
@@ -43,7 +43,7 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
   is2026Inspector = false,
   activeAeroMode = 'corner',
   eraSpec,
-  modelUrl = MODEL_URL,
+  modelUrl = eraSpec?.modelPath ?? DEFAULT_MODEL_URL,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
 
@@ -224,5 +224,5 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
   );
 };
 
-// Preload the GLB model with self-hosted Draco decoder for instantaneous rendering
-useGLTF.preload(MODEL_URL, '/draco/');
+// Preload the default GLB model with self-hosted Draco decoder for instantaneous rendering
+useGLTF.preload(DEFAULT_MODEL_URL, '/draco/');
