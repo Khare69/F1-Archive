@@ -102,7 +102,31 @@ export default defineConfig({
     setupFiles: './src/test/setup.ts',
     include: ['src/**/*.{test,spec}.{ts,tsx}', 'scripts/**/*.{test,spec}.{ts,tsx}'],
     exclude: ['e2e/**', 'node_modules/**', 'dist/**'],
-    testTimeout: 10000,
-    css: false
+    testTimeout: 20000,
+    css: false,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json-summary'],
+      include: [
+        'src/features/**/comparisonMetrics.ts',
+        'src/features/strategy/strategyMath.ts',
+        'src/features/telemetry/telemetryMath.ts',
+        'src/features/circuits/geometry/circuitRibbonBuilder.ts',
+        'src/features/cars/carMaterialMapper.ts',
+        'src/features/cars/carEraRegistry.ts',
+        'src/features/historian/nlParser.ts',
+        'src/utils/webglDisposal.ts',
+        'src/lib/idbPersister.ts',
+        'src/api/httpClient.ts',
+        'src/components/Layout/Footer.tsx',
+        'src/features/notfound/NotFound.tsx',
+      ],
+      thresholds: {
+        lines: 65,
+        functions: 65,
+        statements: 65,
+        branches: 65,
+      },
+    },
   }
 });
