@@ -35,7 +35,7 @@ export const CarViewportControls: React.FC<CarViewportControlsProps> = ({
       <button
         type="button"
         onClick={onResetCamera}
-        className="rounded border border-white/10 bg-white/5 px-2.5 py-1 text-[#8494AB] hover:text-white hover:bg-white/10 transition-colors"
+        className="camera-reset-btn rounded border border-white/10 bg-white/5 px-2.5 py-1 text-[#8494AB] hover:text-white hover:bg-white/10 transition-colors"
         title="Recenter Camera (3/4 Studio View)"
         aria-label="Recenter Camera view"
       >
@@ -59,7 +59,7 @@ export const CarViewportControls: React.FC<CarViewportControlsProps> = ({
       <button
         type="button"
         onClick={onToggleAero}
-        className={`rounded border px-2.5 py-1 transition-colors ${
+        className={`aero-toggle-btn rounded border px-2.5 py-1 transition-colors ${
           showAero
             ? 'border-[#00D2FF]/50 bg-[#00D2FF]/20 text-[#00D2FF] font-bold'
             : 'border-white/10 bg-white/5 text-[#8494AB] hover:text-white'
@@ -90,6 +90,7 @@ export const CarViewportControls: React.FC<CarViewportControlsProps> = ({
         <button
           type="button"
           onClick={onToggleActiveAeroMode}
+          aria-label="Toggle Active Aero Mode"
           className={`rounded border px-2.5 py-1 font-bold transition-colors ${
             activeAeroMode === 'straight'
               ? 'border-cyan-400 bg-cyan-500/20 text-cyan-300'

@@ -76,6 +76,7 @@ export const CarSelectorBar: React.FC<CarSelectorBarProps> = ({
                 key={t.id}
                 type="button"
                 onClick={() => onSelectTeam(t.id)}
+                aria-label={`Select ${t.name}`}
                 className={`flex items-center gap-2 whitespace-nowrap rounded px-2.5 py-1 font-mono text-xs transition-all ${
                   isSelected
                     ? 'bg-white/15 text-white font-bold ring-1 ring-white/30'
