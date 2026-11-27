@@ -52,8 +52,8 @@ jobs:
       - name: TypeScript Compilation Check
         run: npx tsc -b
 
-      - name: Run Unit Tests (MSW Offline Suite)
-        run: npm test
+      - name: Run Unit Tests & Coverage (MSW Offline Suite)
+        run: npm run test:coverage
 
       - name: Verify 3D Era Car Models & Budgets
         run: npm run models:verify
@@ -63,6 +63,9 @@ jobs:
 
       - name: Enforce Bundle Size Budgets
         run: npm run size
+
+      - name: Audit Performance & Accessibility (Lighthouse CI)
+        run: npm run audit:lighthouse
 
       - name: Run ETL Invariant Tests
         run: npx vitest run scripts/etl/__tests__

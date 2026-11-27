@@ -1,237 +1,243 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { Trophy, ChevronRight, Activity, Zap, Flag, History } from 'lucide-react';
 import { getArchiveStats } from '../../data/dataService';
-import { StatCard } from '../../components/StatCard/StatCard';
 import { usePageMeta } from '../../hooks/usePageMeta';
+import { useDriverStandingsQuery } from '../../api/jolpicaClient';
 import { OnThisDayWidget } from './components/OnThisDayWidget';
 import { FavoritesWidget } from './components/FavoritesWidget';
-import './Home.css';
+import { F1TermTooltip } from '../../components/ui/F1TermTooltip';
+import { InsightBanner } from '../../components/ui/InsightBanner';
+import { InspectQueryButton } from '../../components/DevTools/InspectQueryButton';
 
 export const Home: React.FC = () => {
   const stats = getArchiveStats();
+  const { data: standingsData } = useDriverStandingsQuery('current');
+  const topDrivers = standingsData?.data.standings?.slice(0, 10) || [];
 
   usePageMeta({
     title: 'The Evolution of Speed — F1 Historical Telemetry Vault (1950–2026)',
     description:
       'Step into 77 unbroken Formula 1 seasons (1950–2026), 900+ drivers, 3D CAD chassis models, aerodynamic simulations, and what-if championship simulators.',
     canonicalPath: '/',
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@type': 'WebSite',
-      name: 'F1 Archive',
-      url: 'https://f1-archive.pages.dev/',
-      description: 'Historical Formula 1 telemetry vault, 3D vehicle CAD lab, and interactive championship analytics.'
-    }
   });
 
   return (
-    <div className="f1-home-page fade-in">
-      {/* Background Gradients */}
-      <div className="home-hero-glow"></div>
-
-      <div className="home-container">
-        {/* Top Hero Section */}
-        <section className="hero-section">
-          <div className="hero-content">
-            <div className="hero-badge telemetry">
-              <span className="badge-pulse"></span>
-              HISTORICAL TELEMETRY VAULT // 1950 - 2026 • F1DB SYNCED (v{stats.f1dbVersion})
+    <div className="min-h-screen bg-[#0B0E14] text-[#F4F6FA] pb-16 font-sans">
+      <div className="max-w-7xl mx-auto px-4 pt-6">
+        {/* Season Pulse Hero (I-02) */}
+        <section className="p-6 rounded-[4px] bg-[#11151E] border border-white/8 relative overflow-hidden mb-6">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-4">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-crimson animate-pulse" />
+              <span className="text-[11px] font-mono tracking-widest text-neutral-400 uppercase">
+                HISTORICAL TELEMETRY VAULT // 1950–2026 • F1DB SYNCED (v{stats.f1dbVersion})
+              </span>
             </div>
-            
-            <h1 className="hero-title headline">
-              THE EVOLUTION <br />
-              <span className="text-gradient-cyan">OF SPEED.</span>
-            </h1>
-            
-            <p className="hero-description">
-              Step into the pinnacle of motorsport heritage. 75 years of aerodynamic evolution,
-              legendary championship rivalries, technical regulations, and telemetry-grade archives.
-            </p>
-
-            <div className="hero-actions">
-              <Link to="/seasons" className="f1-btn">
-                <span>ENTER ARCHIVE</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M5 12h14M12 5l7 7-7 7"/>
-                </svg>
-              </Link>
-              
-              <Link to="/cars" className="f1-btn f1-btn-secondary">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                </svg>
-                <span>3D VEHICLE LAB</span>
-              </Link>
-
-              <Link to="/drivers/compare" className="f1-btn f1-btn-secondary" style={{ borderColor: 'rgba(0, 210, 255, 0.4)' }}>
-                <span>VS DRIVER COMPARATOR</span>
-              </Link>
-
-              <Link to="/telemetry" className="f1-btn f1-btn-secondary" style={{ borderColor: 'rgba(0, 231, 1, 0.4)' }}>
-                <span>🎮 3D GHOST TELEMETRY</span>
-              </Link>
+            <div className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 border border-white/8 text-neutral-400">
+              {stats.seasonsCount} SEASONS • {stats.driversCount}+ DRIVERS • {stats.circuitsCount} CIRCUITS
             </div>
           </div>
 
-          {/* Hero Car Silhouette Artwork */}
-          <div className="hero-visual">
-            <div className="car-visual-container">
-              <svg 
-                className="hero-car-svg" 
-                viewBox="0 0 600 200" 
-                fill="none" 
-                xmlns="http://www.w3.org/2000/svg"
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white uppercase mb-3">
+            THE EVOLUTION <span className="text-crimson">OF SPEED.</span>
+          </h1>
+
+          <p className="text-sm sm:text-base text-neutral-300 max-w-3xl leading-relaxed mb-6 font-normal">
+            Explore 77 unbroken seasons of motorsport engineering, from classic 1950s front-engine machines to modern{' '}
+            <F1TermTooltip termKey="ground-effect">ground-effect</F1TermTooltip> aerodynamics and 2026{' '}
+            <F1TermTooltip termKey="active-aero">active aerodynamics</F1TermTooltip>.
+          </p>
+
+          {/* Quick Hub Launchers */}
+          <div className="flex flex-wrap gap-2.5">
+            <Link
+              to="/seasons"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-[3px] bg-crimson hover:bg-crimson/90 text-white text-xs font-mono uppercase tracking-wider font-bold transition-colors"
+            >
+              <span>Explore Seasons</span>
+              <ChevronRight className="w-3.5 h-3.5" />
+            </Link>
+            <Link
+              to="/lab"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[3px] bg-[#181D28] hover:bg-white/10 border border-white/10 text-white text-xs font-mono uppercase tracking-wider transition-colors"
+            >
+              <Zap className="w-3.5 h-3.5 text-cyan-400" />
+              <span>3D Vehicle Lab</span>
+            </Link>
+            <Link
+              to="/telemetry"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[3px] bg-[#181D28] hover:bg-white/10 border border-white/10 text-white text-xs font-mono uppercase tracking-wider transition-colors"
+            >
+              <Activity className="w-3.5 h-3.5 text-emerald-400" />
+              <span>Ghost Telemetry</span>
+            </Link>
+            <Link
+              to="/pitwall"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[3px] bg-[#181D28] hover:bg-white/10 border border-white/10 text-white text-xs font-mono uppercase tracking-wider transition-colors"
+            >
+              <Flag className="w-3.5 h-3.5 text-amber-400" />
+              <span>Pit-Wall Strategy</span>
+            </Link>
+            <Link
+              to="/historian"
+              className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[3px] bg-[#181D28] hover:bg-white/10 border border-white/10 text-white text-xs font-mono uppercase tracking-wider transition-colors"
+            >
+              <History className="w-3.5 h-3.5 text-purple-400" />
+              <span>SQL Historian</span>
+            </Link>
+          </div>
+        </section>
+
+        {/* Beginner Insight Banner */}
+        <InsightBanner
+          title="New to Formula 1?"
+          insight="Formula 1 combines 1,000+ hp hybrid power units, high-downforce aerodynamics, and split-second pit strategy. Look for dotted underlines across the archive to inspect beginner-friendly glossary definitions."
+          ruleTag="WHY THIS MATTERS"
+          className="mb-6"
+        />
+
+        {/* 12-Column Asymmetric Bento Grid (I-02) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          {/* Main Left/Center Column (8 cols) */}
+          <div className="lg:col-span-8 flex flex-col gap-6">
+            {/* 3 Guided Starter Story Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <Link
+                to="/seasons"
+                className="p-3.5 rounded-[4px] bg-[#11151E] border border-white/8 hover:border-crimson/50 transition-all group flex flex-col justify-between"
               >
-                <defs>
-                  <linearGradient id="heroCarGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#00D2FF" stopOpacity="0.2"/>
-                    <stop offset="50%" stopColor="#00D2FF" stopOpacity="0.9"/>
-                    <stop offset="100%" stopColor="#FF1E1E" stopOpacity="0.8"/>
-                  </linearGradient>
-                  <filter id="heroCarGlow" x="-20%" y="-20%" width="140%" height="140%">
-                    <feGaussianBlur stdDeviation="6" result="blur" />
-                    <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-                  </filter>
-                </defs>
+                <div>
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-crimson font-bold mb-1">
+                    HISTORIC DOMINANCE
+                  </div>
+                  <h4 className="text-xs font-bold text-white group-hover:text-crimson transition-colors mb-1">
+                    1988 McLaren MP4/4
+                  </h4>
+                  <p className="text-[11px] text-neutral-400 leading-relaxed">
+                    Ayrton Senna & Alain Prost won 15 out of 16 Grands Prix in turbo supremacy.
+                  </p>
+                </div>
+                <span className="text-[10px] font-mono text-neutral-400 group-hover:text-white inline-flex items-center gap-1 mt-3 pt-2 border-t border-white/5">
+                  View 1988 Season <ChevronRight className="w-3 h-3" />
+                </span>
+              </Link>
 
-                {/* Car Silhouette Body */}
-                <path 
-                  d="M 60 130 L 110 110 L 220 100 L 320 85 L 440 95 L 530 130 L 510 140 L 460 145 L 340 145 L 200 145 L 90 140 Z" 
-                  fill="#0D1322" 
-                  stroke="url(#heroCarGrad)" 
-                  strokeWidth="3"
-                  filter="url(#heroCarGlow)"
-                />
-                {/* Front Wing */}
-                <path d="M 510 130 L 570 135 L 570 150 L 500 148 Z" fill="#00D2FF" opacity="0.8"/>
-                {/* Rear Wing */}
-                <path d="M 50 130 L 30 80 L 80 80 L 70 130 Z" fill="#FF1E1E" opacity="0.8"/>
-                {/* Halo Cockpit */}
-                <path d="M 280 90 L 320 70 L 360 85 Z" stroke="#FFFFFF" strokeWidth="2.5" fill="none"/>
-                {/* Wheels */}
-                <circle cx="120" cy="145" r="28" fill="#05070C" stroke="#00D2FF" strokeWidth="3"/>
-                <circle cx="120" cy="145" r="12" fill="#FF1E1E"/>
-                <circle cx="450" cy="145" r="28" fill="#05070C" stroke="#00D2FF" strokeWidth="3"/>
-                <circle cx="450" cy="145" r="12" fill="#FF1E1E"/>
-                {/* Speed Aero Lines */}
-                <line x1="20" y1="110" x2="580" y2="110" stroke="#00D2FF" strokeWidth="1" strokeDasharray="8 8" opacity="0.3"/>
-                <line x1="80" y1="60" x2="520" y2="60" stroke="#00D2FF" strokeWidth="1" strokeDasharray="4 6" opacity="0.2"/>
-              </svg>
-              <div className="hero-floor-reflection"></div>
+              <Link
+                to="/drivers/compare?d1=VER&d2=HAM"
+                className="p-3.5 rounded-[4px] bg-[#11151E] border border-white/8 hover:border-cyan-400/50 transition-all group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-cyan-400 font-bold mb-1">
+                    TITAN RIVALRY
+                  </div>
+                  <h4 className="text-xs font-bold text-white group-hover:text-cyan-400 transition-colors mb-1">
+                    Verstappen vs. Hamilton
+                  </h4>
+                  <p className="text-[11px] text-neutral-400 leading-relaxed">
+                    Head-to-head career comparison across 2021 title fight, poles, and win conversions.
+                  </p>
+                </div>
+                <span className="text-[10px] font-mono text-neutral-400 group-hover:text-white inline-flex items-center gap-1 mt-3 pt-2 border-t border-white/5">
+                  Launch Comparison <ChevronRight className="w-3 h-3" />
+                </span>
+              </Link>
+
+              <Link
+                to="/lab"
+                className="p-3.5 rounded-[4px] bg-[#11151E] border border-white/8 hover:border-emerald-400/50 transition-all group flex flex-col justify-between"
+              >
+                <div>
+                  <div className="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold mb-1">
+                    REGULATION REVOLUTION
+                  </div>
+                  <h4 className="text-xs font-bold text-white group-hover:text-emerald-400 transition-colors mb-1">
+                    2026 Active Aerodynamics
+                  </h4>
+                  <p className="text-[11px] text-neutral-400 leading-relaxed">
+                    Explore 3D models with movable wings, 50% electric power deployment, and Venturi floors.
+                  </p>
+                </div>
+                <span className="text-[10px] font-mono text-neutral-400 group-hover:text-white inline-flex items-center gap-1 mt-3 pt-2 border-t border-white/5">
+                  Open 3D Lab <ChevronRight className="w-3 h-3" />
+                </span>
+              </Link>
+            </div>
+
+            {/* On This Day Widget */}
+            <OnThisDayWidget />
+
+            {/* Favorites Widget */}
+            <FavoritesWidget />
+          </div>
+
+          {/* Right Sidebar Column (4 cols) — Timing Tower Preview */}
+          <div className="lg:col-span-4 flex flex-col gap-6">
+            <div className="p-4 rounded-[4px] bg-[#11151E] border border-white/8">
+              <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-white/8">
+                <div className="flex items-center gap-2">
+                  <Trophy className="w-3.5 h-3.5 text-crimson" />
+                  <h3 className="text-xs font-mono uppercase tracking-wider text-white font-semibold">
+                    Timing Tower // Standings
+                  </h3>
+                </div>
+                <div className="flex items-center gap-2">
+                  <InspectQueryButton
+                    query={{
+                      title: 'All-Time Grand Prix Winners (F1DB SQLite)',
+                      sql: 'SELECT d.name, d.abbreviation, COUNT(*) AS wins FROM race_result rr JOIN driver d ON rr.driver_id = d.id WHERE rr.position_number = 1 GROUP BY d.id ORDER BY wins DESC LIMIT 10;',
+                    }}
+                    label="SQL"
+                  />
+                  <span className="text-[10px] font-mono text-neutral-500 uppercase">
+                    Top 10
+                  </span>
+                </div>
+              </div>
+
+              {topDrivers.length > 0 ? (
+                <div className="flex flex-col gap-1 font-mono text-xs">
+                  {topDrivers.map((entry, idx) => (
+                    <div
+                      key={entry.driverId}
+                      className="flex items-center justify-between px-2 py-1.5 rounded-[3px] bg-[#181D28] border border-white/4 hover:border-white/10 transition-colors"
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="w-4 text-[10px] text-neutral-500 font-bold">
+                          {entry.position || idx + 1}
+                        </span>
+                        <span className="text-[11px] font-bold text-white">
+                          {entry.driverCode || entry.driverName.slice(0, 3).toUpperCase()}
+                        </span>
+                        <span className="text-neutral-400 text-[11px] truncate max-w-[120px]">
+                          {entry.driverName}
+                        </span>
+                      </div>
+                      <span className="text-neutral-200 font-bold tabular-nums">
+                        {entry.points} <span className="text-[9px] text-neutral-500 font-normal">PTS</span>
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-4 text-center text-xs font-mono text-neutral-400 bg-[#181D28] rounded">
+                  STANDINGS FEED SYNCHRONIZING...
+                </div>
+              )}
+
+              <Link
+                to="/standings"
+                className="mt-3 inline-flex items-center justify-center w-full py-2 rounded-[3px] bg-white/5 hover:bg-white/10 text-white font-mono text-xs uppercase tracking-wider transition-colors border border-white/8"
+              >
+                <span>Full Championship Standings</span>
+                <ChevronRight className="w-3.5 h-3.5 ml-1" />
+              </Link>
             </div>
           </div>
-        </section>
-
-        {/* Telemetry Stats Bar */}
-        <section className="stats-bar-section">
-          <div className="stats-grid">
-            <StatCard 
-              label="CHAMPIONSHIP SEASONS" 
-              value={stats.seasonsCount} 
-              subtext={stats.yearSpan}
-              isPrimary
-            />
-            <StatCard 
-              label="CONSTRUCTORS ARCHIVED" 
-              value={stats.teamsCount} 
-              subtext="Current & Legendary"
-              accentColor="#FF1E1E"
-            />
-            <StatCard 
-              label="WORLD DRIVERS" 
-              value={stats.driversCount} 
-              subtext="Champions & Contenders"
-              accentColor="#00E701"
-            />
-            <StatCard 
-              label="GRAND PRIX CIRCUITS" 
-              value={stats.circuitsCount} 
-              subtext="Historic Venues"
-              accentColor="#FF8000"
-            />
-            <StatCard 
-              label="GRAND PRIX WINS" 
-              value={stats.totalWins} 
-              subtext="Indexed in Database"
-              accentColor="#FFD700"
-            />
-          </div>
-        </section>
-
-        {/* Historical Chronology: On This Day in F1 */}
-        <section className="historical-chronology-section">
-          <OnThisDayWidget />
-        </section>
-
-        {/* Paddock Favorites (Safely Persisted via SafeStorage) */}
-        <section className="user-favorites-section">
-          <FavoritesWidget />
-        </section>
-
-        {/* Feature Navigation Modules */}
-        <section className="modules-section">
-          <div className="section-header">
-            <h2 className="section-title headline">ARCHIVE DIRECTORY</h2>
-            <span className="telemetry">[ SELECT SYSTEM MODULE ]</span>
-          </div>
-
-          <div className="modules-grid">
-            <Link to="/seasons" className="module-card corner-bracket">
-              <div className="module-icon">🏁</div>
-              <h3 className="module-title headline">SEASONS VAULT</h3>
-              <p className="module-desc">
-                From the 1972 Lotus ground-effect revolution to modern 24-race championship records.
-              </p>
-              <span className="module-link-label telemetry">EXPLORE SEASONS →</span>
-            </Link>
-
-            <Link to="/teams" className="module-card corner-bracket">
-              <div className="module-icon">🏎️</div>
-              <h3 className="module-title headline">CONSTRUCTORS</h3>
-              <p className="module-desc">
-                Technical headquarters, engineering specs, power unit partnerships, and legacy titles.
-              </p>
-              <span className="module-link-label telemetry">VIEW CONSTRUCTORS →</span>
-            </Link>
-
-            <Link to="/cars" className="module-card corner-bracket">
-              <div className="module-icon">📐</div>
-              <h3 className="module-title headline">3D VEHICLE LAB</h3>
-              <p className="module-desc">
-                Interactive real-time 3D chassis inspection, aerodynamic airflow simulation, and livery mapping.
-              </p>
-              <span className="module-link-label telemetry">LAUNCH 3D VIEWER →</span>
-            </Link>
-
-            <Link to="/circuits" className="module-card corner-bracket">
-              <div className="module-icon">🗺️</div>
-              <h3 className="module-title headline">RACE CIRCUITS</h3>
-              <p className="module-desc">
-                Track profiles, technical turn data, elevation metrics, and all-time Grand Prix lap records.
-              </p>
-              <span className="module-link-label telemetry">EXPLORE CIRCUITS →</span>
-            </Link>
-
-            <Link to="/telemetry" className="module-card corner-bracket">
-              <div className="module-icon">🎮</div>
-              <h3 className="module-title headline">GHOST LAP TELEMETRY</h3>
-              <p className="module-desc">
-                Multi-channel 3D ghost car replay, 25 vertex-colored mini-sectors, and fuel-corrected tyre degradation analytics.
-              </p>
-              <span className="module-link-label telemetry">LAUNCH TELEMETRY →</span>
-            </Link>
-
-            <Link to="/drivers" className="module-card corner-bracket">
-              <div className="module-icon">🏆</div>
-              <h3 className="module-title headline">DRIVERS ROSTER</h3>
-              <p className="module-desc">
-                Career statistics, podium tallies, race-by-race finishes, and Hall of Fame profiles.
-              </p>
-              <span className="module-link-label telemetry">INSPECT DRIVERS →</span>
-            </Link>
-          </div>
-        </section>
+        </div>
       </div>
     </div>
   );
 };
+
+export default Home;

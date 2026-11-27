@@ -1,6 +1,11 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import React from 'react';
+import { renderHook, act } from '@testing-library/react';
 import { useGlobalShortcuts, isEditableTarget } from '../useGlobalShortcuts';
+import { ExperienceModeProvider } from '../../contexts/ExperienceModeContext';
+
+const wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) =>
+  React.createElement(ExperienceModeProvider, null, children);
 
 const mockNavigate = vi.fn();
 vi.mock('react-router-dom', () => ({
@@ -56,8 +61,9 @@ describe('useGlobalShortcuts hook (C-21)', () => {
       const onToggleSearch = vi.fn();
       const onOpenShortcuts = vi.fn();
 
-      renderHook(() =>
-        useGlobalShortcuts({ onToggleSearch, onOpenShortcuts })
+      renderHook(
+        () => useGlobalShortcuts({ onToggleSearch, onOpenShortcuts }),
+        { wrapper }
       );
 
       const event = new KeyboardEvent('keydown', {
@@ -75,8 +81,9 @@ describe('useGlobalShortcuts hook (C-21)', () => {
       const onToggleSearch = vi.fn();
       const onOpenShortcuts = vi.fn();
 
-      renderHook(() =>
-        useGlobalShortcuts({ onToggleSearch, onOpenShortcuts })
+      renderHook(
+        () => useGlobalShortcuts({ onToggleSearch, onOpenShortcuts }),
+        { wrapper }
       );
 
       const event = new KeyboardEvent('keydown', {
@@ -92,8 +99,9 @@ describe('useGlobalShortcuts hook (C-21)', () => {
       const onToggleSearch = vi.fn();
       const onOpenShortcuts = vi.fn();
 
-      renderHook(() =>
-        useGlobalShortcuts({ onToggleSearch, onOpenShortcuts })
+      renderHook(
+        () => useGlobalShortcuts({ onToggleSearch, onOpenShortcuts }),
+        { wrapper }
       );
 
       const input = document.createElement('input');
@@ -121,12 +129,14 @@ describe('useGlobalShortcuts hook (C-21)', () => {
       const onToggleSearch = vi.fn();
       const onOpenShortcuts = vi.fn();
 
-      renderHook(() =>
-        useGlobalShortcuts({
-          onToggleSearch,
-          onOpenShortcuts,
-          isModalOpen: false,
-        })
+      renderHook(
+        () =>
+          useGlobalShortcuts({
+            onToggleSearch,
+            onOpenShortcuts,
+            isModalOpen: false,
+          }),
+        { wrapper }
       );
 
       const key3Event = new KeyboardEvent('keydown', {
@@ -142,12 +152,14 @@ describe('useGlobalShortcuts hook (C-21)', () => {
       const onToggleSearch = vi.fn();
       const onOpenShortcuts = vi.fn();
 
-      renderHook(() =>
-        useGlobalShortcuts({
-          onToggleSearch,
-          onOpenShortcuts,
-          isModalOpen: true,
-        })
+      renderHook(
+        () =>
+          useGlobalShortcuts({
+            onToggleSearch,
+            onOpenShortcuts,
+            isModalOpen: true,
+          }),
+        { wrapper }
       );
 
       const key2Event = new KeyboardEvent('keydown', {
@@ -157,6 +169,34 @@ describe('useGlobalShortcuts hook (C-21)', () => {
       document.body.dispatchEvent(key2Event);
 
       expect(mockNavigate).not.toHaveBeenCalled();
+    });
+
+    it('toggles developer mode when Shift+D is pressed', () => {
+      const onToggleSearch = vi.fn();
+      const onOpenShortcuts = vi.fn();
+
+      localStorage.setItem('f1_archive_experience_mode', 'enthusiast');
+
+      renderHook(
+        () =>
+          useGlobalShortcuts({
+            onToggleSearch,
+            onOpenShortcuts,
+            isModalOpen: false,
+          }),
+        { wrapper }
+      );
+
+      const shiftDEvent = new KeyboardEvent('keydown', {
+        key: 'D',
+        shiftKey: true,
+        bubbles: true,
+      });
+      act(() => {
+        document.body.dispatchEvent(shiftDEvent);
+      });
+
+      expect(localStorage.getItem('f1_archive_experience_mode')).toBe('developer');
     });
   });
 });

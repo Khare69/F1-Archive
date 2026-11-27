@@ -2,7 +2,7 @@ import React from 'react';
 import './StatCard.css';
 
 interface StatCardProps {
-  label: string;
+  label: React.ReactNode;
   value: string | number;
   subtext?: string;
   accentColor?: string;

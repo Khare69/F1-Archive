@@ -6,6 +6,8 @@ import { defaultShouldDehydrateQuery } from '@tanstack/react-query';
 import { queryClient, queryPersister, QUERY_PERSIST_BUSTER } from '../../lib/queryClient';
 import { shouldPersistQueryKey } from '../../lib/idbPersister';
 import { UserPreferencesProvider } from '../../contexts/UserPreferencesContext';
+import { ExperienceModeProvider } from '../../contexts/ExperienceModeContext';
+import { InspectQueryProvider } from '../../contexts/InspectQueryContext';
 import { TooltipProvider } from '../ui/tooltip';
 
 interface AppProvidersProps {
@@ -27,9 +29,13 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <NuqsAdapter>
         <UserPreferencesProvider>
-          <TooltipProvider delayDuration={200}>
-            {children}
-          </TooltipProvider>
+          <ExperienceModeProvider>
+            <InspectQueryProvider>
+              <TooltipProvider delayDuration={200}>
+                {children}
+              </TooltipProvider>
+            </InspectQueryProvider>
+          </ExperienceModeProvider>
         </UserPreferencesProvider>
       </NuqsAdapter>
     </BrowserRouter>

@@ -7,6 +7,9 @@ import {
 import { useDocumentTitle } from '../../hooks/usePageMeta';
 import { LiveStatusBadge } from './LiveStatusBadge';
 import { StandingsTable } from './StandingsTable';
+import { F1TermTooltip } from '../../components/ui/F1TermTooltip';
+import { InsightBanner } from '../../components/ui/InsightBanner';
+import { InspectQueryButton } from '../../components/DevTools/InspectQueryButton';
 
 export const LiveStandings: React.FC = () => {
   useDocumentTitle('Live Standings & Calendar');
@@ -67,9 +70,18 @@ export const LiveStandings: React.FC = () => {
               updatedAt={activeUpdatedAt}
               isFetching={isFetching}
             />
-            <span className="font-telemetry text-xs text-slate-400 border border-slate-700/60 px-2.5 py-0.5 rounded">
-              {seasonLabel} FIA WORLD CHAMPIONSHIP
-            </span>
+            <div className="flex items-center gap-2">
+              <InspectQueryButton
+                query={{
+                  title: 'Latest F1 Championship Driver Standings',
+                  sql: 'SELECT sds.position_number, d.name AS driver_name, d.abbreviation, sds.points FROM season_driver_standing sds JOIN driver d ON sds.driver_id = d.id WHERE sds.year = (SELECT MAX(year) FROM season_driver_standing) ORDER BY sds.position_number ASC LIMIT 20;',
+                }}
+                label="Inspect Standings SQL"
+              />
+              <span className="font-telemetry text-xs text-slate-400 border border-slate-700/60 px-2.5 py-0.5 rounded">
+                {seasonLabel} FIA WORLD CHAMPIONSHIP
+              </span>
+            </div>
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight font-headline">
@@ -78,7 +90,7 @@ export const LiveStandings: React.FC = () => {
 
           <p className="text-sm text-slate-400 mt-1 max-w-3xl">
             Real-time classifications for the FIA Formula One World Championship. Track points,
-            podiums, constructor standings, and the official Grand Prix calendar.
+            podiums, <F1TermTooltip termKey="constructors-title">constructor standings</F1TermTooltip>, and the official Grand Prix calendar.
           </p>
 
           {/* Navigation Mode Tabs */}
@@ -118,6 +130,13 @@ export const LiveStandings: React.FC = () => {
             </button>
           </div>
         </div>
+
+        {/* Beginner Insight Banner */}
+        <InsightBanner
+          title="Understanding Championship Points"
+          insight="The World Drivers' Championship (WDC) awards points to the top 10 finishers (25-18-15-12-10-8-6-4-2-1). The World Constructors' Championship (WCC) sums points from both team cars and dictates commercial prize distributions."
+          ruleTag="POINTS & TITLES"
+        />
 
         {/* Amber Fallback Banner when upstream live API is unavailable */}
         {activeSource === 'fallback' && (

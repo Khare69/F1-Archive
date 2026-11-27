@@ -7,7 +7,22 @@ import { SearchPalette } from './features/search/SearchPalette';
 import { KeyboardShortcutsModal } from './components/Layout/KeyboardShortcutsModal';
 import { LazyPerfDebugOverlay } from './components/DevTools/LazyPerfDebugOverlay';
 import { useGlobalShortcuts } from './hooks/useGlobalShortcuts';
+import { useInspectQuery } from './contexts/InspectQueryContext';
 import './App.css';
+
+const LazyInspectQueryDrawer = React.lazy(() =>
+  import('./components/DevTools/InspectQueryDrawer').then((m) => ({ default: m.InspectQueryDrawer }))
+);
+
+const InspectQueryDrawerMount: React.FC = () => {
+  const { isOpen } = useInspectQuery();
+  if (!isOpen) return null;
+  return (
+    <React.Suspense fallback={null}>
+      <LazyInspectQueryDrawer />
+    </React.Suspense>
+  );
+};
 
 const AppContent: React.FC = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -23,6 +38,7 @@ const AppContent: React.FC = () => {
     <div className="f1-app-root">
       <Navigation onOpenSearch={() => setIsSearchOpen(true)} onOpenShortcuts={() => setIsShortcutsOpen(true)} />
       <LazyPerfDebugOverlay />
+      <InspectQueryDrawerMount />
       <SearchPalette
         isOpen={isSearchOpen}
         onClose={() => setIsSearchOpen(false)}

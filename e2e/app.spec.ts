@@ -657,4 +657,132 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
 
     expect(pageErrors).toEqual([]);
   });
+
+  test('Phase 8: Audience Depth Mode persistence (Learn, Pro, Dev) and glossary tooltips (C-42)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err.message));
+
+    await page.goto('/');
+    await expect(page.locator('#main-content')).toBeVisible();
+
+    // Default mode is 'enthusiast' (Pro)
+    const initialMode = await page.evaluate(() => localStorage.getItem('f1_archive_experience_mode') || 'enthusiast');
+    expect(initialMode).toBe('enthusiast');
+
+    // Switch to Learn (beginner) mode via direct button
+    const learnBtn = page.getByTestId('mode-btn-beginner');
+    await expect(learnBtn).toBeVisible();
+    await learnBtn.click();
+
+    // Assert persistence
+    const savedLearnMode = await page.evaluate(() => localStorage.getItem('f1_archive_experience_mode'));
+    expect(savedLearnMode).toBe('beginner');
+
+    // Verify insight banner is rendered in Learn mode
+    await expect(page.getByText(/WHY THIS MATTERS/i)).toBeVisible();
+
+    // Switch to Dev mode
+    const devBtn = page.getByTestId('mode-btn-developer');
+    await devBtn.click();
+
+    const savedDevMode = await page.evaluate(() => localStorage.getItem('f1_archive_experience_mode'));
+    expect(savedDevMode).toBe('developer');
+
+    // Reload page and ensure Dev mode persists
+    await page.reload();
+    await expect(page.locator('#main-content')).toBeVisible();
+    const reloadedMode = await page.evaluate(() => localStorage.getItem('f1_archive_experience_mode'));
+    expect(reloadedMode).toBe('developer');
+
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('Phase 8: Dev Mode & </> Inspect Query slide-over CodeMirror 6 drawer (C-43)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err.message));
+
+    await page.goto('/');
+    await page.evaluate(() => localStorage.setItem('f1_archive_experience_mode', 'developer'));
+    await page.reload();
+
+    // Find Inspect Query button
+    const inspectBtn = page.getByRole('button', { name: /Inspect Query/i }).first();
+    await expect(inspectBtn).toBeVisible();
+    await inspectBtn.click();
+
+    // Assert CodeMirror 6 drawer opens
+    await expect(page.getByTestId('inspect-query-drawer')).toBeVisible();
+    await expect(page.getByText(/SQL INSPECTOR/i)).toBeVisible();
+    await expect(page.locator('.cm-editor')).toBeVisible();
+
+    // Click Run Query
+    const runBtn = page.getByRole('button', { name: /Run Query|EXECUTE/i });
+    await runBtn.click();
+
+    // Close drawer via Escape key
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('inspect-query-drawer')).not.toBeVisible();
+
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('Phase 8: /docs interactive Architecture Explorer & live SQLite schema inspector (C-44)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err.message));
+
+    await page.goto('/docs');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText(/ARCHITECTURE/i);
+
+    // Tab 1: Data Pipeline
+    await expect(page.getByText(/01 \/\/ SOURCES/i)).toBeVisible();
+
+    // Tab 2: SQLite Schema
+    const schemaTab = page.getByRole('tab', { name: /SQLite Schema/i });
+    await schemaTab.click();
+    await expect(page.getByText('driver', { exact: true }).first()).toBeVisible();
+    await expect(page.getByText('circuit', { exact: true }).first()).toBeVisible();
+
+    // Click Query Table on driver
+    const queryDriverBtn = page.locator('button', { hasText: 'Query Table' }).first();
+    await queryDriverBtn.click();
+    await expect(page.getByTestId('inspect-query-drawer')).toBeVisible();
+    await expect(page.getByText(/SQL INSPECTOR/i)).toBeVisible();
+
+    // Close drawer
+    await page.keyboard.press('Escape');
+    await expect(page.getByTestId('inspect-query-drawer')).not.toBeVisible();
+
+    // Tab 4: ADRs & Legal
+    const adrTab = page.getByRole('tab', { name: /ADRs & Legal/i });
+    await adrTab.click();
+    await expect(page.getByText('ADR-0001')).toBeVisible();
+    await expect(page.getByText('ADR-0005')).toBeVisible();
+    await expect(page.getByText(/Formula One Licensing B\.V\./i).first()).toBeVisible();
+
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('Phase 8: Home page Bento grid (I-02), On This Day in F1, and Starter Story links (I-02)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err.message));
+
+    await page.goto('/');
+    await expect(page.locator('#main-content')).toBeVisible();
+
+    // 1. Verify Header badge in hero
+    await expect(page.getByText(/HISTORICAL TELEMETRY VAULT \/\/ 1950–2026/i)).toBeVisible();
+
+    // 2. Verify Bento grid widgets: Live Standings, Favorites, On This Day
+    await expect(page.getByText(/CHAMPIONSHIP STANDINGS/i)).toBeVisible();
+    await expect(page.getByText(/Paddock Favorites/i)).toBeVisible();
+    await expect(page.locator('.on-this-day-panel')).toBeVisible();
+
+    // 3. Verify Discovery / Starter Story cards
+    const starterStory = page.getByRole('link', { name: /1988 McLaren MP4\/4/i });
+    await expect(starterStory).toBeVisible();
+    await starterStory.click();
+    await expect(page).toHaveURL(/\/seasons/);
+
+    expect(pageErrors).toEqual([]);
+  });
 });

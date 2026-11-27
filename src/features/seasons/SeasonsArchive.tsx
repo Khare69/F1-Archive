@@ -8,6 +8,7 @@ import { StatCard } from '../../components/StatCard/StatCard';
 import { usePageMeta } from '../../hooks/usePageMeta';
 import { TelemetryDataTable } from '../../components/ui/TelemetryDataTable';
 import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
+import { InspectQueryButton } from '../../components/DevTools/InspectQueryButton';
 
 const SeasonProgressionChart = lazy(() =>
   import('./components/SeasonProgressionChart').then(m => ({ default: m.SeasonProgressionChart }))
@@ -267,7 +268,14 @@ export const SeasonsArchive: React.FC = () => {
           <div className="bg-[#0f172a]/80 backdrop-blur-md border border-slate-800 rounded-lg p-6 space-y-4">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 border-b border-slate-800/80 pb-3">
               <span className="font-telemetry text-xs text-slate-400">FIA FORMULA ONE WORLD CHAMPIONSHIP</span>
-              <div className="flex items-center gap-2 font-telemetry text-xs">
+              <div className="flex items-center gap-2 font-telemetry text-xs flex-wrap">
+                <InspectQueryButton
+                  query={{
+                    title: `${selectedSeason.year} Season Race Winners (SQLite)`,
+                    sql: `SELECT r.round, r.official_name, d.name AS winner, rr.laps FROM race r JOIN race_result rr ON r.id = rr.race_id JOIN driver d ON rr.driver_id = d.id WHERE r.year = ${selectedSeason.year} AND rr.position_number = 1 ORDER BY r.round ASC;`,
+                  }}
+                  label={`Query ${selectedSeason.year} SQL`}
+                />
                 <span className="px-2 py-0.5 rounded bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
                   OFFICIALLY INDEXED
                 </span>

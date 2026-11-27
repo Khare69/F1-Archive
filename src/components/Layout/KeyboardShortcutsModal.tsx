@@ -23,6 +23,8 @@ const SHORTCUTS: ShortcutItem[] = [
   { category: 'NAVIGATION', keys: ['5'], description: 'Jump to SQL Historian Hub' },
   { category: 'VIEWPORTS', keys: ['2', '/', '3'], description: 'Toggle 2D Map vs 3D Track Elevation (Circuits)' },
   { category: 'VIEWPORTS', keys: ['Space'], description: 'Play / Pause Telemetry Replay (Telemetry)' },
+  { category: 'VIEWPORTS', keys: ['R'], description: 'Reset Camera Orbit Controls (3D Lab & Circuits)' },
+  { category: 'DEVELOPER', keys: ['Shift', 'D'], description: 'Toggle Developer Mode (SQL Inspector)' },
   { category: 'DEVELOPER', keys: ['Shift', 'P'], description: 'Toggle Real-Time GPU & Memory Profiler' },
 ];
 

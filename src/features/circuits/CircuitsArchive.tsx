@@ -9,6 +9,9 @@ import { useCircuitGeometry } from './circuitGeometryClient';
 import { getCuratedCorners, buildFallbackApexMarkers } from '../../data/circuitCorners';
 import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
 import { usePageMeta } from '../../hooks/usePageMeta';
+import { F1TermTooltip } from '../../components/ui/F1TermTooltip';
+import { InsightBanner } from '../../components/ui/InsightBanner';
+import { InspectQueryButton } from '../../components/DevTools/InspectQueryButton';
 import type { RibbonColorMode } from './geometry/circuitRibbonBuilder';
 
 const MODERN_CALENDAR_IDS = new Set([
@@ -142,9 +145,23 @@ export const CircuitsArchive: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          <InspectQueryButton
+            query={{
+              title: `${selectedCircuit.name} Historical Grand Prix Winners (SQLite)`,
+              sql: `SELECT r.year, r.round, r.official_name, d.name AS winner FROM race r JOIN race_result rr ON r.id = rr.race_id JOIN driver d ON rr.driver_id = d.id WHERE r.circuit_id = '${selectedCircuit.id}' AND rr.position_number = 1 ORDER BY r.year DESC LIMIT 20;`,
+            }}
+            label="Circuit SQL"
+          />
           <CopyShareLinkButton label="Share Circuit View" />
         </div>
       </header>
+
+      {/* Beginner Insight Banner */}
+      <InsightBanner
+        title="Circuit Characteristics & Downforce"
+        insight="Tracks with heavy elevation shifts and sweeping chicanes (like Spa and Suzuka) demand high aerodynamic downforce, while long-straight circuits (like Monza) prioritize low drag and slipstreaming."
+        ruleTag="CIRCUIT TELEMETRY"
+      />
 
       {/* ── Circuit KPIs ── */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
@@ -167,7 +184,11 @@ export const CircuitsArchive: React.FC = () => {
           accentColor="#FFD700"
         />
         <StatCard
-          label="POLE-TO-WIN RATE"
+          label={
+            <F1TermTooltip termKey="pole-to-win">
+              <span>POLE-TO-WIN RATE</span>
+            </F1TermTooltip>
+          }
           value={poleRateLabel}
           subtext={poleRateSubtext}
           accentColor="#E10600"

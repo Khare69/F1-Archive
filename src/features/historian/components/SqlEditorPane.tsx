@@ -13,7 +13,6 @@ import { EditorView, keymap } from '@codemirror/view';
 import { EditorState } from '@codemirror/state';
 import { basicSetup } from 'codemirror';
 import { sql, SQLite } from '@codemirror/lang-sql';
-import './SqlEditorPane.css';
 
 export interface SqlEditorPaneProps {
   value: string;
@@ -164,13 +163,13 @@ export const SqlEditorPane: React.FC<SqlEditorPaneProps> = ({
   }, [value]);
 
   return (
-    <div className="sql-editor-wrapper">
+    <div className="sql-editor-wrapper flex flex-col bg-[#090B10] border-b border-white/10 w-full">
       {/* Editor Action Toolbar */}
-      <div className="sql-editor-toolbar">
-        <div className="sql-editor-actions">
+      <div className="sql-editor-toolbar flex items-center justify-between flex-wrap gap-2 px-3 py-2 bg-[#11151E] border-b border-white/10">
+        <div className="sql-editor-actions flex items-center gap-2 flex-wrap">
           <button
             type="button"
-            className="sql-run-btn"
+            className="sql-run-btn inline-flex items-center gap-1.5 px-3 py-1.5 bg-[#00D2FF] text-[#05070C] font-bold font-mono text-xs tracking-wider rounded-[2px] transition-all hover:bg-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
             onClick={handleRunClick}
             disabled={isRunning}
             title="Execute query against SQLite database (Ctrl+Enter)"
@@ -180,7 +179,7 @@ export const SqlEditorPane: React.FC<SqlEditorPaneProps> = ({
 
           <button
             type="button"
-            className="sql-tool-btn copy-sql-btn"
+            className="sql-tool-btn copy-sql-btn bg-transparent border border-white/15 text-[#8b949e] px-2.5 py-1 font-mono text-[11px] rounded-[2px] transition-all hover:text-white hover:border-[#00D2FF] hover:bg-[#00D2FF]/10 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
             onClick={handleCopyClick}
             title="Copy SQL to clipboard"
           >
@@ -190,7 +189,7 @@ export const SqlEditorPane: React.FC<SqlEditorPaneProps> = ({
           {onExportCsv && (
             <button
               type="button"
-              className="sql-tool-btn"
+              className="sql-tool-btn bg-transparent border border-white/15 text-[#8b949e] px-2.5 py-1 font-mono text-[11px] rounded-[2px] transition-all hover:text-white hover:border-[#00D2FF] hover:bg-[#00D2FF]/10 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               onClick={onExportCsv}
               title="Export query results as CSV"
             >
@@ -201,7 +200,7 @@ export const SqlEditorPane: React.FC<SqlEditorPaneProps> = ({
           {onExportJson && (
             <button
               type="button"
-              className="sql-tool-btn"
+              className="sql-tool-btn bg-transparent border border-white/15 text-[#8b949e] px-2.5 py-1 font-mono text-[11px] rounded-[2px] transition-all hover:text-white hover:border-[#00D2FF] hover:bg-[#00D2FF]/10 disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               onClick={onExportJson}
               title="Export query results as JSON"
             >
@@ -212,16 +211,16 @@ export const SqlEditorPane: React.FC<SqlEditorPaneProps> = ({
 
         {/* Live Execution Metrics */}
         {(executionTimeMs !== null || rowCount !== null) && (
-          <div className="sql-editor-metrics">
+          <div className="sql-editor-metrics flex items-center gap-2 font-mono text-[11px] text-[#6e7681]">
             {rowCount !== null && (
               <span>
-                ROWS: <strong>{rowCount}</strong>
+                ROWS: <strong className="text-white">{rowCount}</strong>
               </span>
             )}
             {rowCount !== null && executionTimeMs !== null && <span>•</span>}
             {executionTimeMs !== null && (
               <span>
-                LATENCY: <strong>{executionTimeMs} ms</strong>
+                LATENCY: <strong className="text-white">{executionTimeMs} ms</strong>
               </span>
             )}
           </div>
@@ -231,14 +230,14 @@ export const SqlEditorPane: React.FC<SqlEditorPaneProps> = ({
       {/* CodeMirror Surface */}
       <div
         ref={containerRef}
-        className="sql-editor-container sql-code-block"
+        className="sql-editor-container sql-code-block min-h-[160px] max-h-[260px] overflow-hidden relative"
         data-testid="sql-editor"
       />
 
       {/* Inline Error Banner */}
       {errorMessage && (
-        <div className="sql-editor-error-banner telemetry" role="alert">
-          {errorMessage}
+        <div className="sql-editor-error-banner telemetry p-2.5 bg-red-500/10 border-t border-red-500/40 text-red-400 font-mono text-xs flex items-center gap-2" role="alert">
+          <span>⚠️</span> {errorMessage}
         </div>
       )}
     </div>
