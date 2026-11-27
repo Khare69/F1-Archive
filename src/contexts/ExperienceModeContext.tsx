@@ -62,10 +62,16 @@ export const ExperienceModeProvider: React.FC<{ children: React.ReactNode }> = (
   return <ExperienceModeContext.Provider value={value}>{children}</ExperienceModeContext.Provider>;
 };
 
+const DEFAULT_CONTEXT_VALUE: ExperienceModeContextValue = {
+  mode: DEFAULT_MODE,
+  setMode: () => {},
+  cycleMode: () => {},
+  isBeginner: false,
+  isEnthusiast: true,
+  isDeveloper: false,
+};
+
 export function useExperienceMode(): ExperienceModeContextValue {
   const context = useContext(ExperienceModeContext);
-  if (!context) {
-    throw new Error('useExperienceMode must be used within an ExperienceModeProvider');
-  }
-  return context;
+  return context ?? DEFAULT_CONTEXT_VALUE;
 }

@@ -42,10 +42,14 @@ export const InspectQueryProvider: React.FC<{ children: React.ReactNode }> = ({ 
   return <InspectQueryContext.Provider value={value}>{children}</InspectQueryContext.Provider>;
 };
 
+const DEFAULT_INSPECT_VALUE: InspectQueryContextValue = {
+  isOpen: false,
+  activeQuery: null,
+  openQuery: () => {},
+  closeQuery: () => {},
+};
+
 export function useInspectQuery(): InspectQueryContextValue {
   const context = useContext(InspectQueryContext);
-  if (!context) {
-    throw new Error('useInspectQuery must be used within an InspectQueryProvider');
-  }
-  return context;
+  return context ?? DEFAULT_INSPECT_VALUE;
 }
