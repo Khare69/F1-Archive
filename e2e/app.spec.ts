@@ -95,7 +95,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
 
   test('Phase 3: IndexedDB query persistence with zero localStorage bloat', async ({ page }) => {
     await page.goto('/standings');
-    await expect(page.locator('.standings-container, .live-standings-page').first()).toBeVisible();
+    await expect(page.locator('.standings-container, .live-standings-page').first()).toBeVisible({ timeout: 15000 });
 
     const f1Cache = await page.evaluate(() => window.localStorage.getItem('F1_QUERY_CACHE'));
     const offlineCache = await page.evaluate(() => window.localStorage.getItem('REACT_QUERY_OFFLINE_CACHE'));
@@ -533,6 +533,128 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     await expect(analyticsPanel).toBeVisible({ timeout: 15000 });
 
     // Assert 0 uncaught runtime errors
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('Phase 7: 5-Era Technical Timeline Switcher & Nuqs URL Sync (C-25, C-38)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err.message));
+
+    await page.goto('/lab/ferrari');
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10000 });
+
+    // 1. Confirm 5 era buttons exist
+    const era1950Btn = page.locator('button', { hasText: '1950s' });
+    const era2004Btn = page.locator('button', { hasText: '2004' });
+    await expect(era1950Btn).toBeVisible();
+    await expect(era2004Btn).toBeVisible();
+
+    // 2. Switch to 1950s Front-Engine Era
+    await era1950Btn.click();
+    await expect(page).toHaveURL(/era=1950s_front_engine/);
+    await expect(page.locator('text=Front-Engine Grand Prix Era').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=N/A (Unregulated)').first()).toBeVisible({ timeout: 10000 });
+
+    // 3. Switch to 2004 V10 Pinnacle Era
+    await era2004Btn.click();
+    await expect(page).toHaveURL(/era=2004_v10/);
+    await expect(page.locator('text=3.0L V10 High-Downforce Pinnacle').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=605 KG').first()).toBeVisible({ timeout: 10000 });
+
+    // 4. Switch Constructor to McLaren while preserving era in URL query
+    const mclarenBtn = page.locator('button[aria-label*="McLaren"], button[aria-label*="mclaren"]').first();
+    await mclarenBtn.click();
+    await expect(page).toHaveURL(/\/lab\/mclaren\?era=2004_v10/);
+    await expect(page.locator('h1', { hasText: /McLaren/i })).toBeVisible({ timeout: 10000 });
+
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('Phase 7: 2026 Technical Regulations Simulation & Active Aero Articulation (C-40, F-10)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err.message));
+
+    await page.goto('/lab/redbull?era=2026_active_aero');
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10000 });
+
+    // 1. Verify 2026 Experimental simulation badge & disclaimer
+    await expect(page.locator('text=2026 REGULATION SIMULATION').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=Active Aero & 50/50 Hybrid Concept').first()).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('text=768 KG').first()).toBeVisible({ timeout: 10000 });
+
+    // 2. Locate Active Aero Mode Toggle in viewport controls dock
+    const aeroModeBtn = page.locator('button[aria-label*="Active Aero Mode"], button[aria-label*="Active Wing Mode"]').first();
+    await expect(aeroModeBtn).toBeVisible({ timeout: 10000 });
+
+    // Click to toggle between Corner (Z-Mode) and Straight (X-Mode)
+    await aeroModeBtn.click();
+    await page.waitForTimeout(300);
+
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('Phase 7: Interactive Anatomy Hotspots & 2-Tab Inspector Panel (C-41)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err.message));
+
+    await page.goto('/lab/ferrari?era=2024_ground_effect');
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10000 });
+
+    // 1. Find and click an interactive anatomy hotspot button
+    const hotspotBtn = page.locator('button[aria-label*="Inspect"]').first();
+    await expect(hotspotBtn).toBeVisible({ timeout: 15000 });
+    await hotspotBtn.click({ force: true });
+
+    // 2. Assert CarAnatomyPanel opens
+    const panel = page.locator('div[role="region"][aria-label*="Anatomy Inspector"]').first();
+    await expect(panel).toBeVisible({ timeout: 10000 });
+
+    // 3. Confirm Plain English tab is default
+    await expect(page.locator('button[role="tab"][aria-selected="true"]', { hasText: /PLAIN ENGLISH/i })).toBeVisible();
+
+    // 4. Switch to Technical Spec tab
+    const specTab = page.locator('button[role="tab"]', { hasText: /TECHNICAL SPEC/i });
+    await specTab.click();
+    await expect(page.locator('button[role="tab"][aria-selected="true"]', { hasText: /TECHNICAL SPEC/i })).toBeVisible();
+
+    // 5. Close panel
+    const closeBtn = page.locator('button[aria-label="Close anatomy panel"]');
+    await closeBtn.click();
+    await expect(panel).not.toBeVisible();
+
+    expect(pageErrors).toEqual([]);
+  });
+
+  test('Phase 7: WebGL Canvas DOM Identity & Shader Stability (F-38, F-40)', async ({ page }) => {
+    const pageErrors: string[] = [];
+    page.on('pageerror', (err) => pageErrors.push(err.message));
+
+    await page.goto('/lab/ferrari');
+    await expect(page.locator('h1').first()).toBeVisible({ timeout: 10000 });
+
+    const canvas = page.locator('canvas').first();
+    await expect(canvas).toBeVisible({ timeout: 15000 });
+
+    // Record DOM canvas element reference
+    const canvasHandle = await canvas.elementHandle();
+
+    // Switch team to Mercedes
+    const mercBtn = page.locator('button[aria-label*="Mercedes"], button[aria-label*="mercedes"]').first();
+    await mercBtn.click();
+    await page.waitForTimeout(400);
+
+    // Assert same canvas DOM element is still mounted and attached
+    const isStillAttached = await canvasHandle?.evaluate((el) => el.isConnected);
+    expect(isStillAttached).toBe(true);
+
+    // Switch era to 1988
+    const era1988Btn = page.locator('button', { hasText: '1988' });
+    await era1988Btn.click();
+    await page.waitForTimeout(400);
+
+    const isStillAttachedAfterEra = await canvasHandle?.evaluate((el) => el.isConnected);
+    expect(isStillAttachedAfterEra).toBe(true);
+
     expect(pageErrors).toEqual([]);
   });
 });

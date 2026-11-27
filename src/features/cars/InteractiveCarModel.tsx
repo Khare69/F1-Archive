@@ -4,7 +4,13 @@ import { useGLTF } from '@react-three/drei';
 import * as THREE from 'three';
 import type { Team } from '../../types/f1';
 import { WindTunnel } from './WindTunnel';
-import { getMaterialRole } from './config/carMaterialMap';
+import {
+  getCanonicalMaterialZone,
+  createEraCarMaterials,
+  disposeCarMaterials,
+} from './carMaterialMapper';
+import { getTeamLiveryTextures } from './carLiveryGenerator';
+import type { CarEraSpec } from './carEraRegistry';
 import { Regulation2026Overlay, type ActiveAeroMode } from './components/Regulation2026Overlay';
 import { disposeObject3D } from '../../utils/webglDisposal';
 
@@ -22,27 +28,12 @@ interface InteractiveCarModelProps {
   onHoverPart?: (info: PartHoverInfo | null) => void;
   is2026Inspector?: boolean;
   activeAeroMode?: ActiveAeroMode;
+  eraSpec?: CarEraSpec;
+  modelUrl?: string;
 }
 
 const ASSETS_BASE_URL = (typeof import.meta !== 'undefined' && import.meta.env?.VITE_ASSETS_BASE_URL) || '/';
-const MODEL_URL = `${ASSETS_BASE_URL.replace(/\/$/, '')}/models/f1_chassis.glb`;
-
-// Authentic team-specific dual-tone color schemes
-const TEAM_COLOR_SCHEMES: Record<string, { primary: string; secondary: string; accent: string; carbon: string }> = {
-  redbull: { primary: '#0808EF', secondary: '#FCD116', accent: '#E8002D', carbon: '#0A0E18' },
-  ferrari: { primary: '#E8002D', secondary: '#FFE500', accent: '#FFFFFF', carbon: '#0C0E14' },
-  mercedes: { primary: '#C8D0DC', secondary: '#00A19B', accent: '#111726', carbon: '#0D111A' },
-  mclaren: { primary: '#FF8000', secondary: '#1A1E29', accent: '#00D2FF', carbon: '#0F131D' },
-  aston: { primary: '#00594F', secondary: '#CEDC00', accent: '#003B34', carbon: '#0A1014' },
-  alpine: { primary: '#0078D0', secondary: '#FF87BC', accent: '#0E1422', carbon: '#0B0F18' },
-  williams: { primary: '#005AFF', secondary: '#041E42', accent: '#E4002B', carbon: '#0A0E1A' },
-  rb: { primary: '#1534CC', secondary: '#FFFFFF', accent: '#D90026', carbon: '#0B101E' },
-  sauber: { primary: '#00E701', secondary: '#090D14', accent: '#00B301', carbon: '#080B10' },
-  haas: { primary: '#11151F', secondary: '#FFFFFF', accent: '#E6002B', carbon: '#0A0D14' },
-  lotus: { primary: '#0A0A0A', secondary: '#FFB800', accent: '#FFD700', carbon: '#060606' },
-  benetton: { primary: '#0088CE', secondary: '#009E49', accent: '#FFFFFF', carbon: '#0A0F1A' },
-  brawn: { primary: '#FFFFFF', secondary: '#BDFE00', accent: '#11151F', carbon: '#0E121B' }
-};
+const DEFAULT_MODEL_URL = `${ASSETS_BASE_URL.replace(/\/$/, '')}/models/2024_ground_effect.glb`;
 
 export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
   team,
@@ -50,78 +41,34 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
   hasReducedMotion = false,
   onHoverPart,
   is2026Inspector = false,
-  activeAeroMode = 'corner'
+  activeAeroMode = 'corner',
+  eraSpec,
+  modelUrl = eraSpec?.modelPath ?? DEFAULT_MODEL_URL,
 }) => {
   const groupRef = useRef<THREE.Group>(null);
+  const frontFlapRef = useRef<THREE.Object3D | null>(null);
+  const rearFlapRef = useRef<THREE.Object3D | null>(null);
 
   // Load the authentic CAD F1 Chassis GLB model with self-hosted Draco decoder
-  const { scene } = useGLTF(MODEL_URL, '/draco/');
+  const { scene } = useGLTF(modelUrl, '/draco/');
 
-  // Clone the scene and apply component-specific high-gloss PBR materials
-  const clonedScene = useMemo(() => {
+  // Clone the scene and apply component-specific clearcoat PBR materials & procedural liveries
+  const { clone: clonedScene, materials, liveryTextures } = useMemo(() => {
     const clone = scene.clone(true);
-    const colors = TEAM_COLOR_SCHEMES[team.id] || {
-      primary: team.color,
-      secondary: '#FFFFFF',
-      accent: '#00D2FF',
-      carbon: '#0D111A'
-    };
+    const liveryTextures = getTeamLiveryTextures(team);
+    const materials = createEraCarMaterials({ team, eraSpec, liveryTextures });
 
-    // 1. High-Gloss Metallic Team Lacquer (Monocoque, Sidepods, Engine Cowling)
-    const bodyPaint = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(colors.primary),
-      metalness: 0.88,
-      roughness: 0.14,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.05,
-      reflectivity: 1.0,
-      envMapIntensity: 1.8
-    });
+    frontFlapRef.current = null;
+    rearFlapRef.current = null;
 
-    // 2. Secondary Dual-Tone Accent Paint (Rear Wing Endplates & Cowl Stripes)
-    const accentPaint = new THREE.MeshPhysicalMaterial({
-      color: new THREE.Color(colors.secondary),
-      metalness: 0.78,
-      roughness: 0.18,
-      clearcoat: 0.8,
-      clearcoatRoughness: 0.08,
-      reflectivity: 0.9,
-      envMapIntensity: 1.4
-    });
-
-    // 3. Raw Pre-Preg Carbon Fiber Composite (Front Wing Cascade, Floor, Diffuser)
-    const carbonComposite = new THREE.MeshStandardMaterial({
-      color: new THREE.Color(colors.carbon),
-      metalness: 0.35,
-      roughness: 0.52,
-      envMapIntensity: 0.9
-    });
-
-    // 4. Pirelli P-Zero Soft Compound Tyres (Matte Rubber)
-    const tyreRubber = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#14161F'),
-      metalness: 0.06,
-      roughness: 0.92,
-      envMapIntensity: 0.4
-    });
-
-    // 5. Grade 5 Titanium Halo & Wheel Hubs
-    const titaniumMetal = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#C8CED8'),
-      metalness: 0.92,
-      roughness: 0.16,
-      envMapIntensity: 1.5
-    });
-
-    // 6. Internal Radiator Ducts & Brake Assemblies
-    const darkMechanicals = new THREE.MeshStandardMaterial({
-      color: new THREE.Color('#080A10'),
-      metalness: 0.2,
-      roughness: 0.85
-    });
-
-    // Map each child mesh according to its authentic CAD sub-assembly
+    // Map each child mesh according to its authentic CAD sub-assembly / Blender zone
     clone.traverse((child) => {
+      if (child.name === 'front_wing_active_flap') {
+        frontFlapRef.current = child;
+      } else if (child.name === 'rear_wing_active_flap') {
+        rearFlapRef.current = child;
+      }
+
       if ((child as THREE.Mesh).isMesh) {
         const mesh = child as THREE.Mesh;
         mesh.castShadow = true;
@@ -131,62 +78,59 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
           ? mesh.material[0]?.name
           : mesh.material?.name;
 
-        const role = getMaterialRole(matName);
-
-        switch (role) {
-          case 'bodyPrimary':
-            mesh.material = bodyPaint;
-            break;
-
-          case 'bodyAccent':
-            mesh.material = accentPaint;
-            break;
-
-          case 'carbonComposite':
-            mesh.material = carbonComposite;
-            break;
-
-          case 'tyreRubber':
-            mesh.material = tyreRubber;
-            break;
-
-          case 'titaniumHalo':
-            mesh.material = titaniumMetal;
-            break;
-
-          case 'mechanicals':
-          default:
-            mesh.material = darkMechanicals;
-            break;
-        }
+        const zone = getCanonicalMaterialZone(matName);
+        mesh.material = materials[zone];
       }
     });
 
-    // EXACT VERIFIED HORIZONTAL TRACK ALIGNMENT:
-    // Euler(180°, -90°, 180°) places Length along X (5.09 units), Height along Y (1.00 unit), Width along Z (1.82 units).
-    // The bottom of the tyres touches ground plane Y = 0.00.
-    clone.rotation.set(Math.PI, -Math.PI / 2, Math.PI);
-    clone.scale.set(0.11, 0.11, 0.11);
-    clone.position.set(-0.0057, -0.0007, -0.0005);
+    // NATIVE COORDINATE ALIGNMENT (FND-01):
+    // Standard Blender MCP export: Length along X (Nose = +X, Tail = -X),
+    // Height along Y (Roof = +Y), Width symmetric along Z.
+    // Bottom of tires touches ground plane Y = 0.00 natively with zero rotation hacks.
+    clone.rotation.set(0, 0, 0);
+    clone.scale.set(1, 1, 1);
+    clone.position.set(0, 0, 0);
 
-    return clone;
-  }, [scene, team]);
+    return { clone, materials, liveryTextures };
+  }, [scene, team, eraSpec]);
 
   // Deterministically dispose locally created cloned materials & procedural textures on team change/unmount
   // (skipGeometries: true protects useGLTF's cached shared BufferGeometry primitives!)
   useEffect(() => {
     return () => {
       disposeObject3D(clonedScene, { skipGeometries: true });
+      disposeCarMaterials(materials);
+      liveryTextures.dispose();
     };
-  }, [clonedScene]);
+  }, [clonedScene, materials, liveryTextures]);
 
-  // Subtle chassis idle vibration (disabled under prefers-reduced-motion)
-  useFrame(({ clock }) => {
+  // Subtle chassis idle vibration & 2026 active aerodynamics flap articulation
+  useFrame(({ clock }, delta) => {
     if (!groupRef.current) return;
     if (!showAero && !hasReducedMotion) {
       groupRef.current.position.y = Math.sin(clock.getElapsedTime() * 1.5) * 0.015;
     } else {
       groupRef.current.position.y = 0;
+    }
+
+    // Articulate 2026 active aero flaps between Z-Mode (Corner) and X-Mode (Straight)
+    if (eraSpec?.id === '2026_active_aero') {
+      const isStraight = activeAeroMode === 'straight';
+      const targetPitch = isStraight ? -0.32 : 0.0;
+      if (frontFlapRef.current) {
+        frontFlapRef.current.rotation.y = THREE.MathUtils.lerp(
+          frontFlapRef.current.rotation.y,
+          targetPitch,
+          Math.min(1, delta * 8)
+        );
+      }
+      if (rearFlapRef.current) {
+        rearFlapRef.current.rotation.y = THREE.MathUtils.lerp(
+          rearFlapRef.current.rotation.y,
+          targetPitch,
+          Math.min(1, delta * 8)
+        );
+      }
     }
   });
 
@@ -312,5 +256,5 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
   );
 };
 
-// Preload the GLB model with self-hosted Draco decoder for instantaneous rendering
-useGLTF.preload(MODEL_URL, '/draco/');
+// Preload the default GLB model with self-hosted Draco decoder for instantaneous rendering
+useGLTF.preload(DEFAULT_MODEL_URL, '/draco/');

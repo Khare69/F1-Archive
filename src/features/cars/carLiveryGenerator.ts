@@ -1,429 +1,303 @@
 import * as THREE from 'three';
 import type { Team } from '../../types/f1';
+import {
+  resolveCanonicalTeamId,
+  CONSTRUCTOR_EMBLEMS,
+  type ConstructorEmblemConfig,
+} from '../../components/FallbackImage/constructorEmblems';
 
-// Texture cache to avoid re-generating canvas textures on every render
-const liveryTextureCache = new Map<string, THREE.CanvasTexture>();
+export type TeamLike =
+  | Team
+  | { id: string; color?: string; name?: string; [key: string]: unknown }
+  | string;
+
+export interface GeneratedLiveryTextures {
+  liveryMap: THREE.CanvasTexture | null;
+  carbonRoughnessMap: THREE.CanvasTexture | null;
+  dispose: () => void;
+}
+
+export interface LiveryGeneratorOptions {
+  raceNumber?: number;
+  width?: number;
+  height?: number;
+}
 
 /**
- * Creates an authentic high-resolution procedural livery texture for each F1 team.
- * Includes official dual-tone color blocking, racing gradients, carbon fiber weave texture,
- * and team crest emblems without any commercial sponsor logos.
+ * Creates a seamless procedural 2x2 twill carbon fiber weave texture
+ * to serve as a roughness / micro-bump map for exposed carbon elements.
  */
-export function getTeamLiveryTexture(team: Team): THREE.CanvasTexture {
-  if (liveryTextureCache.has(team.id)) {
-    return liveryTextureCache.get(team.id)!;
+export function createCarbonWeaveTexture(size = 256): {
+  texture: THREE.CanvasTexture | null;
+  dispose: () => void;
+} {
+  if (typeof document === 'undefined') {
+    return { texture: null, dispose: () => {} };
   }
 
-  const width = 2048;
-  const height = 1024;
   const canvas = document.createElement('canvas');
-  canvas.width = width;
-  canvas.height = height;
-  const ctx = canvas.getContext('2d')!;
+  canvas.width = size;
+  canvas.height = size;
+  const ctx = canvas.getContext('2d');
 
-  // 1. Base Carbon / Team Background
-  ctx.fillStyle = '#0D111A';
-  ctx.fillRect(0, 0, width, height);
+  if (!ctx) {
+    return { texture: null, dispose: () => {} };
+  }
 
-  // Carbon fiber micro-weave pattern
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.015)';
-  for (let x = 0; x < width; x += 8) {
-    for (let y = 0; y < height; y += 8) {
-      if ((x + y) % 16 === 0) {
-        ctx.fillRect(x, y, 4, 4);
+  // Dark baseline composite
+  ctx.fillStyle = '#14171E';
+  ctx.fillRect(0, 0, size, size);
+
+  // 2x2 Twill Weave procedural simulation
+  const tileSize = 8;
+  const halfTile = tileSize / 2;
+
+  for (let y = 0; y < size; y += tileSize) {
+    for (let x = 0; x < size; x += tileSize) {
+      const isAltRow = (y / tileSize) % 2 === 0;
+      const isAltCol = (x / tileSize) % 2 === 0;
+
+      // Weave thread highlight & shadow
+      if ((isAltRow && isAltCol) || (!isAltRow && !isAltCol)) {
+        ctx.fillStyle = '#222733';
+        ctx.fillRect(x, y, tileSize, halfTile);
+        ctx.fillStyle = '#101319';
+        ctx.fillRect(x, y + halfTile, tileSize, halfTile);
+      } else {
+        ctx.fillStyle = '#1B1F2A';
+        ctx.fillRect(x, y, halfTile, tileSize);
+        ctx.fillStyle = '#0E1117';
+        ctx.fillRect(x + halfTile, y, halfTile, tileSize);
       }
     }
   }
 
-  // 2. Apply Team-Specific Authentic Livery Patterns
-  switch (team.id) {
-    case 'redbull': {
-      // Deep Matte Navy Blue Body
-      ctx.fillStyle = '#0600EF';
-      ctx.fillRect(0, 200, width, 624);
-
-      // Yellow Nose Cone & Intake Tip (#FCD116)
-      ctx.fillStyle = '#FCD116';
-      ctx.beginPath();
-      ctx.moveTo(1700, 300);
-      ctx.lineTo(2048, 450);
-      ctx.lineTo(2048, 574);
-      ctx.lineTo(1700, 724);
-      ctx.closePath();
-      ctx.fill();
-
-      // Bold Crimson Red Racing Swooshes (#DC0000)
-      ctx.fillStyle = '#DC0000';
-      ctx.beginPath();
-      ctx.moveTo(400, 320);
-      ctx.bezierCurveTo(900, 280, 1400, 360, 1800, 480);
-      ctx.lineTo(1750, 544);
-      ctx.bezierCurveTo(1350, 440, 850, 360, 400, 380);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(400, 644);
-      ctx.bezierCurveTo(850, 664, 1350, 584, 1750, 480);
-      ctx.lineTo(1800, 544);
-      ctx.bezierCurveTo(1400, 664, 900, 744, 400, 704);
-      ctx.closePath();
-      ctx.fill();
-
-      // Red Bull Sun / Emblem Graphic on Engine Cover
-      ctx.fillStyle = '#FCD116';
-      ctx.beginPath();
-      ctx.arc(700, 512, 110, 0, Math.PI * 2);
-      ctx.fill();
-
-      ctx.fillStyle = '#DC0000';
-      ctx.beginPath();
-      ctx.arc(700, 512, 85, 0, Math.PI * 2);
-      ctx.fill();
-      break;
-    }
-
-    case 'ferrari': {
-      // Iconic Rosso Corsa Primary Base (#EE0000)
-      ctx.fillStyle = '#E8002D';
-      ctx.fillRect(0, 0, width, height);
-
-      // Modena Yellow & Italian White Racing Pinstripes
-      ctx.fillStyle = '#FFE500';
-      ctx.fillRect(200, 360, 1648, 16);
-      ctx.fillRect(200, 648, 1648, 16);
-
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(200, 380, 1648, 10);
-      ctx.fillRect(200, 634, 1648, 10);
-
-      // Scuderia Shield Background on Shark Fin
-      ctx.fillStyle = '#FFE500';
-      ctx.beginPath();
-      ctx.moveTo(650, 430);
-      ctx.lineTo(750, 430);
-      ctx.lineTo(750, 540);
-      ctx.lineTo(700, 590);
-      ctx.lineTo(650, 540);
-      ctx.closePath();
-      ctx.fill();
-
-      // Italian Tricolore Flag Accent on Nose
-      ctx.fillStyle = '#009246';
-      ctx.fillRect(1750, 470, 100, 25);
-      ctx.fillStyle = '#FFFFFF';
-      ctx.fillRect(1750, 495, 100, 25);
-      ctx.fillStyle = '#CE2B37';
-      ctx.fillRect(1750, 520, 100, 25);
-      break;
-    }
-
-    case 'mercedes': {
-      // High-sheen Silver arrow fading into obsidian carbon black rear
-      const grad = ctx.createLinearGradient(0, 512, width, 512);
-      grad.addColorStop(0, '#0A0E17');
-      grad.addColorStop(0.45, '#1A2233');
-      grad.addColorStop(0.75, '#C0C8D8');
-      grad.addColorStop(1, '#E8EDF5');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, width, height);
-
-      // Electric Petronas Turquoise Pinstripes (#00A19B)
-      ctx.fillStyle = '#00A19B';
-      ctx.fillRect(100, 340, 1800, 24);
-      ctx.fillRect(100, 660, 1800, 24);
-      ctx.fillRect(100, 370, 1800, 8);
-      ctx.fillRect(100, 646, 1800, 8);
-
-      // Mercedes Star Crest on Engine Cowl
-      ctx.strokeStyle = '#00A19B';
-      ctx.lineWidth = 12;
-      ctx.beginPath();
-      ctx.arc(700, 512, 80, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.beginPath();
-      ctx.moveTo(700, 435);
-      ctx.lineTo(700, 512);
-      ctx.lineTo(635, 555);
-      ctx.moveTo(700, 512);
-      ctx.lineTo(765, 555);
-      ctx.stroke();
-      break;
-    }
-
-    case 'mclaren': {
-      // Exposed Anthracite Carbon Base
-      ctx.fillStyle = '#10141D';
-      ctx.fillRect(0, 0, width, height);
-
-      // Papaya Orange Aerodynamic Panels (#FF8000)
-      ctx.fillStyle = '#FF8000';
-      ctx.beginPath();
-      ctx.moveTo(300, 200);
-      ctx.bezierCurveTo(800, 150, 1400, 220, 2048, 380);
-      ctx.lineTo(2048, 644);
-      ctx.bezierCurveTo(1400, 804, 800, 874, 300, 824);
-      ctx.closePath();
-      ctx.fill();
-
-      // Anthracite Center Section
-      ctx.fillStyle = '#151922';
-      ctx.fillRect(500, 440, 1100, 144);
-
-      // Cyan Accent Highlights (#00D2FF)
-      ctx.fillStyle = '#00D2FF';
-      ctx.fillRect(400, 420, 1200, 12);
-      ctx.fillRect(400, 592, 1200, 12);
-
-      // McLaren Speedmark Kiwi Crescent
-      ctx.fillStyle = '#FF8000';
-      ctx.beginPath();
-      ctx.arc(700, 512, 70, -Math.PI / 3, Math.PI / 1.5);
-      ctx.lineTo(750, 480);
-      ctx.closePath();
-      ctx.fill();
-      break;
-    }
-
-    case 'aston': {
-      // British Racing Metallic Green (#00594F)
-      ctx.fillStyle = '#00594F';
-      ctx.fillRect(0, 0, width, height);
-
-      // Racing Acid Lime / Yellow Accent Lines (#CEDC00)
-      ctx.fillStyle = '#CEDC00';
-      ctx.fillRect(100, 310, 1848, 18);
-      ctx.fillRect(100, 696, 1848, 18);
-      ctx.fillRect(800, 490, 900, 8);
-      ctx.fillRect(800, 526, 900, 8);
-
-      // Dark Racing Emerald Inset
-      ctx.fillStyle = '#004038';
-      ctx.fillRect(400, 340, 1100, 130);
-      ctx.fillRect(400, 554, 1100, 130);
-
-      // Winged Emblem on Engine Cover
-      ctx.strokeStyle = '#CEDC00';
-      ctx.lineWidth = 10;
-      ctx.beginPath();
-      ctx.ellipse(700, 512, 90, 40, 0, 0, Math.PI * 2);
-      ctx.stroke();
-      break;
-    }
-
-    case 'alpine': {
-      // Carbon Black with Alpine French Blue & BWT Pink
-      ctx.fillStyle = '#0E131F';
-      ctx.fillRect(0, 0, width, height);
-
-      // Alpine Metallic Blue (#0078D0)
-      ctx.fillStyle = '#0078D0';
-      ctx.beginPath();
-      ctx.moveTo(300, 150);
-      ctx.lineTo(1900, 320);
-      ctx.lineTo(1900, 512);
-      ctx.lineTo(300, 512);
-      ctx.closePath();
-      ctx.fill();
-
-      // BWT Bubblegum Pink (#FF87BC)
-      ctx.fillStyle = '#FF87BC';
-      ctx.beginPath();
-      ctx.moveTo(300, 512);
-      ctx.lineTo(1900, 512);
-      ctx.lineTo(1900, 704);
-      ctx.lineTo(300, 874);
-      ctx.closePath();
-      ctx.fill();
-
-      // Alpine "A" Arrow Crest on Shark Fin
-      ctx.fillStyle = '#FFFFFF';
-      ctx.font = 'bold 120px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('A', 700, 512);
-      break;
-    }
-
-    case 'williams': {
-      // Heritage Blue (#005AFF) & Deep Navy (#041E42)
-      const grad = ctx.createLinearGradient(0, 0, width, height);
-      grad.addColorStop(0, '#041E42');
-      grad.addColorStop(0.5, '#005AFF');
-      grad.addColorStop(1, '#003399');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, width, height);
-
-      // Bright Cyan Chevron Arrow & Orange Red Accent
-      ctx.fillStyle = '#00D2FF';
-      ctx.beginPath();
-      ctx.moveTo(400, 250);
-      ctx.lineTo(1800, 450);
-      ctx.lineTo(1800, 574);
-      ctx.lineTo(400, 774);
-      ctx.lineTo(500, 512);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.fillStyle = '#E4002B';
-      ctx.fillRect(300, 504, 1500, 16);
-      break;
-    }
-
-    case 'rb': {
-      // VCARB Royal Metallic Blue (#1534CC)
-      ctx.fillStyle = '#1534CC';
-      ctx.fillRect(0, 0, width, height);
-
-      // Crisp White Sidepod Racing Stripes (#FFFFFF)
-      ctx.fillStyle = '#FFFFFF';
-      ctx.beginPath();
-      ctx.moveTo(200, 340);
-      ctx.lineTo(1900, 460);
-      ctx.lineTo(1900, 564);
-      ctx.lineTo(200, 684);
-      ctx.closePath();
-      ctx.fill();
-
-      // Red Racing Pinstripes (#D90026)
-      ctx.fillStyle = '#D90026';
-      ctx.fillRect(200, 492, 1700, 40);
-      break;
-    }
-
-    case 'sauber': {
-      // Raw Carbon Black (#080B10) Base
-      ctx.fillStyle = '#080B10';
-      ctx.fillRect(0, 0, width, height);
-
-      // Electric Fluorescent Neon Green (#00E701)
-      ctx.fillStyle = '#00E701';
-      ctx.beginPath();
-      ctx.moveTo(300, 200);
-      ctx.lineTo(2048, 380);
-      ctx.lineTo(1900, 460);
-      ctx.lineTo(300, 350);
-      ctx.closePath();
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(300, 824);
-      ctx.lineTo(2048, 644);
-      ctx.lineTo(1900, 564);
-      ctx.lineTo(300, 674);
-      ctx.closePath();
-      ctx.fill();
-
-      // Neon Green Side Intake Box
-      ctx.fillRect(600, 460, 600, 104);
-      break;
-    }
-
-    case 'haas': {
-      // Stealth Carbon & White Sidepod Contrast with Haas Red
-      ctx.fillStyle = '#0D1117';
-      ctx.fillRect(0, 0, width, height);
-
-      // Crisp White Sidepods
-      ctx.fillStyle = '#F0F3F6';
-      ctx.beginPath();
-      ctx.moveTo(400, 300);
-      ctx.lineTo(1800, 420);
-      ctx.lineTo(1800, 604);
-      ctx.lineTo(400, 724);
-      ctx.closePath();
-      ctx.fill();
-
-      // Haas Red Racing Stripes (#E6002B)
-      ctx.fillStyle = '#E6002B';
-      ctx.fillRect(300, 480, 1600, 64);
-      break;
-    }
-
-    case 'lotus': {
-      // Classic John Player Special Piano Gloss Black & Gold (#FFB800)
-      ctx.fillStyle = '#080808';
-      ctx.fillRect(0, 0, width, height);
-
-      // Royal Gold Triple Pinstripes
-      ctx.fillStyle = '#FFB800';
-      ctx.fillRect(100, 320, 1848, 14);
-      ctx.fillRect(100, 350, 1848, 8);
-      ctx.fillRect(100, 656, 1848, 8);
-      ctx.fillRect(100, 680, 1848, 14);
-
-      // Gold Roundel Emblem on Shark Fin
-      ctx.strokeStyle = '#FFB800';
-      ctx.lineWidth = 14;
-      ctx.beginPath();
-      ctx.arc(700, 512, 90, 0, Math.PI * 2);
-      ctx.stroke();
-
-      ctx.fillStyle = '#FFB800';
-      ctx.font = 'bold 80px sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      ctx.fillText('LOTUS', 700, 512);
-      break;
-    }
-
-    case 'benetton': {
-      // United Colors of Benetton: Cyan Blue, Green & White
-      ctx.fillStyle = '#0088CE';
-      ctx.fillRect(0, 0, width, 512);
-      ctx.fillStyle = '#009E49';
-      ctx.fillRect(0, 512, width, 512);
-
-      // White Center Band
-      ctx.fillStyle = '#FFFFFF';
-      ctx.beginPath();
-      ctx.moveTo(300, 420);
-      ctx.lineTo(1800, 460);
-      ctx.lineTo(1800, 564);
-      ctx.lineTo(300, 604);
-      ctx.closePath();
-      ctx.fill();
-      break;
-    }
-
-    case 'brawn': {
-      // Pure Pearl White (#FFFFFF) Base
-      ctx.fillStyle = '#F8F9FA';
-      ctx.fillRect(0, 0, width, height);
-
-      // Signature Brawn High-Voltage Fluorescent Neon Lime (#BDFE00)
-      ctx.fillStyle = '#BDFE00';
-      ctx.beginPath();
-      ctx.moveTo(300, 260);
-      ctx.lineTo(1900, 400);
-      ctx.lineTo(1900, 624);
-      ctx.lineTo(300, 764);
-      ctx.closePath();
-      ctx.fill();
-
-      // Deep Charcoal Black Aero Trim Lines
-      ctx.fillStyle = '#11151F';
-      ctx.fillRect(200, 480, 1700, 64);
-      break;
-    }
-
-    default: {
-      ctx.fillStyle = team.color || '#00D2FF';
-      ctx.fillRect(0, 200, width, 624);
-    }
-  }
-
-  // Create Three.js Texture with anisotropic filtering
   const texture = new THREE.CanvasTexture(canvas);
   texture.wrapS = THREE.RepeatWrapping;
   texture.wrapT = THREE.RepeatWrapping;
+  texture.repeat.set(16, 16);
   texture.generateMipmaps = true;
-  texture.minFilter = THREE.LinearMipmapLinearFilter;
-  texture.magFilter = THREE.LinearFilter;
-  texture.anisotropy = 8;
   texture.needsUpdate = true;
 
-  liveryTextureCache.set(team.id, texture);
-  return texture;
+  return {
+    texture,
+    dispose: () => {
+      texture.dispose();
+    },
+  };
+}
+
+/**
+ * Resolves color palette and typographic monogram for any team
+ */
+function resolveTeamPalette(teamIdOrTeam: TeamLike): {
+  id: string;
+  primary: string;
+  secondary: string;
+  accent: string;
+  monogram: string;
+} {
+  const id = typeof teamIdOrTeam === 'string' ? teamIdOrTeam : teamIdOrTeam.id;
+  const canonicalId = resolveCanonicalTeamId(id) ?? id.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+  const emblem: ConstructorEmblemConfig | undefined = CONSTRUCTOR_EMBLEMS[canonicalId];
+
+  if (emblem) {
+    return {
+      id: canonicalId,
+      primary: emblem.primaryColor,
+      secondary: emblem.secondaryColor,
+      accent: emblem.accentColor ?? '#FFFFFF',
+      monogram: emblem.monogram,
+    };
+  }
+
+  // Fallback to team object colors if available
+  if (typeof teamIdOrTeam !== 'string' && teamIdOrTeam.color) {
+    return {
+      id: canonicalId,
+      primary: teamIdOrTeam.color,
+      secondary: '#FFFFFF',
+      accent: '#00D2FF',
+      monogram: id.slice(0, 3).toUpperCase(),
+    };
+  }
+
+  return {
+    id: canonicalId,
+    primary: '#E10600',
+    secondary: '#FFFFFF',
+    accent: '#0A0E18',
+    monogram: 'F1',
+  };
+}
+
+/**
+ * Generates trademark-safe procedural geometric liveries for F1 vehicles.
+ * Purged of all manufacturer trademarked emblems and registered logos.
+ * Uses strictly geometric racing stripes, contrast color blocking, number roundels,
+ * and typographic team monograms.
+ */
+export function getTeamLiveryTextures(
+  teamIdOrTeam: TeamLike,
+  options: LiveryGeneratorOptions = {}
+): GeneratedLiveryTextures {
+  const { raceNumber = 1, width = 2048, height = 1024 } = options;
+
+  if (typeof document === 'undefined') {
+    return {
+      liveryMap: null,
+      carbonRoughnessMap: null,
+      dispose: () => {},
+    };
+  }
+
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+
+  if (!ctx) {
+    return {
+      liveryMap: null,
+      carbonRoughnessMap: null,
+      dispose: () => {},
+    };
+  }
+
+  const palette = resolveTeamPalette(teamIdOrTeam);
+  const carbonWeave = createCarbonWeaveTexture(256);
+
+  // 1. Deep Carbon Fiber Foundation (Chassis / Underbody)
+  ctx.fillStyle = '#0B0E14';
+  ctx.fillRect(0, 0, width, height);
+
+  // Subtle micro-pattern on base
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+  for (let x = 0; x < width; x += 16) {
+    for (let y = 0; y < height; y += 16) {
+      if ((x + y) % 32 === 0) {
+        ctx.fillRect(x, y, 8, 8);
+      }
+    }
+  }
+
+  // 2. Primary Team Color Coat
+  ctx.fillStyle = palette.primary;
+  ctx.beginPath();
+  // Sleek tapered aerodynamic body panels
+  ctx.moveTo(100, 180);
+  ctx.lineTo(width - 150, 260);
+  ctx.lineTo(width, 420);
+  ctx.lineTo(width, height - 420);
+  ctx.lineTo(width - 150, height - 260);
+  ctx.lineTo(100, height - 180);
+  ctx.closePath();
+  ctx.fill();
+
+  // 3. Secondary Dynamic Color Block / Chevrons
+  ctx.fillStyle = palette.secondary;
+  // Sidepod dynamic sweep
+  ctx.beginPath();
+  ctx.moveTo(350, 320);
+  ctx.lineTo(width - 300, 400);
+  ctx.lineTo(width - 450, 480);
+  ctx.lineTo(300, 440);
+  ctx.closePath();
+  ctx.fill();
+
+  ctx.beginPath();
+  ctx.moveTo(350, height - 320);
+  ctx.lineTo(width - 300, height - 400);
+  ctx.lineTo(width - 450, height - 480);
+  ctx.lineTo(300, height - 440);
+  ctx.closePath();
+  ctx.fill();
+
+  // 4. Accent Pinstripes (Pure geometric aero lines)
+  ctx.strokeStyle = palette.accent;
+  ctx.lineWidth = 14;
+
+  // Upper pinstripe
+  ctx.beginPath();
+  ctx.moveTo(200, 280);
+  ctx.lineTo(width - 200, 360);
+  ctx.stroke();
+
+  // Lower pinstripe
+  ctx.beginPath();
+  ctx.moveTo(200, height - 280);
+  ctx.lineTo(width - 200, height - 360);
+  ctx.stroke();
+
+  // 5. Center Exposed Carbon Spine
+  ctx.fillStyle = '#080A0F';
+  ctx.fillRect(400, 470, width - 800, 84);
+
+  // 6. Trademark-Safe Racing Roundel on Shark Fin / Engine Cover
+  const roundelX = 680;
+  const roundelY = height / 2;
+  const roundelRadius = 110;
+
+  // Outer border
+  ctx.fillStyle = palette.secondary;
+  ctx.beginPath();
+  ctx.arc(roundelX, roundelY, roundelRadius, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Inner field
+  ctx.fillStyle = '#0A0D14';
+  ctx.beginPath();
+  ctx.arc(roundelX, roundelY, roundelRadius - 14, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Racing Number or Monogram inside roundel
+  ctx.fillStyle = '#FFFFFF';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.font = 'bold 100px "Titillium Web", "Arial Black", sans-serif';
+  ctx.fillText(String(raceNumber), roundelX, roundelY - 8);
+
+  // Monogram badge on nosecone section
+  const noseX = width - 280;
+  const noseY = height / 2;
+  ctx.fillStyle = palette.accent;
+  ctx.beginPath();
+  ctx.arc(noseX, noseY, 56, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#090B10';
+  ctx.beginPath();
+  ctx.arc(noseX, noseY, 48, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = '#FFFFFF';
+  ctx.font = 'bold 32px "Titillium Web", sans-serif';
+  ctx.fillText(palette.monogram, noseX, noseY + 2);
+
+  // Wrap in Three.js CanvasTexture
+  const liveryMap = new THREE.CanvasTexture(canvas);
+  liveryMap.wrapS = THREE.RepeatWrapping;
+  liveryMap.wrapT = THREE.RepeatWrapping;
+  liveryMap.generateMipmaps = true;
+  liveryMap.minFilter = THREE.LinearMipmapLinearFilter;
+  liveryMap.magFilter = THREE.LinearFilter;
+  liveryMap.anisotropy = 8;
+  liveryMap.needsUpdate = true;
+
+  return {
+    liveryMap,
+    carbonRoughnessMap: carbonWeave.texture,
+    dispose: () => {
+      liveryMap.dispose();
+      carbonWeave.dispose();
+    },
+  };
+}
+
+/**
+ * Backward compatibility helper returning only the livery texture.
+ */
+export function getTeamLiveryTexture(team: Team): THREE.CanvasTexture | null {
+  return getTeamLiveryTextures(team).liveryMap;
 }

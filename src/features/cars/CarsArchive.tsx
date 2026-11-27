@@ -1,62 +1,34 @@
-import React, { useState, useEffect, useRef, Suspense, useCallback } from 'react';
+import React, { useState, useRef, Suspense, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Canvas, useThree } from '@react-three/fiber';
-import { OrbitControls, ContactShadows, Environment } from '@react-three/drei';
-import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib';
+import { useQueryState, parseAsStringLiteral } from 'nuqs';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { CameraControls, ContactShadows } from '@react-three/drei';
+import type CameraControlsImpl from 'camera-controls';
 import * as THREE from 'three';
 import { getAllTeams, getTeamById } from '../../data/dataService';
 import { InteractiveCarModel, type PartHoverInfo } from './InteractiveCarModel';
-import { CameraTrackingLight } from './CameraTrackingLight';
-import { FallbackImage } from '../../components/FallbackImage/FallbackImage';
+import { CarStudioLighting } from './components/CarStudioLighting';
 import { usePreferencesContext } from '../../contexts/UserPreferencesContext';
 import { CanvasErrorBoundary } from './components/CanvasErrorBoundary';
-import { TelemetryLoadingProgress } from './components/TelemetryLoadingProgress';
 import { PerfDebugCollector } from './components/PerfDebugOverlay';
 import { usePageMeta } from '../../hooks/usePageMeta';
 import type { ActiveAeroMode } from './components/Regulation2026Overlay';
-import { ExperimentalBadge } from '../../components/ui/ExperimentalBadge';
-import './CarsArchive.css';
+import { getCarEraSpec, type CarEraId } from './carEraRegistry';
+import { CarSelectorBar } from './components/CarSelectorBar';
+import { CarSpecPanel } from './components/CarSpecPanel';
+import { CarViewportControls } from './components/CarViewportControls';
+import { CarHotspotPins } from './components/CarHotspotPins';
+import { CarAnatomyPanel } from './components/CarAnatomyPanel';
+import { getHotspotsForEra, type CarHotspot } from '../../data/carHotspots';
+import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
 
-/**
- * Inner error boundary that catches HDR environment map fetch failures.
- * Prevents CDN latency or network drops from breaking the 3D scene.
- */
-class EnvironmentErrorBoundary extends React.Component<
-  { children: React.ReactNode },
-  { hasError: boolean }
-> {
-  state = { hasError: false };
-
-  static getDerivedStateFromError(): { hasError: boolean } {
-    return { hasError: true };
-  }
-
-  componentDidCatch(error: Error) {
-    console.warn('[CarsArchive] HDR environment map failed to load. Falling back to scene lights only.', error.message);
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return null;
-    }
-    return this.props.children;
-  }
-}
-
-const EnvironmentWithFallback: React.FC = () => (
-  <EnvironmentErrorBoundary>
-    <Environment preset="city" />
-  </EnvironmentErrorBoundary>
-);
-
-/**
- * Invalidation Trigger for demand-frameloop
- */
-const CanvasInvalidator: React.FC<{ trigger: unknown }> = ({ trigger }) => {
-  const { invalidate } = useThree();
-  useEffect(() => {
-    invalidate();
-  }, [trigger, invalidate]);
+const AutoRotateHelper: React.FC<{
+  controlsRef: React.RefObject<CameraControlsImpl | null>;
+  enabled: boolean;
+}> = ({ controlsRef, enabled }) => {
+  useFrame((_, delta) => {
+    if (enabled && controlsRef.current) controlsRef.current.rotate(delta * 0.25, 0, false);
+  });
   return null;
 };
 
@@ -66,477 +38,204 @@ export const CarsArchive: React.FC = () => {
   const teams = getAllTeams();
   const { hasReducedMotion } = usePreferencesContext();
 
+  const [eraId, setEraId] = useQueryState(
+    'era',
+    parseAsStringLiteral([
+      '1950s_front_engine', '1988_turbo', '2004_v10', '2024_ground_effect', '2026_active_aero',
+    ] as const).withDefault('2024_ground_effect')
+  );
+
+  const eraSpec = getCarEraSpec(eraId);
   const selectedTeam = getTeamById(teamId) || teams[0];
 
-  usePageMeta({
-    title: selectedTeam
-      ? `${selectedTeam.name} ${selectedTeam.carName} — 3D CAD Lab & 2026 Regulation Inspector`
-      : '3D Vehicle Lab — Formula 1 Technical Regulations',
-    description:
-      'Interactive 3D Formula 1 chassis viewer, aerodynamic CAD flow visualization, and 2026 FIA technical regulation inspector comparing active aero, 50-50 hybrid power units, and nimble car dimensions.',
-    canonicalPath: `/cars${selectedTeam ? `/${selectedTeam.id}` : ''}`,
-    jsonLd: {
-      '@context': 'https://schema.org',
-      '@type': 'TechArticle',
-      headline: `${selectedTeam.name} ${selectedTeam.carName} 3D Vehicle Lab & 2026 Regulation Inspector`,
-      description: 'Interactive 3D model, aerodynamic CAD flow visualization, and 2026 FIA technical regulations comparison.',
-      proficiencyLevel: 'Expert',
-      dependencies: 'Three.js, WebGL'
-    }
-  });
-
-  const [showAero, setShowAero] = useState<boolean>(false);
+  const [showAero, setShowAero] = useState(false);
   const [hoveredPart, setHoveredPart] = useState<PartHoverInfo | null>(null);
-  const [isContextLost, setIsContextLost] = useState<boolean>(false);
-  const [is2026Inspector, setIs2026Inspector] = useState<boolean>(false);
   const [activeAeroMode, setActiveAeroMode] = useState<ActiveAeroMode>('corner');
+  const [isAutoRotating, setIsAutoRotating] = useState(true);
+  const [isInteracting, setIsInteracting] = useState(false);
+  const [showHotspots, setShowHotspots] = useState(true);
+  const [selectedHotspot, setSelectedHotspot] = useState<CarHotspot | null>(null);
 
-  // Mobile / Coarse Pointer Touch Lock
-  const [isTouchDevice, setIsTouchDevice] = useState<boolean>(false);
-  const [isTouchUnlocked, setIsTouchUnlocked] = useState<boolean>(false);
-
-  const orbitRef = useRef<OrbitControlsImpl>(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const isCoarse = window.matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
-      setIsTouchDevice(isCoarse);
-      if (!isCoarse) {
-        setIsTouchUnlocked(true);
-      }
-    }
-  }, []);
+  const controlsRef = useRef<CameraControlsImpl | null>(null);
+  const eraHotspots = useMemo(() => getHotspotsForEra(eraSpec.id), [eraSpec.id]);
 
   const handleSelectTeam = (id: string) => {
-    navigate(`/cars/${id}`);
+    navigate(`/lab/${id}${eraId !== '2024_ground_effect' ? `?era=${eraId}` : ''}`);
   };
 
-  const handleResetCamera = useCallback(() => {
-    if (orbitRef.current) {
-      orbitRef.current.reset();
-    }
-  }, []);
+  const handleSelectHotspot = useCallback(
+    (hotspot: CarHotspot) => {
+      setSelectedHotspot(hotspot);
+      if (controlsRef.current) {
+        const { position, target } = hotspot.cameraTarget;
+        controlsRef.current.setLookAt(
+          position[0],
+          position[1],
+          position[2],
+          target[0],
+          target[1],
+          target[2],
+          !hasReducedMotion
+        );
+      }
+    },
+    [hasReducedMotion]
+  );
 
-  // Compute frameloop state:
-  // When aero particles are running or auto-rotating: 'always'.
-  // When idle and user is stationary: 'demand' (0 FPS idle draw).
-  const isAutoRotating = !hasReducedMotion && !showAero && !hoveredPart;
-  const isAnimating = showAero || isAutoRotating;
+  const handleResetCamera = useCallback(() => {
+    setSelectedHotspot(null);
+    if (controlsRef.current) {
+      controlsRef.current.setLookAt(3.6, 1.3, 3.1, 0, 0.25, 0, !hasReducedMotion);
+    }
+  }, [hasReducedMotion]);
+
+  const handleToggleAutoRotate = () => {
+    setIsAutoRotating((prev) => !prev);
+  };
+
+  const isAutoRotateActive =
+    isAutoRotating && !isInteracting && !showAero && !hoveredPart && !hasReducedMotion;
+
+  usePageMeta({
+    title: `${selectedTeam.name} (${eraSpec.yearLabel} ${eraSpec.title}) — 3D CAD Lab`,
+    description: `Inspect ${selectedTeam.name} across 75+ years of F1 technical eras: ${eraSpec.title}. Interactive 3D PBR vehicle model, aerodynamics and regulations.`,
+    canonicalPath: `/lab/${selectedTeam.id}`,
+  });
 
   return (
-    <div className="cars-archive-container">
-      {/* 3-Column Grid Layout */}
-      <div className="cars-three-column-layout">
-        {/* Left Column: Team Selector List */}
-        <aside className="cars-sidebar-left" aria-label="Team selector">
-          <div className="sidebar-header telemetry">
-            <span>// CHASSIS LAB</span>
-            <span className="sidebar-count">{teams.length} VEHICLES</span>
-          </div>
-
-          <div className="cars-team-list">
-            {teams.map((team) => (
-              <button
-                key={team.id}
-                type="button"
-                className={`list-button car-team-btn ${selectedTeam.id === team.id ? 'active' : ''}`}
-                onClick={() => handleSelectTeam(team.id)}
-              >
-                <div className="car-btn-content">
-                  <span
-                    className="team-color-indicator"
-                    style={{ backgroundColor: team.color, boxShadow: `0 0 8px ${team.color}` }}
-                  />
-                  <div className="car-btn-text">
-                    <span className="car-team-name">{team.name}</span>
-                    <span className="car-model-name telemetry">{team.carName}</span>
-                  </div>
-                </div>
-              </button>
-            ))}
-          </div>
-        </aside>
-
-        {/* Center Column: Interactive 3D Canvas */}
-        <main className="cars-canvas-area">
-          {/* Canvas HUD Top Overlay */}
-          <div className="canvas-hud-top">
-            <div className="canvas-header-box">
-              <div className="canvas-tag telemetry">
-                <span className="canvas-live-blip"></span>
-                <span>AERODYNAMIC HIGH-FIDELITY CAD LAB</span>
-                <span className="telemetry-frameloop-tag">
-                  {isAnimating ? 'FPS: 60 (ACTIVE)' : 'FPS: 0 (DEMAND IDLE)'}
-                </span>
-              </div>
-              <h1
-                className="canvas-car-title headline"
-                style={{ color: selectedTeam.color, textShadow: `0 0 20px ${selectedTeam.color}66` }}
-              >
-                {selectedTeam.carName}
-              </h1>
-              <span className="canvas-team-subtitle telemetry">
-                {selectedTeam.name.toUpperCase()} // OFFICIAL LIVERY &amp; AERO MAPPING
+    <div className="relative min-h-[calc(100vh-80px)] w-full bg-[#090B10] px-4 py-6 sm:px-6 lg:px-8 text-white">
+      <div className="mx-auto flex max-w-[1440px] flex-col gap-6">
+        {/* Top Header Row */}
+        <section className="flex flex-col gap-3 rounded-lg border border-white/10 bg-[#11151E] p-5 shadow-2xl">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex items-center gap-2 font-mono text-xs text-[#8494AB]">
+              <span className="h-2 w-2 rounded-full bg-[#E10600] animate-pulse" />
+              <span className="font-bold text-white uppercase tracking-wider">
+                3D VEHICLE EVOLUTION LAB
+              </span>
+              <span className="rounded border border-white/10 bg-white/5 px-2 py-0.5 text-[10px] text-cyan-400">
+                PBR SHADER PIPELINE // {eraSpec.yearLabel}
               </span>
             </div>
-
-            {/* Aero Wind Tunnel & Camera Reset Controls */}
-            <div className="canvas-controls-box">
-              {/* Touch interaction unlock/lock toggle for mobile */}
-              {isTouchDevice && (
-                <button
-                  type="button"
-                  className={`f1-btn telemetry touch-lock-btn ${isTouchUnlocked ? 'f1-btn-secondary' : 'unlocked'}`}
-                  onClick={() => setIsTouchUnlocked(!isTouchUnlocked)}
-                  aria-label={isTouchUnlocked ? 'Lock 3D canvas scrolling' : 'Unlock 3D canvas interaction'}
-                >
-                  <span>{isTouchUnlocked ? '🔒 LOCK SCROLL' : '👆 3D INTERACT'}</span>
-                </button>
-              )}
-
-              <button
-                type="button"
-                className="f1-btn f1-btn-secondary telemetry camera-reset-btn"
-                onClick={handleResetCamera}
-                title="Reset Camera to Beauty 3/4 Angle"
-                aria-label="Reset Camera view"
-              >
-                <span>RECENTER VIEW</span>
-              </button>
-
-              <button
-                type="button"
-                className={`f1-btn aero-toggle-btn ${showAero ? 'aero-active' : ''}`}
-                onClick={() => setShowAero(!showAero)}
-                aria-pressed={showAero}
-              >
-                <span className="aero-pulse-icon"></span>
-                <span>AERO TEST: {showAero ? 'ACTIVE' : 'OFF'}</span>
-              </button>
-
-              <button
-                type="button"
-                className={`f1-btn reg-2026-toggle-btn ${is2026Inspector ? 'reg-active' : ''}`}
-                onClick={() => setIs2026Inspector(!is2026Inspector)}
-                aria-pressed={is2026Inspector}
-                title="Toggle 2026 FIA Regulation 3D Wireframe & Innovation Inspector"
-              >
-                <span>{is2026Inspector ? '⚡ 2026 SPECS: ON' : '🔍 2026 REGULATION INSPECTOR'}</span>
-              </button>
-
-              {is2026Inspector && (
-                <>
-                  <ExperimentalBadge compact label="2026 REGULATION SIMULATION" />
-                  <button
-                    type="button"
-                    className={`f1-btn aero-mode-btn ${activeAeroMode === 'straight' ? 'mode-straight' : 'mode-corner'}`}
-                    onClick={() => setActiveAeroMode(activeAeroMode === 'corner' ? 'straight' : 'corner')}
-                    title="Toggle Active Aero Mode: Straight (Low Drag) vs Corner (Downforce)"
-                  >
-                    <span>
-                      {activeAeroMode === 'straight' ? 'WING: STRAIGHT (LOW DRAG)' : 'WING: CORNER (DOWNFORCE)'}
-                    </span>
-                  </button>
-                </>
-              )}
-            </div>
+            <CopyShareLinkButton label="Share 3D Vehicle View" />
           </div>
 
-          {/* Three.js Canvas Container with Studio Staging & Lighting */}
-          <div className="canvas-viewport-wrapper">
-            {isContextLost ? (
-              <div className="canvas-context-lost-banner telemetry-panel corner-bracket" role="alert">
-                <div className="context-lost-content">
-                  <span className="context-icon">⚠️</span>
-                  <h3 className="headline">WEBGL GPU CONTEXT SUSPENDED</h3>
-                  <p className="telemetry">Mobile OS or system idle suspended the graphics pipeline.</p>
-                  <button
-                    type="button"
-                    className="f1-btn telemetry"
-                    onClick={() => setIsContextLost(false)}
-                  >
-                    <span>RESTORE GRAPHICS PIPELINE</span>
-                  </button>
-                </div>
+          <div>
+            <h1 className="font-display text-2xl sm:text-3xl font-extrabold tracking-wide text-white">
+              {selectedTeam.name} // {eraSpec.title}
+            </h1>
+            <p className="font-mono text-xs text-[#8494AB] mt-0.5">
+              {selectedTeam.carName} • {eraSpec.subtitle}
+            </p>
+          </div>
+        </section>
+
+        {/* 2-Bar Selectors: Era Timeline + Constructor Livery */}
+        <CarSelectorBar
+          currentEra={eraSpec.id}
+          selectedTeam={selectedTeam}
+          teams={teams}
+          onSelectEra={(newEra) => setEraId(newEra)}
+          onSelectTeam={handleSelectTeam}
+        />
+
+        {/* Main 3D Viewport & Technical Readout Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Left 3D Viewport (8 Columns) */}
+          <div className="lg:col-span-8 flex flex-col gap-3">
+            <div className="relative h-[480px] sm:h-[560px] w-full rounded-lg border border-white/10 bg-gradient-to-b from-[#0c121e] to-[#05070c] overflow-hidden shadow-2xl">
+              {/* Floating Top Controls Dock */}
+              <div className="absolute top-3 left-3 z-10">
+                <CarViewportControls
+                  isAutoRotating={isAutoRotating}
+                  onToggleAutoRotate={handleToggleAutoRotate}
+                  onResetCamera={handleResetCamera}
+                  showAero={showAero}
+                  onToggleAero={() => setShowAero(!showAero)}
+                  is2026Era={eraSpec.id === '2026_active_aero'}
+                  activeAeroMode={activeAeroMode}
+                  onToggleActiveAeroMode={() =>
+                    setActiveAeroMode(activeAeroMode === 'corner' ? 'straight' : 'corner')
+                  }
+                  showHotspots={showHotspots}
+                  onToggleHotspots={() => setShowHotspots(!showHotspots)}
+                />
               </div>
-            ) : (
+
+              {/* WebGL Canvas (stable DOM element instance) */}
               <CanvasErrorBoundary
-                fallbackTitle={`${selectedTeam.carName} Telemetry Fallback`}
-                onReset={() => handleResetCamera()}
+                fallbackTitle={`${selectedTeam.name} 3D Viewport Fault`}
+                onReset={handleResetCamera}
               >
                 <Canvas
                   shadows={{ type: THREE.PCFSoftShadowMap }}
                   dpr={[1, 2]}
-                  frameloop={isAnimating ? 'always' : 'demand'}
+                  frameloop="always"
                   camera={{ position: [3.6, 1.3, 3.1], fov: 38 }}
-                  style={{
-                    background: 'radial-gradient(ellipse at 50% 40%, #0d121c 0%, #05070c 100%)',
-                    pointerEvents: isTouchDevice && !isTouchUnlocked ? 'none' : 'auto'
-                  }}
-                  gl={{
-                    antialias: true,
-                    alpha: false,
-                    toneMapping: THREE.ACESFilmicToneMapping,
-                    toneMappingExposure: 1.2,
-                    powerPreference: 'high-performance'
-                  }}
-                  onCreated={({ gl }) => {
-                    const el = gl.domElement;
-                    el.addEventListener('webglcontextlost', (e) => {
-                      e.preventDefault();
-                      setIsContextLost(true);
-                    });
-                    el.addEventListener('webglcontextrestored', () => {
-                      setIsContextLost(false);
-                    });
-                  }}
+                  gl={{ antialias: true, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2, powerPreference: 'high-performance' }}
                 >
-                  {/* Invalidates demand loop when team or controls change */}
-                  <CanvasInvalidator
-                    trigger={`${selectedTeam.id}_${showAero}_${isTouchUnlocked}_${is2026Inspector}_${activeAeroMode}`}
+                  <PerfDebugCollector />
+                  <CarStudioLighting selectedTeamColor={selectedTeam.color} />
+
+                  <CameraControls
+                    ref={controlsRef} minDistance={2.2} maxDistance={9.0}
+                    maxPolarAngle={Math.PI / 2 + 0.02} minPolarAngle={Math.PI / 12}
+                    onStart={() => setIsInteracting(true)} onEnd={() => setIsInteracting(false)}
                   />
 
-                  {/* GPU Performance Profiler Collector for ?debug=perf */}
-                  <PerfDebugCollector />
+                  <AutoRotateHelper controlsRef={controlsRef} enabled={isAutoRotateActive} />
 
-                  {/* Studio Ambient & Directional Fill Lights */}
-                  <ambientLight intensity={0.5} />
-
-                  {/* User Co-located Key Light: Tracks camera to create sharp clearcoat highlights */}
-                  <CameraTrackingLight intensity={2.0} castShadow={true} />
-
-                  {/* Studio Overhead Top Light for Roof & Airbox Contour */}
-                  <directionalLight position={[0, 8, 0]} intensity={1.0} color="#FFFFFF" />
-
-                  {/* Studio Rim Lights for Bodywork Silhouette Separation */}
-                  <pointLight position={[-6, 4, -5]} intensity={1.2} color="#00D2FF" />
-                  <pointLight position={[6, 2, -4]} intensity={0.8} color={selectedTeam.color} />
-                  <pointLight position={[0, -2, 4]} intensity={0.3} color="#FFFFFF" />
-
+                  {/* Inner Suspense keeps Canvas DOM element mounted */}
                   <Suspense fallback={null}>
-                    {/* High-Fidelity 3D Car with Component-Specific PBR Shaders & 2026 Regulation Overlay */}
                     <InteractiveCarModel
                       team={selectedTeam}
+                      eraSpec={eraSpec}
                       showAero={showAero}
                       hasReducedMotion={hasReducedMotion}
                       onHoverPart={setHoveredPart}
-                      is2026Inspector={is2026Inspector}
+                      is2026Inspector={eraSpec.id === '2026_active_aero'}
                       activeAeroMode={activeAeroMode}
                     />
 
-                    {/* Ground Contact Shadow under tyres and floor */}
-                    <ContactShadows
-                      position={[0, 0, 0]}
-                      opacity={0.85}
-                      scale={16}
-                      blur={2.0}
-                      far={4}
-                      color={showAero ? '#00D2FF' : '#000000'}
-                    />
+                    {showHotspots && (
+                      <CarHotspotPins
+                        hotspots={eraHotspots}
+                        selectedHotspotId={selectedHotspot?.id}
+                        onSelectHotspot={handleSelectHotspot}
+                      />
+                    )}
 
-                    {/* Studio reflections for metallic lacquer and carbon */}
-                    <EnvironmentWithFallback />
+                    <ContactShadows position={[0, 0, 0]} opacity={0.85} scale={16} blur={2.0} far={4} color={showAero ? '#00D2FF' : '#000000'} />
                   </Suspense>
-
-                  {/* Camera Orbit Controls (defaults to beauty 3/4 angle) */}
-                  <OrbitControls
-                    ref={orbitRef}
-                    target={[0, 0.25, 0]}
-                    enablePan={false}
-                    enabled={!isTouchDevice || isTouchUnlocked}
-                    minDistance={2.5}
-                    maxDistance={8.5}
-                    maxPolarAngle={Math.PI / 2 + 0.02}
-                    minPolarAngle={Math.PI / 12}
-                    autoRotate={isAutoRotating}
-                    autoRotateSpeed={0.6}
-                    touches={{
-                      ONE: THREE.TOUCH.ROTATE,
-                      TWO: THREE.TOUCH.DOLLY_PAN
-                    }}
-                  />
                 </Canvas>
               </CanvasErrorBoundary>
-            )}
 
-            {/* Seamless Telemetry Loader Overlay */}
-            <TelemetryLoadingProgress
-              label={`LOADING ${selectedTeam.carName.toUpperCase()} MESH`}
-              accentColor={selectedTeam.color}
-            />
-
-            {/* Mobile Interaction Gate Overlay */}
-            {isTouchDevice && !isTouchUnlocked && (
-              <div
-                className="mobile-touch-gate"
-                onClick={() => setIsTouchUnlocked(true)}
-                role="button"
-                tabIndex={0}
-                aria-label="Unlock 3D chassis orbit mode"
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') setIsTouchUnlocked(true);
-                }}
-              >
-                <div className="mobile-gate-card telemetry">
-                  <span className="gate-icon">👆</span>
-                  <span className="gate-text">TAP TO ORBIT 3D CHASSIS</span>
-                  <span className="gate-subtext">Page scrolling remains uninhibited</span>
-                </div>
-              </div>
-            )}
-
-            {/* FIXED-SIZE TELEMETRY SPEC HUD OVERLAY IN CORNER */}
-            <div className="canvas-hud-bottom-overlay">
-              {hoveredPart ? (
-                <div
-                  className="hud-part-card"
-                  style={{ '--hud-accent': selectedTeam.color } as React.CSSProperties}
-                >
-                  <div className="hud-card-header telemetry">
-                    <span className="hud-badge-dot"></span>
-                    <span className="hud-badge-category">{hoveredPart.category} // TELEMETRY</span>
+              {/* Hovered Component Telemetry HUD Overlay */}
+              {hoveredPart && (
+                <div className="absolute bottom-3 left-3 z-10 max-w-sm rounded border border-white/10 bg-[#05070c]/90 p-3 font-mono text-xs backdrop-blur-md">
+                  <div className="flex items-center gap-1.5 text-[10px] text-[#8494AB] uppercase">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#E10600]" />
+                    <span>{hoveredPart.category} // TELEMETRY</span>
                   </div>
-                  <div className="hud-card-title headline">{hoveredPart.name}</div>
-                  <div className="hud-card-detail">{hoveredPart.detail}</div>
-                  <div className="hud-card-stat telemetry">{hoveredPart.stat}</div>
-                </div>
-              ) : (
-                <div className="hud-standby-hint telemetry">
-                  <span className="standby-dot"></span>
-                  <span>[ HOVER OVER VEHICLE COMPONENTS FOR TELEMETRY // DRAG TO ORBIT // SCROLL TO ZOOM ]</span>
+                  <div className="font-bold text-white text-sm mt-0.5">{hoveredPart.name}</div>
+                  <div className="text-[#8494AB] text-[11px] mt-1">{hoveredPart.detail}</div>
+                  <div className="text-emerald-400 font-bold mt-1">{hoveredPart.stat}</div>
                 </div>
               )}
             </div>
           </div>
-        </main>
 
-        {/* Right Column: Engineering Specs & Telemetry Status */}
-        <aside className="cars-sidebar-right" aria-label="Vehicle specifications">
-          <div className="sidebar-header telemetry">
-            <span>// CHASSIS TELEMETRY</span>
-            <span className="sidebar-count">SPECS</span>
-          </div>
-
-          <div className="specs-column-content">
-            {/* Team Logo Badge */}
-            <div className="specs-team-brand telemetry-panel">
-              <FallbackImage
-                src={selectedTeam.logoUrl}
-                alt={`${selectedTeam.name} Logo`}
-                type="team"
-                teamId={selectedTeam.id}
-                accentColor={selectedTeam.color}
-                className="specs-brand-logo"
+          {/* Right Technical Specification & Hotspot Anatomy Panel (4 Columns) */}
+          <div className="lg:col-span-4 flex flex-col gap-4">
+            {selectedHotspot && (
+              <CarAnatomyPanel
+                hotspot={selectedHotspot}
+                onClose={() => setSelectedHotspot(null)}
               />
-              <div className="specs-team-desc">
-                <span className="headline" style={{ color: selectedTeam.color }}>
-                  {selectedTeam.name}
-                </span>
-                <span className="telemetry">{selectedTeam.base}</span>
-              </div>
-            </div>
-
-            {/* Specifications Cards: 2026 Regulations vs Current Vehicle */}
-            {is2026Inspector ? (
-              <div className="spec-card-group reg-2026-panel">
-                <div className="reg-2026-header telemetry">
-                  <span className="reg-badge">⚡ FIA 2026 SPEC</span>
-                  <span className="reg-tag">NIMBLE CAR</span>
-                </div>
-
-                <div className="spec-stat-card telemetry-panel reg-highlight">
-                  <span className="spec-label telemetry">POWER UNIT ARCHITECTURE</span>
-                  <span className="spec-val-primary">50% ICE (400 kW) + 50% MGU-K (350 kW)</span>
-                  <span className="spec-sublabel telemetry">MGU-H Removed • 100% Sustainable E-Fuel</span>
-                </div>
-
-                <div className="spec-stat-subgroup">
-                  <div className="spec-stat-card telemetry-panel">
-                    <span className="spec-label telemetry">MINIMUM WEIGHT</span>
-                    <span className="spec-val-highlight headline">768 KG</span>
-                    <span className="spec-sublabel telemetry" style={{ color: '#00ffcc' }}>-32 KG VS 2025</span>
-                  </div>
-                  <div className="spec-stat-card telemetry-panel">
-                    <span className="spec-label telemetry">CHASSIS WIDTH</span>
-                    <span className="spec-val-highlight headline">1,900 MM</span>
-                    <span className="spec-sublabel telemetry" style={{ color: '#00ffcc' }}>-100 MM VS 2025</span>
-                  </div>
-                </div>
-
-                <div className="spec-stat-subgroup">
-                  <div className="spec-stat-card telemetry-panel">
-                    <span className="spec-label telemetry">WHEELBASE</span>
-                    <span className="spec-val-highlight headline">3,400 MM</span>
-                    <span className="spec-sublabel telemetry" style={{ color: '#00ffcc' }}>-200 MM VS 2025</span>
-                  </div>
-                  <div className="spec-stat-card telemetry-panel">
-                    <span className="spec-label telemetry">ACTIVE AERO</span>
-                    <span
-                      className="spec-val-highlight headline"
-                      style={{ color: activeAeroMode === 'straight' ? '#00ffcc' : '#ff9900' }}
-                    >
-                      {activeAeroMode === 'straight' ? 'STRAIGHT' : 'CORNER'}
-                    </span>
-                    <span className="spec-sublabel telemetry">Replaces traditional DRS</span>
-                  </div>
-                </div>
-
-                <div className="spec-stat-card telemetry-panel">
-                  <span className="spec-label telemetry">OVERTAKE ASSIST (MOM)</span>
-                  <span className="spec-val-speed headline" style={{ color: '#eab308' }}>
-                    +0.5 MJ MANUAL OVERRIDE
-                  </span>
-                  <span className="spec-sublabel telemetry">Deployable within 1.0s gap at &gt;290 km/h</span>
-                </div>
-              </div>
-            ) : (
-              <div className="spec-card-group">
-                <div className="spec-stat-card telemetry-panel">
-                  <span className="spec-label telemetry">POWER UNIT SPECIFICATION</span>
-                  <span className="spec-val-primary">{selectedTeam.specs.powerUnit}</span>
-                </div>
-
-                <div className="spec-stat-card telemetry-panel">
-                  <span className="spec-label telemetry">MONOCOQUE &amp; CHASSIS</span>
-                  <span className="spec-val">{selectedTeam.specs.chassis}</span>
-                </div>
-
-                <div className="spec-stat-subgroup">
-                  <div className="spec-stat-card telemetry-panel">
-                    <span className="spec-label telemetry">MINIMUM WEIGHT</span>
-                    <span className="spec-val-highlight headline">{selectedTeam.specs.weight}</span>
-                  </div>
-                  <div className="spec-stat-card telemetry-panel">
-                    <span className="spec-label telemetry">AERO DOWNFORCE</span>
-                    <span className="spec-val-highlight headline">{selectedTeam.specs.downforce}</span>
-                  </div>
-                </div>
-
-                <div className="spec-stat-card telemetry-panel">
-                  <span className="spec-label telemetry">ESTIMATED TOP SPEED</span>
-                  <span className="spec-val-speed headline" style={{ color: '#00D2FF' }}>
-                    {selectedTeam.specs.topSpeed}
-                  </span>
-                </div>
-              </div>
             )}
-
-            {/* Telemetry Status Box */}
-            <div className="telemetry-status-box telemetry-panel">
-              <div className="status-box-header telemetry">
-                <span>CAD TELEMETRY SYSTEM</span>
-                <span className="status-tag-green">ACTIVE</span>
-              </div>
-              <div className="status-readout telemetry">
-                <div>SYSTEM STATUS: ONLINE</div>
-                <div>RENDER ENGINE: THREE.JS R174</div>
-                <div>ASSET PIPELINE: DRACO 1.19 MB</div>
-                <div>FRAME LOOP: {isAnimating ? 'CONTINUOUS (60 FPS)' : 'DEMAND (0 FPS IDLE)'}</div>
-                <div>AERO SIMULATION: {showAero ? '2000 PARTICLES (1 CALL)' : 'STANDBY'}</div>
-              </div>
-            </div>
+            <CarSpecPanel eraSpec={eraSpec} selectedTeam={selectedTeam} />
           </div>
-        </aside>
+        </div>
       </div>
     </div>
   );
