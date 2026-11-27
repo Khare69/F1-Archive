@@ -29,6 +29,7 @@ export const InspectQueryButton: React.FC<InspectQueryButtonProps> = ({
         type="button"
         onClick={() => openQuery(query)}
         data-testid="inspect-query-btn-dev"
+        aria-label="Inspect Query"
         title="Inspect real SQLite-WASM query in slide-over drawer (Shift+D)"
         className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[3px] bg-[#181D28] hover:bg-crimson/20 border border-crimson/40 text-[#F4F6FA] font-mono text-[11px] tracking-wider transition-colors ${className}`}
       >

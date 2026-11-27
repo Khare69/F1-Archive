@@ -18,7 +18,8 @@
     "optimize:models": "node scripts/blender/optimize-car-models.mjs",
     "sync:data": "tsx scripts/etl/index.ts",
     "build:browser-db": "tsx scripts/etl/build-browser-sqlite.ts",
-    "size": "size-limit"
+    "size": "size-limit",
+    "audit:lighthouse": "lhci autorun"
   },
   "dependencies": {
     "@codemirror/lang-sql": "^6.10.0",
@@ -62,6 +63,7 @@
     "@gltf-transform/cli": "^4.5.1",
     "@gltf-transform/core": "^4.5.1",
     "@gltf-transform/functions": "^4.5.1",
+    "@lhci/cli": "0.15.1",
     "@playwright/test": "^1.65.1",
     "@size-limit/file": "^14.3.0",
     "@tailwindcss/vite": "4.3.5",

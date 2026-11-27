@@ -131,6 +131,7 @@ export const InspectQueryDrawer: React.FC = () => {
               type="button"
               onClick={() => executeSql(sqlText)}
               disabled={isRunning}
+              aria-label="Run Query"
               className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[3px] bg-crimson hover:bg-crimson/90 disabled:opacity-50 text-white font-bold transition-colors"
             >
               <Play className="w-3 h-3 fill-white" />

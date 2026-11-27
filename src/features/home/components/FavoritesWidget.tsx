@@ -103,7 +103,7 @@ export const FavoritesWidget: React.FC = () => {
     .slice(0, 6);
 
   return (
-    <div className="p-4 rounded-[4px] bg-[#11151E] border border-white/8 text-neutral-300">
+    <div className="p-4 rounded-[4px] bg-[#11151E] border border-white/8 text-neutral-300 favorites-widget">
       <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-white/8">
         <div className="flex items-center gap-2">
           <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />

@@ -94,7 +94,7 @@ export const WhatIfSimulator: React.FC<WhatIfSimulatorProps> = ({ year }) => {
   const outcomeFlipped = simulatedChampion.driverId !== originalChampion.driverId;
 
   return (
-    <div className="whatif-simulator-panel p-6 sm:p-8 flex flex-col gap-6 bg-[#0D1322]/80 border border-white/10 rounded-lg text-white">
+    <div className="what-if-simulator whatif-simulator-panel p-6 sm:p-8 flex flex-col gap-6 bg-[#0D1322]/80 border border-white/10 rounded-lg text-white">
       {/* Title & Description */}
       <div className="whatif-header-row flex justify-between items-start flex-wrap gap-4">
         <div className="whatif-title-group flex flex-col gap-1.5">

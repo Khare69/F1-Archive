@@ -9,6 +9,7 @@ build/
 
 # Testing & Coverage
 coverage/
+.lighthouseci/
 test-results/
 playwright-report/
 blob-report/

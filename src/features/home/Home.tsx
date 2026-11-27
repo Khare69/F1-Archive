@@ -93,7 +93,7 @@ export const Home: React.FC = () => {
         <InsightBanner
           title="New to Formula 1?"
           insight="Formula 1 combines 1,000+ hp hybrid power units, high-downforce aerodynamics, and split-second pit strategy. Look for dotted underlines across the archive to inspect beginner-friendly glossary definitions."
-          ruleTag="GUIDED ARCHIVE CONTEXT"
+          ruleTag="WHY THIS MATTERS"
           className="mb-6"
         />
 
