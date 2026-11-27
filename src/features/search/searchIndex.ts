@@ -121,6 +121,14 @@ export async function loadSearchIndex(): Promise<FuseType<SearchEntity>> {
         keywords: 'developer dev code sql inspect schema architecture query engine',
         action: 'set-mode-developer',
       },
+      {
+        id: 'action-architecture-docs',
+        category: 'action',
+        title: 'Open Architecture & Docs Explorer',
+        subtitle: 'System architecture, SQLite schema inspector, 3D pipeline, and ADRs',
+        keywords: 'architecture docs documentation sqlite schema adr pipeline internals',
+        path: '/docs',
+      },
     ];
 
     const driverEntities: SearchEntity[] = drivers.map((d) => ({

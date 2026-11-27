@@ -39,6 +39,8 @@ export const Footer: React.FC = () => {
           <Link to="/lab">3D LAB</Link>
           <span>•</span>
           <Link to="/historian">HISTORIAN</Link>
+          <span>•</span>
+          <Link to="/docs">ARCHITECTURE &amp; DOCS</Link>
         </div>
       </div>
     </footer>

@@ -49,5 +49,6 @@ describe('Footer Component', () => {
     expect(screen.getByRole('link', { name: /^PIT WALL$/i })).toHaveAttribute('href', '/pitwall');
     expect(screen.getByRole('link', { name: /^3D LAB$/i })).toHaveAttribute('href', '/lab');
     expect(screen.getByRole('link', { name: /^HISTORIAN$/i })).toHaveAttribute('href', '/historian');
+    expect(screen.getByRole('link', { name: /^ARCHITECTURE & DOCS$/i })).toHaveAttribute('href', '/docs');
   });
 });

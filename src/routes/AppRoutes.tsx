@@ -34,6 +34,9 @@ const RaceHistorian = lazy(() =>
 const PitWallStrategy = lazy(() =>
   import('../features/strategy/PitWallStrategy').then((m) => ({ default: m.PitWallStrategy }))
 );
+const ArchitectureExplorer = lazy(() =>
+  import('../features/docs/ArchitectureExplorer').then((m) => ({ default: m.ArchitectureExplorer }))
+);
 const NotFound = lazy(() =>
   import('../features/notfound/NotFound').then((m) => ({ default: m.NotFound }))
 );
@@ -147,6 +150,16 @@ export const AppRoutes: React.FC = () => {
         element={
           <RouteShell fallbackTitle="AI Race Historian Fault" loadingLabel="INITIALIZING F1DB SQL ENGINE...">
             <RaceHistorian />
+          </RouteShell>
+        }
+      />
+
+      {/* Interactive Architecture & System Docs (C-44) */}
+      <Route
+        path="/docs"
+        element={
+          <RouteShell fallbackTitle="System Architecture Fault" loadingLabel="INITIALIZING ARCHITECTURE EXPLORER...">
+            <ArchitectureExplorer />
           </RouteShell>
         }
       />
