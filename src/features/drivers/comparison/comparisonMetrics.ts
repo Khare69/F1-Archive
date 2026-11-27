@@ -171,7 +171,7 @@ export function computeComparisonRows(
 
 /**
  * Resolves teammate head-to-head records defensively.
- * Coalesces Phase 1 ETL property names and legacy aliases, inverting fields when leftSlug > rightSlug.
+ * Coalesces ETL property names and legacy aliases, inverting fields when leftSlug > rightSlug.
  */
 export function resolveTeammatePair(
   teammatesMap: Record<string, RawTeammateH2HRecord> | undefined | null,

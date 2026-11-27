@@ -7,7 +7,7 @@ import { RaceHistorian } from './RaceHistorian';
 import { sqlClient } from './sqlClient';
 import type { HistorianQueryResult } from './types';
 
-// Mock sqlClient for jsdom environment (FND-03 compliant)
+// Mock sqlClient for jsdom environment
 vi.mock('./sqlClient', () => {
   return {
     sqlClient: {

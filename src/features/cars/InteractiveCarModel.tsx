@@ -83,10 +83,10 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
       }
     });
 
-    // NATIVE COORDINATE ALIGNMENT (FND-01):
-    // Standard Blender MCP export: Length along X (Nose = +X, Tail = -X),
+    // Standard coordinate alignment:
+    // Length along X (Nose = +X, Tail = -X),
     // Height along Y (Roof = +Y), Width symmetric along Z.
-    // Bottom of tires touches ground plane Y = 0.00 natively with zero rotation hacks.
+    // Bottom of tires touches ground plane Y = 0.00 natively with zero rotation offsets.
     clone.rotation.set(0, 0, 0);
     clone.scale.set(1, 1, 1);
     clone.position.set(0, 0, 0);

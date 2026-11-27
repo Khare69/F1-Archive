@@ -8,7 +8,7 @@ import {
   disposeCarMaterials,
 } from '../carMaterialMapper';
 
-describe('carMaterialMapper (P7-FIX-03, F-38, F-08)', () => {
+describe('carMaterialMapper', () => {
   describe('Canonical Zone Resolution', () => {
     it('resolves direct canonical zone names identically', () => {
       for (const zone of CANONICAL_MATERIAL_ZONES) {

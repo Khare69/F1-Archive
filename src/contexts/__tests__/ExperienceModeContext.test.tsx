@@ -26,7 +26,7 @@ const TestConsumer: React.FC = () => {
   );
 };
 
-describe('ExperienceModeContext (C-42 Audience Depth Layer)', () => {
+describe('ExperienceModeContext (Audience Depth Layer)', () => {
   beforeEach(() => {
     safeStorage.removeItem('f1_archive_experience_mode');
     document.documentElement.dataset.experienceMode = '';

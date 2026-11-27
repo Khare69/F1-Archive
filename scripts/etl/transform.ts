@@ -608,7 +608,7 @@ export async function transformF1Data(
 
     const poleToWinRate = recordedPoles > 0 ? Number(((poleWins / recordedPoles) * 100).toFixed(1)) : null;
 
-    // F-12: trackCoordinates is NOT included in summary circuits.json!
+    // trackCoordinates is NOT included in summary circuits.json!
     const countryName = countryNameMap.get(rc.countryId.toLowerCase()) || rc.countryId;
     circuits.push({
       id: cId,
@@ -650,7 +650,7 @@ export async function transformF1Data(
       base: cfg.base,
       principal: cfg.principal,
       championships: rawMatch?.totalChampionshipWins ?? 0,
-      firstEntry, // F-14: No 1950 fallback!
+      firstEntry, // Explicit entry year, no 1950 fallback
       polePositions: rawMatch?.totalPolePositions ?? 0,
       fastestLaps: rawMatch?.totalFastestLaps ?? 0,
       isLegendary: cfg.isLegendary,
@@ -682,7 +682,7 @@ export async function transformF1Data(
         base: rc.countryId || 'Historic',
         principal: 'Team Principal',
         championships: rc.totalChampionshipWins || 0,
-        firstEntry: rc.firstRaceEntryYear ?? computedFirst, // F-14: computed from race entries, never 1950!
+        firstEntry: rc.firstRaceEntryYear ?? computedFirst, // computed from race entries, never 1950
         polePositions: rc.totalPolePositions || 0,
         fastestLaps: rc.totalFastestLaps || 0,
         isLegendary: (rc.totalChampionshipWins ?? 0) > 0,
@@ -711,7 +711,7 @@ export async function transformF1Data(
     const podiums = d.totalPodiums ?? 0;
     const starts = d.totalRaceStarts ?? dResults.length;
 
-    // F-17: Compute pointsSharePct from entered rounds max points
+    // Compute pointsSharePct from entered rounds max points
     let earnedPoints = 0;
     let maxPossibleInEnteredRaces = 0;
 
@@ -734,7 +734,7 @@ export async function transformF1Data(
       ? Number(((earnedPoints / maxPossibleInEnteredRaces) * 100).toFixed(1))
       : 0;
 
-    // F-16: Sort race finishes strictly descending chronologically before taking 8
+    // Sort race finishes strictly descending chronologically before taking 8
     const sortedFinishes = dResults
       .slice()
       .sort((a, b) => {
@@ -791,12 +791,12 @@ export async function transformF1Data(
   }
 
   // ── Process Teammate H2H (Excluding shared cars & splitting DNFs) ──
-  console.log('🤝 Computing teammate head-to-head records (F-18)...');
+  console.log('🤝 Computing teammate head-to-head records...');
   const teammateMap: Record<string, any> = {};
   const racesByConstructorAndRace = new Map<string, RawResult[]>();
 
   for (const r of rawResults) {
-    if (r.positionText === 'DNS' || r.sharedCar) continue; // F-18: exclude sharedCar!
+    if (r.positionText === 'DNS' || r.sharedCar) continue; // exclude sharedCar
     const key = `${r.raceId}_${normalizeTeamId(r.constructorId)}`;
     if (!racesByConstructorAndRace.has(key)) racesByConstructorAndRace.set(key, []);
     racesByConstructorAndRace.get(key)!.push(r);
@@ -833,7 +833,7 @@ export async function transformF1Data(
         const rec = teammateMap[pairKey];
         rec.racesTogether++;
 
-        // F-18: Split both finished vs all starts
+        // Split both finished vs all starts
         if (d1.positionNumber && d2.positionNumber) {
           if (d1.positionNumber < d2.positionNumber) {
             rec.bothFinishedWinsA++;

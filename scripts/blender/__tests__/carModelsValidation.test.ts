@@ -15,7 +15,7 @@ const EXPECTED_ERA_MODELS = [
 const GLTF_MAGIC = 0x46546c67; // 'glTF' in little-endian uint32
 const MAX_BUDGET_BYTES = 1.5 * 1024 * 1024; // 1.5 MB
 
-describe('Car Models Asset Validation Gate (P7-DEV-02, C-39, F-38, F-03)', () => {
+describe('Car Models Asset Validation Gate', () => {
   it.each(EXPECTED_ERA_MODELS)(
     'ensures %s exists, is under 1.5 MB, and has valid glTF 2.0 binary header',
     (filename) => {

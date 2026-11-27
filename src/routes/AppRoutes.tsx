@@ -154,7 +154,7 @@ export const AppRoutes: React.FC = () => {
         }
       />
 
-      {/* Interactive Architecture & System Docs (C-44) */}
+      {/* Interactive Architecture & System Docs */}
       <Route
         path="/docs"
         element={

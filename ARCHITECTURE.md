@@ -87,7 +87,7 @@ Queries are handled through a dual-tier execution abstraction (`sqlClient.ts`):
    - Takes GPS latitude, longitude, and elevation points.
    - Projects coordinates into local Cartesian space using Mercator projection.
    - Computes smooth 3D Frenet-Serret frames along the centerline spline to generate road deck, inner/outer kerbs, and apex run-off geometry.
-2. **Blender MCP 5-Era Vehicle Pipeline (`scripts/blender/build_era_cars.py`)**:
+2. **Parametric Blender Python (bpy) 5-Era Vehicle Pipeline (`scripts/blender/build_era_cars.py`)**:
    - Standardized coordinate system: `+X` Nose, `-X` Tail, `+Z` Roof (Blender) $\to$ `+Y` Roof, `-Z` Tail, `+X` Nose (glTF 2.0).
    - Real-world physical dimensions (Length 4.2m–5.5m, Width 1.8m–2.0m, Height ~1.0m).
    - 9 canonical material slots mapped dynamically to team liveries via `carMaterialMapper.ts`.

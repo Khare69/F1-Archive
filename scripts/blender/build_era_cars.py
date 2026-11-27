@@ -1,5 +1,5 @@
 """
-F1 // ARCHIVE — Blender MCP 5-Era Chassis Generator Pipeline
+F1 // ARCHIVE — Parametric 5-Era Chassis Generator Pipeline
 Generates 5 distinct procedural CAD-accurate F1 chassis spanning 1950 to 2026.
 Standard coordinate alignment:
   Length along X (Nose = +X, Tail = -X)
@@ -798,7 +798,7 @@ def build_2026():
 
 
 def build_all():
-    print("=== Generating 5 Era F1 Chassis via Blender MCP ===")
+    print("=== Generating 5 Era F1 Chassis via Blender (bpy) ===")
     build_1950s()
     build_1988()
     build_2004()

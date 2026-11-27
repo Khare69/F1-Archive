@@ -37,22 +37,31 @@ Thumbs.db
 desktop.ini
 ~$*
 
-# Logs
+# Logs & Scratch
 *.log
+task-*.log
+error-context.md
+output.txt
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+review_bundle.txt
 
 # 3D Raw Master Assets (Local only, compressed .glb committed)
 *.raw.glb
+public/models/*.raw.glb
 assets/blender/*.blend
 assets/blender/*.blend1
 assets/blender/*.blend2
 assets/blender/exports/
+assets/blender/imports/
 
 # Agent & internal configuration
 .agents/
+.gemini/
+.claude/
+.cursor/
 
 # Python & Backend
 backend/.venv/

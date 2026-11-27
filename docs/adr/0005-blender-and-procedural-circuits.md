@@ -1,10 +1,10 @@
-# ADR-0005: Blender MCP Procedural 5-Era Car Pipeline
+# ADR-0005: Blender Procedural 5-Era Car Pipeline
 
 ## Context and Problem Statement
 3D models of Formula 1 cars from different eras (1950 Front-Engine, 1967 Cigar Era, 1988 Turbo Era, 2014 Hybrid Era, and 2026 Active Aerodynamics) often come from inconsistent 3D sources with differing coordinate orientations, missing material zones, arbitrary scales, and heavy polygon counts (10–50 MB each).
 
 ## Decision
-We established an automated procedural generation and export pipeline using the **Blender MCP Server** (`scripts/blender/build_era_cars.py`) paired with Draco compression.
+We established an automated procedural generation and export pipeline using Blender Python (bpy) script automation (`scripts/blender/build_era_cars.py`) paired with Draco compression.
 
 ## Technical Implementation
 1. **Standardized Native Coordinates**:

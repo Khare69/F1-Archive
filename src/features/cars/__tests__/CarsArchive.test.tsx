@@ -81,7 +81,7 @@ const renderCarsArchive = (initialUrl = '/lab/ferrari') => {
   );
 };
 
-describe('CarsArchive Component (P7-FIX-01)', () => {
+describe('CarsArchive Component', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });

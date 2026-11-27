@@ -93,7 +93,7 @@
   }
 }
 
-/* CodeMirror 6 Protection against preflight resets (FND-04) */
+/* CodeMirror 6 Protection against preflight resets */
 .cm-editor {
   font-family: var(--font-mono) !important;
   border-radius: 4px;

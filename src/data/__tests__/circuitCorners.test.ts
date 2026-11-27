@@ -8,7 +8,7 @@ import {
 } from '../circuitCorners';
 import { CircuitCornersRegistrySchema } from '../circuitCornersSchema';
 
-describe('Circuit Corners Registry (C-30, F-39)', () => {
+describe('Circuit Corners Registry', () => {
   it('validates 100% against Zod CircuitCornersRegistrySchema', () => {
     expect(() => CircuitCornersRegistrySchema.parse(CIRCUIT_CORNERS_REGISTRY)).not.toThrow();
   });

@@ -9,7 +9,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '../tabs';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle, DialogDescription } from '../dialog';
 import { Skeleton } from '../skeleton';
 
-describe('shadcn/ui Radix Primitives (C-19, F-04)', () => {
+describe('shadcn/ui Radix Primitives', () => {
   it('renders Button with variants and sizes', () => {
     render(
       <div>

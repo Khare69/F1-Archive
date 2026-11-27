@@ -39,7 +39,7 @@ function renderWithProviders(
   );
 }
 
-describe('InspectQueryButton Component (C-43)', () => {
+describe('InspectQueryButton Component', () => {
   it('is completely hidden in beginner mode to keep newcomer UI clean', () => {
     renderWithProviders(
       <InspectQueryButton query={SAMPLE_QUERY} />,

@@ -5,7 +5,7 @@ import {
   getHotspotsForEra,
 } from '../carHotspots';
 
-describe('carHotspots Registry (P7-DEV-04, C-41, F-38, F-08)', () => {
+describe('carHotspots Registry', () => {
   it('validates 100% of registry entries against CarHotspotSchema', () => {
     expect(CAR_HOTSPOTS.length).toBeGreaterThanOrEqual(8);
 

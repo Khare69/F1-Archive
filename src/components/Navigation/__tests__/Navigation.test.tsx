@@ -4,7 +4,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { Navigation } from '../Navigation';
 
-describe('Navigation Component (5-Hub Architecture: C-18, C-20, F-39)', () => {
+describe('Navigation Component (5-Hub Architecture)', () => {
   it('renders exactly 5 top-level desktop navigation hub links', () => {
     render(
       <MemoryRouter initialEntries={['/']}>

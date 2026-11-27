@@ -6,9 +6,9 @@
  * 3. 107% green-flag outlier filtering (Trap 5)
  * 4. Transparent linear fuel-burn pace correction
  * 5. Ordinary Least Squares (OLS) tyre degradation slope
- * 6. Distance normalization & uniform resampling (Phase 6)
- * 7. Multi-driver time delta series computation (Phase 6)
- * 8. Telemetry pack provenance inference (Phase 6)
+ * 6. Distance normalization & uniform resampling
+ * 7. Multi-driver time delta series computation
+ * 8. Telemetry pack provenance inference
  */
 
 import type { TelemetrySample, StintPaceLap } from '../../types/telemetry';

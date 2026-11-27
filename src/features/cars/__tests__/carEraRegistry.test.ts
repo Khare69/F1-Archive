@@ -6,7 +6,7 @@ import {
   type CarEraId,
 } from '../carEraRegistry';
 
-describe('carEraRegistry (P7-FIX-01)', () => {
+describe('carEraRegistry', () => {
   it('defines exactly 5 distinct F1 technical eras', () => {
     expect(CAR_ERA_SPECS).toHaveLength(5);
     const ids = CAR_ERA_SPECS.map((s) => s.id);

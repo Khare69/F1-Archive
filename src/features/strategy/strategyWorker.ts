@@ -54,7 +54,7 @@ self.onmessage = (event: MessageEvent<WorkerInMessage>) => {
   const data = event.data;
   if (!data) return;
 
-  // Modern requestId + StrategyEngineParams protocol (P6-FIX-02, P6-DEV-04)
+  // Modern requestId + StrategyEngineParams protocol
   if ('requestId' in data && 'params' in data && data.params) {
     const { requestId, params } = data;
     try {

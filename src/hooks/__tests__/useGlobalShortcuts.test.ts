@@ -12,7 +12,7 @@ vi.mock('react-router-dom', () => ({
   useNavigate: () => mockNavigate,
 }));
 
-describe('useGlobalShortcuts hook (C-21)', () => {
+describe('useGlobalShortcuts hook', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     document.body.innerHTML = '';

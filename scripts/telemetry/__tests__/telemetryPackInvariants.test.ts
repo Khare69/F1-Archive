@@ -152,7 +152,7 @@ describe('Telemetry Mathematics & Domain Invariants', () => {
   });
 });
 
-describe('Real Disk Telemetry Audit (FND-02 Partitioned Validation)', () => {
+describe('Real Disk Telemetry Audit (Partitioned Validation)', () => {
   const telemetryDir = path.resolve(process.cwd(), 'public/data/telemetry');
 
   it('directory exists and contains telemetry files', () => {

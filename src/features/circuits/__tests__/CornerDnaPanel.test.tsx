@@ -48,7 +48,7 @@ const mockCorners: CornerMarkerItem[] = [
   }
 ];
 
-describe('CornerDnaPanel Component (C-30, C-31)', () => {
+describe('CornerDnaPanel Component', () => {
   it('renders active corner telemetry metrics, notes, and famous overtake callout', () => {
     const handleSelect = vi.fn();
     const handleFilterChange = vi.fn();

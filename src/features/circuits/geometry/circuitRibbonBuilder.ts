@@ -38,7 +38,7 @@ export interface BuiltCircuitGeometries {
 
 /**
  * Computes the scaled Y coordinate in Three.js scene units.
- * Calibrated directly to Phase 1 ETL normalized coordinates and Open-Meteo elevation deltas.
+ * Calibrated directly to ETL normalized coordinates and Open-Meteo elevation deltas.
  */
 export function computeScaledElevationY(
   relElevMeters: number,

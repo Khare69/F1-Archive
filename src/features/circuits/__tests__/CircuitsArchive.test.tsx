@@ -43,7 +43,7 @@ const renderCircuitsArchive = (initialPath = '/circuits/monza') => {
   );
 };
 
-describe('CircuitsArchive & circuitGeometryClient (P5-FIX-02, P5-DEV-04)', () => {
+describe('CircuitsArchive & circuitGeometryClient', () => {
   describe('circuitGeometryClient', () => {
     it('fetches and validates real Spa-Francorchamps geometry with SRTM elevation', async () => {
       const data = await fetchCircuitGeometry('spa-francorchamps');

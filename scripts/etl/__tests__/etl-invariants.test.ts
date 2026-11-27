@@ -10,7 +10,7 @@ import { validateAndExtractZip } from '../extract';
 import { TEAM_CONFIGS, normalizeTeamId } from '../transform';
 import { CircuitSchema, DriverSchema, ConstructorSchema } from '../validate';
 
-describe('ETL Security & Zip-Slip Protection (F-21)', () => {
+describe('ETL Security & Zip-Slip Protection', () => {
   it('should detect and reject zip entries with path traversal (zip-slip)', () => {
     const tempZipPath = path.join(__dirname, 'test-malicious.zip');
     const extractDest = path.join(__dirname, 'test-extract-dest');
@@ -32,7 +32,7 @@ describe('ETL Security & Zip-Slip Protection (F-21)', () => {
   });
 });
 
-describe('TEAM_CONFIGS Registry Integrity (F-15)', () => {
+describe('TEAM_CONFIGS Registry Integrity', () => {
   it('should have strictly unique canonical team keys with no duplicates or aliases', () => {
     const keys = Object.keys(TEAM_CONFIGS);
     const keySet = new Set(keys);
@@ -52,7 +52,7 @@ describe('TEAM_CONFIGS Registry Integrity (F-15)', () => {
   });
 });
 
-describe('Zod Schema Boundary Checks (C-05)', () => {
+describe('Zod Schema Boundary Checks', () => {
   it('should validate standard circuit objects and reject invalid types', () => {
     const validCircuit = {
       id: 'spa-francorchamps',

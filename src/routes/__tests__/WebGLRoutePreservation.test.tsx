@@ -36,14 +36,14 @@ const MockWebGLView: React.FC = () => {
   );
 };
 
-describe('WebGL Route Preservation (F-34, C-14)', () => {
+describe('WebGL Route Preservation', () => {
   it('preserves the WebGL canvas DOM element identity across sub-route parameter changes', async () => {
     canvasMountCount = 0;
     canvasCleanupCount = 0;
 
     render(
       <MemoryRouter initialEntries={['/lab/ferrari']}>
-        {/* Unkeyed Routes (P3-FIX-01 pattern) */}
+        {/* Unkeyed Routes (Preserve WebGL canvas across sub-routes) */}
         <Routes>
           <Route path="/lab/:teamId?" element={<MockWebGLView />} />
           <Route path="/circuits/:circuitId?" element={<MockWebGLView />} />

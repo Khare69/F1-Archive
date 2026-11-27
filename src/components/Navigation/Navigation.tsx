@@ -264,7 +264,7 @@ export const Navigation: React.FC<NavigationProps> = ({ onOpenSearch, onOpenShor
 
         {/* Right Actions */}
         <div className="flex items-center gap-2">
-          {/* Audience Depth Mode Switcher (Learn | Pro | Dev: C-42) */}
+          {/* Audience Depth Mode Switcher (Learn | Pro | Dev) */}
           <div
             role="group"
             aria-label="Audience Depth Mode"

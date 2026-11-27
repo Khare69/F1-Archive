@@ -8,7 +8,7 @@ vi.mock('../../../features/cars/components/PerfDebugOverlay', () => ({
   PerfDebugOverlay: () => <div data-testid="perf-debug-overlay-mock">PERF DEBUG ACTIVE</div>,
 }));
 
-describe('LazyPerfDebugOverlay (C-17, F-37)', () => {
+describe('LazyPerfDebugOverlay', () => {
   beforeEach(() => {
     window.history.pushState({}, '', '/');
   });

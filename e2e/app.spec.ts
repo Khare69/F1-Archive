@@ -38,7 +38,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     });
   });
 
-  test('Phase 3: 5-hub navigation, legacy redirects, and zero texture noise', async ({ page }) => {
+  test('Navigation: renders 5 hubs, redirects legacy routes, and eliminates visual noise', async ({ page }) => {
     await page.goto('/');
 
     // 1. Assert exactly 5 desktop navigation hub links
@@ -58,7 +58,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     await expect(noiseElements).toHaveCount(0);
   });
 
-  test('Phase 3: Deep link renders immediately with zero splash overlay', async ({ page }) => {
+  test('Navigation: deep links render immediately with zero splash overlay', async ({ page }) => {
     await page.goto('/drivers/VER');
     await expect(page.locator('#main-content')).toBeVisible();
 
@@ -67,7 +67,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     await expect(splash).toHaveCount(0);
   });
 
-  test('Phase 3: cmdk + Fuse.js command palette & "?" shortcuts dialog', async ({ page }) => {
+  test('Navigation: command palette search and keyboard shortcuts dialog', async ({ page }) => {
     await page.goto('/');
 
     // 1. Press Ctrl+K to open search palette
@@ -93,7 +93,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     await expect(shortcutsDialog).not.toBeVisible();
   });
 
-  test('Phase 3: IndexedDB query persistence with zero localStorage bloat', async ({ page }) => {
+  test('Storage: persists queries in IndexedDB with zero localStorage bloat', async ({ page }) => {
     await page.goto('/standings');
     await expect(page.locator('.standings-container, .live-standings-page').first()).toBeVisible({ timeout: 15000 });
 
@@ -104,7 +104,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(offlineCache).toBeNull();
   });
 
-  test('Phase 3: WebGL canvas DOM element identity preserved across sub-route parameter changes', async ({ page }) => {
+  test('3D Lab: preserves WebGL canvas DOM element identity across sub-route parameter changes', async ({ page }) => {
     await page.goto('/lab/ferrari');
     await expect(page.locator('.cars-archive-container, h1').first()).toBeVisible();
 
@@ -272,7 +272,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Phase 4: Shareable Comparison Deep Link (C-22, C-25)', async ({ page }) => {
+  test('Drivers: shareable head-to-head comparison deep link', async ({ page }) => {
     await page.goto('/drivers/compare?d1=SEN&d2=PRO&mode=normalized');
     await expect(page.locator('#main-content')).toBeVisible();
 
@@ -288,7 +288,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(bodyText).not.toContain('NaN');
   });
 
-  test('Phase 4: Virtualized Drivers Table & URL Filter (C-23, C-25)', async ({ page }) => {
+  test('Drivers: virtualized driver directory and filter navigation', async ({ page }) => {
     await page.goto('/drivers?filter=champions');
     await expect(page.locator('#main-content')).toBeVisible();
 
@@ -310,7 +310,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(rowCount).toBeLessThanOrEqual(50);
   });
 
-  test('Phase 4: Live Standings API Outage Fallback (C-24, F-10)', async ({ page }) => {
+  test('Standings: handles upstream API outages with archive recovery fallback', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -332,7 +332,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Phase 4: 2026 Constructors Grid & Trademark-Safe Badges (C-26)', async ({ page }) => {
+  test('Constructors: 2026 grid and historic constructor archives', async ({ page }) => {
     await page.goto('/teams');
     await expect(page.locator('#main-content')).toBeVisible();
 
@@ -354,7 +354,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     await expect(page.locator('text=2009').first()).toBeVisible({ timeout: 10000 });
   });
 
-  test('Phase 5: 2D SVG vs. 3D Elevation Mode & Keyboard Shortcuts (C-28, C-29)', async ({ page }) => {
+  test('Circuits: switches between 2D SVG and 3D elevation views with keyboard shortcuts', async ({ page }) => {
     await page.goto('/circuits/spa-francorchamps');
     await expect(page.locator('.circuits-archive-page')).toBeVisible({ timeout: 10000 });
 
@@ -382,7 +382,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     await expect(canvas).toBeVisible({ timeout: 10000 });
   });
 
-  test('Phase 5: Corner DNA Deep Link & Filter Inspection (C-30, C-31)', async ({ page }) => {
+  test('Circuits: corner telemetry deep links and filter inspection', async ({ page }) => {
     // Navigate straight to Turn 3 (Eau Rouge) in 2D mode
     await page.goto('/circuits/spa-francorchamps?view=2d&corner=3');
     await expect(page.locator('.circuits-archive-page')).toBeVisible({ timeout: 10000 });
@@ -410,7 +410,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(bodyText).not.toContain('NaN');
   });
 
-  test('Phase 5: 10x Rapid Circuit & Hub Route-Switch WebGL Stability (C-32, F-38)', async ({ page }) => {
+  test('Circuits: maintains WebGL context stability across rapid route transitions', async ({ page }) => {
     const webglErrors: string[] = [];
     page.on('console', (msg) => {
       const text = msg.text();
@@ -441,7 +441,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(webglErrors).toEqual([]);
   });
 
-  test('Phase 6: Telemetry Provenance & Experimental Quarantine (C-36, F-39)', async ({ page }) => {
+  test('Telemetry: telemetry provenance badges and experimental simulation quarantine', async ({ page }) => {
     await page.goto('/telemetry');
     await expect(page.locator('h1').first()).toBeVisible({ timeout: 10000 });
 
@@ -466,7 +466,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     ).toBeVisible({ timeout: 10000 });
   });
 
-  test('Phase 6: Synchronized uPlot Telemetry & Space Playback (C-34, C-35)', async ({ page }) => {
+  test('Telemetry: synchronized multi-channel traces and spacebar playback', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -491,7 +491,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Phase 6: Focus-Plus-Context Season Progression Chart (C-34, I-04)', async ({ page }) => {
+  test('Seasons: focus-plus-context season progression chart', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -510,7 +510,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Phase 6: Pit-Wall Strategy Editable Math & URL Hydration (C-33, C-37, C-25)', async ({ page }) => {
+  test('Pit Wall: strategy simulator parameter editing and URL state hydration', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -536,7 +536,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Phase 7: 5-Era Technical Timeline Switcher & Nuqs URL Sync (C-25, C-38)', async ({ page }) => {
+  test('3D Lab: switches between 5 historical technical eras with URL synchronization', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -570,7 +570,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Phase 7: 2026 Technical Regulations Simulation & Active Aero Articulation (C-40, F-10)', async ({ page }) => {
+  test('3D Lab: 2026 technical regulations simulation and active aerodynamics articulation', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -593,7 +593,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Phase 7: Interactive Anatomy Hotspots & 2-Tab Inspector Panel (C-41)', async ({ page }) => {
+  test('3D Lab: interactive car anatomy hotspots and two-tab inspection panel', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -625,7 +625,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Phase 7: WebGL Canvas DOM Identity & Shader Stability (F-38, F-40)', async ({ page }) => {
+  test('3D Lab: WebGL canvas DOM element identity and shader stability across era switches', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -658,7 +658,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Phase 8: Audience Depth Mode persistence (Learn, Pro, Dev) and glossary tooltips (C-42)', async ({ page }) => {
+  test('Audience Depth: persists Learn, Pro, Dev preference and renders contextual glossary tooltips', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -697,7 +697,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Phase 8: Dev Mode & </> Inspect Query slide-over CodeMirror 6 drawer (C-43)', async ({ page }) => {
+  test('Dev Mode: slide-over SQL query inspector with CodeMirror 6 drawer', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -726,7 +726,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Phase 8: /docs interactive Architecture Explorer & live SQLite schema inspector (C-44)', async ({ page }) => {
+  test('Architecture & Docs: interactive Architecture Explorer and live SQLite schema inspector', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 
@@ -762,7 +762,7 @@ test.describe('F1 Archive — Full Application E2E Suite', () => {
     expect(pageErrors).toEqual([]);
   });
 
-  test('Phase 8: Home page Bento grid (I-02), On This Day in F1, and Starter Story links (I-02)', async ({ page }) => {
+  test('Home: Bento dashboard grid, On This Day in F1, and starter story navigation', async ({ page }) => {
     const pageErrors: string[] = [];
     page.on('pageerror', (err) => pageErrors.push(err.message));
 

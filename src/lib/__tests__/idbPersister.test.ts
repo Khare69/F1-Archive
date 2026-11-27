@@ -14,7 +14,7 @@ vi.mock('idb-keyval', () => ({
   del: vi.fn()
 }));
 
-describe('IndexedDB React Query Persister (F-35, C-15)', () => {
+describe('IndexedDB React Query Persister', () => {
   beforeEach(() => {
     window.localStorage.clear();
     vi.clearAllMocks();

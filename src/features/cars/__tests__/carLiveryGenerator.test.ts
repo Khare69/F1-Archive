@@ -6,7 +6,7 @@ import {
   getTeamLiveryTexture,
 } from '../carLiveryGenerator';
 
-describe('carLiveryGenerator (P7-FIX-02, C-26, F-10)', () => {
+describe('carLiveryGenerator', () => {
   beforeEach(() => {
     vi.restoreAllMocks();
   });
@@ -118,7 +118,7 @@ describe('carLiveryGenerator (P7-FIX-02, C-26, F-10)', () => {
     });
   });
 
-  describe('Trademark Safety Audits (F-10)', () => {
+  describe('Trademark Safety Audits', () => {
     it('source code contains zero trademarked crest descriptions or brand emblems', async () => {
       const fs = await import('fs');
       const path = await import('path');

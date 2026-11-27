@@ -108,7 +108,7 @@ describe('ArchitectureExplorer Component', () => {
     await user.click(graphicsTab);
 
     expect(await screen.findByText(/Three\.js Procedural Circuit Ribbon/i)).toBeInTheDocument();
-    expect(screen.getByText(/Blender MCP 5-Era Vehicle Lab/i)).toBeInTheDocument();
+    expect(screen.getByText(/Blender Python 5-Era Vehicle Lab/i)).toBeInTheDocument();
   });
 
   it('displays Architectural Decision Records (ADRs) and legal attributions', async () => {

@@ -22,7 +22,7 @@ const mockCorners: CornerMarkerItem[] = [
   { number: 5, name: 'Les Combes', t: 0.38, isOvertakingZone: true, isHighDownforce: false }
 ];
 
-describe('Track2DMap Component (C-28, C-29)', () => {
+describe('Track2DMap Component', () => {
   it('renders SVG track map and mounts ZERO WebGL canvas elements', () => {
     const { container } = render(
       <Track2DMap

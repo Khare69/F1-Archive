@@ -27,7 +27,7 @@ const ADR_LIST = [
   { id: 'ADR-0002', title: 'Procedural Dual-Mesh Ribbon Generator for 3D Tracks', status: 'Accepted', summary: 'Frenet-Serret frames compute road deck, kerbs, and apex markers from geo-coordinates.' },
   { id: 'ADR-0003', title: 'Head-to-Head Era Normalization Engine', status: 'Accepted', summary: 'Points share mathematical engine normalizes 1950–2026 scoring disparities for cross-era driver comparison.' },
   { id: 'ADR-0004', title: 'Pure-Math Deterministic Mulberry32 Strategy Worker', status: 'Accepted', summary: 'Monte Carlo pit-wall simulation runs 1,000 permutations in a Web Worker using seedable PRNG.' },
-  { id: 'ADR-0005', title: 'Blender MCP Procedural 5-Era Car Pipeline', status: 'Accepted', summary: 'Blender MCP builds 5 era chassis with standardized orientation and Draco compression.' },
+  { id: 'ADR-0005', title: 'Blender Procedural 5-Era Car Pipeline', status: 'Accepted', summary: 'Parametric Blender Python pipeline builds 5 era chassis with standardized orientation and Draco compression.' },
 ];
 
 export const ArchitectureExplorer: React.FC = () => {
@@ -174,10 +174,10 @@ export const ArchitectureExplorer: React.FC = () => {
               </div>
               <div className="p-5 rounded-[4px] bg-[#11151E] border border-white/8">
                 <h4 className="text-sm font-bold text-white mb-2 flex items-center gap-2">
-                  <CheckCircle className="w-4 h-4 text-emerald-400" /> Blender MCP 5-Era Vehicle Lab
+                  <CheckCircle className="w-4 h-4 text-emerald-400" /> Blender Python 5-Era Vehicle Lab
                 </h4>
                 <p className="text-xs text-neutral-300 leading-relaxed font-mono">
-                  Five historical era models (1950, 1967, 1988, 2014, 2026) exported via Blender MCP.
+                  Five historical era models (1950, 1967, 1988, 2014, 2026) exported via parametric Blender Python (bpy).
                   Standardized native orientation (+X Nose, +Z Roof), real-world dimensions, and Draco compression under 1 MB.
                 </p>
               </div>

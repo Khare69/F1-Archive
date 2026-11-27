@@ -21,7 +21,7 @@ describe('Historian Analytical SQL Presets (Zero-Mock Real SQLite)', () => {
     });
   }
 
-  it('verifies monza-past-winners (F-23): Schumacher and Hamilton both lead all-time with 5 wins', async () => {
+  it('verifies monza-past-winners: Schumacher and Hamilton both lead all-time with 5 wins', async () => {
     const monzaPreset = HISTORIAN_PRESETS.find((p) => p.id === 'monza-past-winners');
     expect(monzaPreset).toBeDefined();
     const result = await sqlClient.executeQuery(monzaPreset!.sql);
@@ -36,7 +36,7 @@ describe('Historian Analytical SQL Presets (Zero-Mock Real SQLite)', () => {
     expect(Number(hamilton?.wins)).toBe(5);
   });
 
-  it('verifies most-poles-history (F-24): pole_to_win_pct is bounded between 0% and 100%', async () => {
+  it('verifies most-poles-history: pole_to_win_pct is bounded between 0% and 100%', async () => {
     const polesPreset = HISTORIAN_PRESETS.find((p) => p.id === 'most-poles-history');
     expect(polesPreset).toBeDefined();
     const result = await sqlClient.executeQuery(polesPreset!.sql);
@@ -50,7 +50,7 @@ describe('Historian Analytical SQL Presets (Zero-Mock Real SQLite)', () => {
     }
   });
 
-  it('verifies circuit-elevation-extremes (F-25): strictly descending and Spa delta > 80m', async () => {
+  it('verifies circuit-elevation-extremes: strictly descending and Spa delta > 80m', async () => {
     const elevPreset = HISTORIAN_PRESETS.find((p) => p.id === 'circuit-elevation-extremes');
     expect(elevPreset).toBeDefined();
     const result = await sqlClient.executeQuery(elevPreset!.sql);
@@ -70,7 +70,7 @@ describe('Historian Analytical SQL Presets (Zero-Mock Real SQLite)', () => {
     expect(Number(spa?.elevation_change_m)).toBeGreaterThan(80);
   });
 
-  it('verifies seasons-decade-summary (F-25): covers decades from 1950s through 2020s', async () => {
+  it('verifies seasons-decade-summary: covers decades from 1950s through 2020s', async () => {
     const decadePreset = HISTORIAN_PRESETS.find((p) => p.id === 'seasons-decade-summary');
     expect(decadePreset).toBeDefined();
     const result = await sqlClient.executeQuery(decadePreset!.sql);

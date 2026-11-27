@@ -18,7 +18,7 @@ const mockHotspot: CarHotspot = {
   technicalSpec: 'FIA 8869-2018 Grade 5 Titanium monocoque hoop withstanding 125 kN.',
 };
 
-describe('CarAnatomyPanel Component (P7-DEV-04, C-41, F-38, F-08)', () => {
+describe('CarAnatomyPanel Component', () => {
   it('renders hotspot title, category badge, and default plain English description', () => {
     const handleClose = vi.fn();
     render(<CarAnatomyPanel hotspot={mockHotspot} onClose={handleClose} />);

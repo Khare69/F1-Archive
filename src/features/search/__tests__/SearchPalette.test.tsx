@@ -14,7 +14,7 @@ vi.mock('react-router-dom', async () => {
   };
 });
 
-describe('SearchPalette (cmdk + Fuse.js lazy index: C-21)', () => {
+describe('SearchPalette (cmdk + Fuse.js lazy index)', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
     resetSearchIndexCacheForTesting();

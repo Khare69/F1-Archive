@@ -165,7 +165,7 @@ describe('F1DB Historical Data Integrity & Invariants', () => {
     it('should ensure all circuits have non-empty 3D coordinates in lazy-loaded files with no identical start/end kinks', () => {
       const circuits = getAllCircuits();
       for (const circuit of circuits) {
-        // F-12: trackCoordinates is NOT embedded in summary circuits.json; loaded strictly on demand
+        // trackCoordinates is NOT embedded in summary circuits.json; loaded strictly on demand
         expect(circuit.trackCoordinates).toBeUndefined();
 
         const splineFilePath = path.resolve(process.cwd(), 'public/data/circuits', `${circuit.id}.json`);
@@ -195,7 +195,7 @@ describe('F1DB Historical Data Integrity & Invariants', () => {
       }
     });
 
-    it('should verify F-11 classic tracks have > 50 projected vertices and F-13 real elevation delta', () => {
+    it('should verify classic tracks have > 50 projected vertices and real elevation delta', () => {
       const classicVenues = ['monaco', 'monza', 'silverstone', 'suzuka', 'interlagos', 'spa-francorchamps'];
       for (const cId of classicVenues) {
         const filePath = path.resolve(process.cwd(), 'public/data/circuits', `${cId}.json`);

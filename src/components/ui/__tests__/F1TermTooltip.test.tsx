@@ -6,7 +6,7 @@ import { F1TermTooltip } from '../F1TermTooltip';
 import { ExperienceModeProvider } from '../../../contexts/ExperienceModeContext';
 import { getGlossaryTerm } from '../../../data/f1Glossary';
 
-describe('F1TermTooltip Component (C-42 25-Term Glossary)', () => {
+describe('F1TermTooltip Component (Glossary Tooltips)', () => {
   it('renders trigger element with accessible label for verified glossary term', () => {
     render(
       <ExperienceModeProvider>
