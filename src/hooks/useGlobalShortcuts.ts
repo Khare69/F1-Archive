@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useExperienceMode } from '../contexts/ExperienceModeContext';
 
 export interface UseGlobalShortcutsOptions {
   onToggleSearch: () => void;
@@ -24,6 +25,7 @@ export function useGlobalShortcuts({
   isModalOpen = false,
 }: UseGlobalShortcutsOptions): void {
   const navigate = useNavigate();
+  const { mode, setMode } = useExperienceMode();
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -46,7 +48,14 @@ export function useGlobalShortcuts({
         return;
       }
 
-      // 3. Navigation hotkeys 1-5 when no modal is open and no modifiers held
+      // 3. Shift+D toggles Developer Depth Mode
+      if (e.shiftKey && e.key.toUpperCase() === 'D' && !e.ctrlKey && !e.metaKey && !e.altKey) {
+        e.preventDefault();
+        setMode(mode === 'developer' ? 'enthusiast' : 'developer');
+        return;
+      }
+
+      // 4. Navigation hotkeys 1-5 when no modal is open and no modifiers held
       if (!isModalOpen && !e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
         // On circuits routes, 2 and 3 are reserved for 2D/3D track view toggles (C-28, C-29)
         const isCircuitsRoute = window.location.pathname.startsWith('/circuits');
@@ -82,7 +91,7 @@ export function useGlobalShortcuts({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [navigate, onToggleSearch, onOpenShortcuts, isModalOpen]);
+  }, [navigate, onToggleSearch, onOpenShortcuts, isModalOpen, mode, setMode]);
 }
 
 export default useGlobalShortcuts;

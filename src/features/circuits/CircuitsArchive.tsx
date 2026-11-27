@@ -11,6 +11,7 @@ import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
 import { usePageMeta } from '../../hooks/usePageMeta';
 import { F1TermTooltip } from '../../components/ui/F1TermTooltip';
 import { InsightBanner } from '../../components/ui/InsightBanner';
+import { InspectQueryButton } from '../../components/DevTools/InspectQueryButton';
 import type { RibbonColorMode } from './geometry/circuitRibbonBuilder';
 
 const MODERN_CALENDAR_IDS = new Set([
@@ -144,6 +145,13 @@ export const CircuitsArchive: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          <InspectQueryButton
+            query={{
+              title: `${selectedCircuit.name} Historical Grand Prix Winners (SQLite)`,
+              sql: `SELECT r.year, r.round, r.official_name, d.name AS winner FROM race r JOIN race_result rr ON r.id = rr.race_id JOIN driver d ON rr.driver_id = d.id WHERE r.circuit_id = '${selectedCircuit.id}' AND rr.position_number = 1 ORDER BY r.year DESC LIMIT 20;`,
+            }}
+            label="Circuit SQL"
+          />
           <CopyShareLinkButton label="Share Circuit View" />
         </div>
       </header>

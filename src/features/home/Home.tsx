@@ -8,6 +8,7 @@ import { OnThisDayWidget } from './components/OnThisDayWidget';
 import { FavoritesWidget } from './components/FavoritesWidget';
 import { F1TermTooltip } from '../../components/ui/F1TermTooltip';
 import { InsightBanner } from '../../components/ui/InsightBanner';
+import { InspectQueryButton } from '../../components/DevTools/InspectQueryButton';
 
 export const Home: React.FC = () => {
   const stats = getArchiveStats();
@@ -180,9 +181,18 @@ export const Home: React.FC = () => {
                     Timing Tower // Standings
                   </h3>
                 </div>
-                <span className="text-[10px] font-mono text-neutral-500 uppercase">
-                  Top 10 Leaders
-                </span>
+                <div className="flex items-center gap-2">
+                  <InspectQueryButton
+                    query={{
+                      title: 'All-Time Grand Prix Winners (F1DB SQLite)',
+                      sql: 'SELECT d.name, d.abbreviation, COUNT(*) AS wins FROM race_result rr JOIN driver d ON rr.driver_id = d.id WHERE rr.position_number = 1 GROUP BY d.id ORDER BY wins DESC LIMIT 10;',
+                    }}
+                    label="SQL"
+                  />
+                  <span className="text-[10px] font-mono text-neutral-500 uppercase">
+                    Top 10
+                  </span>
+                </div>
               </div>
 
               {topDrivers.length > 0 ? (

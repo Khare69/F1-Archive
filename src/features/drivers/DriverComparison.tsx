@@ -13,6 +13,7 @@ import { TeammateH2HPanel } from './comparison/TeammateH2HPanel';
 import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
 import { F1TermTooltip } from '../../components/ui/F1TermTooltip';
 import { InsightBanner } from '../../components/ui/InsightBanner';
+import { InspectQueryButton } from '../../components/DevTools/InspectQueryButton';
 
 export const DriverComparison: React.FC = () => {
   const drivers: Driver[] = getAllDrivers();
@@ -148,6 +149,13 @@ export const DriverComparison: React.FC = () => {
         <div className="flex items-center justify-between gap-4 mb-2 flex-wrap">
           <span className="font-telemetry text-xs text-cyan-400 tracking-wider">// TELEMETRY COMPARATOR</span>
           <div className="flex items-center gap-2">
+            <InspectQueryButton
+              query={{
+                title: `${driverA.name} vs ${driverB.name} Career Query (SQLite)`,
+                sql: `SELECT d.name, d.abbreviation, COUNT(CASE WHEN rr.position_number = 1 THEN 1 END) AS wins, COUNT(*) AS total_races FROM driver d JOIN race_result rr ON d.id = rr.driver_id WHERE d.id IN ('${driverA.id}', '${driverB.id}') GROUP BY d.id;`,
+              }}
+              label="H2H SQL"
+            />
             <span className="font-telemetry text-xs text-slate-400 border border-slate-700/80 px-2 py-0.5 rounded">
               HEAD-TO-HEAD BENCHMARK
             </span>

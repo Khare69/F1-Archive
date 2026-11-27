@@ -7,6 +7,7 @@ import { queryClient, queryPersister, QUERY_PERSIST_BUSTER } from '../../lib/que
 import { shouldPersistQueryKey } from '../../lib/idbPersister';
 import { UserPreferencesProvider } from '../../contexts/UserPreferencesContext';
 import { ExperienceModeProvider } from '../../contexts/ExperienceModeContext';
+import { InspectQueryProvider } from '../../contexts/InspectQueryContext';
 import { TooltipProvider } from '../ui/tooltip';
 
 interface AppProvidersProps {
@@ -29,9 +30,11 @@ export const AppProviders: React.FC<AppProvidersProps> = ({ children }) => (
       <NuqsAdapter>
         <UserPreferencesProvider>
           <ExperienceModeProvider>
-            <TooltipProvider delayDuration={200}>
-              {children}
-            </TooltipProvider>
+            <InspectQueryProvider>
+              <TooltipProvider delayDuration={200}>
+                {children}
+              </TooltipProvider>
+            </InspectQueryProvider>
           </ExperienceModeProvider>
         </UserPreferencesProvider>
       </NuqsAdapter>

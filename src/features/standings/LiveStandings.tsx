@@ -9,6 +9,7 @@ import { LiveStatusBadge } from './LiveStatusBadge';
 import { StandingsTable } from './StandingsTable';
 import { F1TermTooltip } from '../../components/ui/F1TermTooltip';
 import { InsightBanner } from '../../components/ui/InsightBanner';
+import { InspectQueryButton } from '../../components/DevTools/InspectQueryButton';
 
 export const LiveStandings: React.FC = () => {
   useDocumentTitle('Live Standings & Calendar');
@@ -69,9 +70,18 @@ export const LiveStandings: React.FC = () => {
               updatedAt={activeUpdatedAt}
               isFetching={isFetching}
             />
-            <span className="font-telemetry text-xs text-slate-400 border border-slate-700/60 px-2.5 py-0.5 rounded">
-              {seasonLabel} FIA WORLD CHAMPIONSHIP
-            </span>
+            <div className="flex items-center gap-2">
+              <InspectQueryButton
+                query={{
+                  title: 'Latest F1 Championship Driver Standings',
+                  sql: 'SELECT sds.position_number, d.name AS driver_name, d.abbreviation, sds.points FROM season_driver_standing sds JOIN driver d ON sds.driver_id = d.id WHERE sds.year = (SELECT MAX(year) FROM season_driver_standing) ORDER BY sds.position_number ASC LIMIT 20;',
+                }}
+                label="Inspect Standings SQL"
+              />
+              <span className="font-telemetry text-xs text-slate-400 border border-slate-700/60 px-2.5 py-0.5 rounded">
+                {seasonLabel} FIA WORLD CHAMPIONSHIP
+              </span>
+            </div>
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-black text-slate-100 tracking-tight font-headline">
