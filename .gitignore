@@ -45,6 +45,10 @@ pnpm-debug.log*
 
 # 3D Raw Master Assets (Local only, compressed .glb committed)
 *.raw.glb
+assets/blender/*.blend
+assets/blender/*.blend1
+assets/blender/*.blend2
+assets/blender/exports/
 
 # Agent & internal configuration
 .agents/
