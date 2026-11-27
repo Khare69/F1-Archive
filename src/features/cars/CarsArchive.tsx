@@ -1,4 +1,4 @@
-import React, { useState, useRef, Suspense, useCallback } from 'react';
+import React, { useState, useRef, Suspense, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useQueryState, parseAsStringLiteral } from 'nuqs';
 import { Canvas, useFrame } from '@react-three/fiber';
@@ -17,6 +17,9 @@ import { getCarEraSpec, type CarEraId } from './carEraRegistry';
 import { CarSelectorBar } from './components/CarSelectorBar';
 import { CarSpecPanel } from './components/CarSpecPanel';
 import { CarViewportControls } from './components/CarViewportControls';
+import { CarHotspotPins } from './components/CarHotspotPins';
+import { CarAnatomyPanel } from './components/CarAnatomyPanel';
+import { getHotspotsForEra, type CarHotspot } from '../../data/carHotspots';
 import { CopyShareLinkButton } from '../../components/ui/CopyShareLinkButton';
 
 const AutoRotateHelper: React.FC<{
@@ -24,9 +27,7 @@ const AutoRotateHelper: React.FC<{
   enabled: boolean;
 }> = ({ controlsRef, enabled }) => {
   useFrame((_, delta) => {
-    if (enabled && controlsRef.current) {
-      controlsRef.current.rotate(delta * 0.25, 0, false);
-    }
+    if (enabled && controlsRef.current) controlsRef.current.rotate(delta * 0.25, 0, false);
   });
   return null;
 };
@@ -40,11 +41,7 @@ export const CarsArchive: React.FC = () => {
   const [eraId, setEraId] = useQueryState(
     'era',
     parseAsStringLiteral([
-      '1950s_front_engine',
-      '1988_turbo',
-      '2004_v10',
-      '2024_ground_effect',
-      '2026_active_aero',
+      '1950s_front_engine', '1988_turbo', '2004_v10', '2024_ground_effect', '2026_active_aero',
     ] as const).withDefault('2024_ground_effect')
   );
 
@@ -57,14 +54,36 @@ export const CarsArchive: React.FC = () => {
   const [isAutoRotating, setIsAutoRotating] = useState(true);
   const [isInteracting, setIsInteracting] = useState(false);
   const [showHotspots, setShowHotspots] = useState(true);
+  const [selectedHotspot, setSelectedHotspot] = useState<CarHotspot | null>(null);
 
   const controlsRef = useRef<CameraControlsImpl | null>(null);
+  const eraHotspots = useMemo(() => getHotspotsForEra(eraSpec.id), [eraSpec.id]);
 
   const handleSelectTeam = (id: string) => {
     navigate(`/lab/${id}${eraId !== '2024_ground_effect' ? `?era=${eraId}` : ''}`);
   };
 
+  const handleSelectHotspot = useCallback(
+    (hotspot: CarHotspot) => {
+      setSelectedHotspot(hotspot);
+      if (controlsRef.current) {
+        const { position, target } = hotspot.cameraTarget;
+        controlsRef.current.setLookAt(
+          position[0],
+          position[1],
+          position[2],
+          target[0],
+          target[1],
+          target[2],
+          !hasReducedMotion
+        );
+      }
+    },
+    [hasReducedMotion]
+  );
+
   const handleResetCamera = useCallback(() => {
+    setSelectedHotspot(null);
     if (controlsRef.current) {
       controlsRef.current.setLookAt(3.6, 1.3, 3.1, 0, 0.25, 0, !hasReducedMotion);
     }
@@ -153,25 +172,15 @@ export const CarsArchive: React.FC = () => {
                   dpr={[1, 2]}
                   frameloop="always"
                   camera={{ position: [3.6, 1.3, 3.1], fov: 38 }}
-                  gl={{
-                    antialias: true,
-                    alpha: false,
-                    toneMapping: THREE.ACESFilmicToneMapping,
-                    toneMappingExposure: 1.2,
-                    powerPreference: 'high-performance',
-                  }}
+                  gl={{ antialias: true, alpha: false, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.2, powerPreference: 'high-performance' }}
                 >
                   <PerfDebugCollector />
                   <CarStudioLighting selectedTeamColor={selectedTeam.color} />
 
                   <CameraControls
-                    ref={controlsRef}
-                    minDistance={2.2}
-                    maxDistance={9.0}
-                    maxPolarAngle={Math.PI / 2 + 0.02}
-                    minPolarAngle={Math.PI / 12}
-                    onStart={() => setIsInteracting(true)}
-                    onEnd={() => setIsInteracting(false)}
+                    ref={controlsRef} minDistance={2.2} maxDistance={9.0}
+                    maxPolarAngle={Math.PI / 2 + 0.02} minPolarAngle={Math.PI / 12}
+                    onStart={() => setIsInteracting(true)} onEnd={() => setIsInteracting(false)}
                   />
 
                   <AutoRotateHelper controlsRef={controlsRef} enabled={isAutoRotateActive} />
@@ -188,14 +197,15 @@ export const CarsArchive: React.FC = () => {
                       activeAeroMode={activeAeroMode}
                     />
 
-                    <ContactShadows
-                      position={[0, 0, 0]}
-                      opacity={0.85}
-                      scale={16}
-                      blur={2.0}
-                      far={4}
-                      color={showAero ? '#00D2FF' : '#000000'}
-                    />
+                    {showHotspots && (
+                      <CarHotspotPins
+                        hotspots={eraHotspots}
+                        selectedHotspotId={selectedHotspot?.id}
+                        onSelectHotspot={handleSelectHotspot}
+                      />
+                    )}
+
+                    <ContactShadows position={[0, 0, 0]} opacity={0.85} scale={16} blur={2.0} far={4} color={showAero ? '#00D2FF' : '#000000'} />
                   </Suspense>
                 </Canvas>
               </CanvasErrorBoundary>
@@ -215,8 +225,14 @@ export const CarsArchive: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Technical Specification Panel (4 Columns) */}
+          {/* Right Technical Specification & Hotspot Anatomy Panel (4 Columns) */}
           <div className="lg:col-span-4 flex flex-col gap-4">
+            {selectedHotspot && (
+              <CarAnatomyPanel
+                hotspot={selectedHotspot}
+                onClose={() => setSelectedHotspot(null)}
+              />
+            )}
             <CarSpecPanel eraSpec={eraSpec} selectedTeam={selectedTeam} />
           </div>
         </div>

@@ -83,12 +83,13 @@ export const InteractiveCarModel: React.FC<InteractiveCarModelProps> = ({
       }
     });
 
-    // EXACT VERIFIED HORIZONTAL TRACK ALIGNMENT:
-    // Euler(180°, -90°, 180°) places Length along X (5.09 units), Height along Y (1.00 unit), Width along Z (1.82 units).
-    // The bottom of the tyres touches ground plane Y = 0.00.
-    clone.rotation.set(Math.PI, -Math.PI / 2, Math.PI);
-    clone.scale.set(0.11, 0.11, 0.11);
-    clone.position.set(-0.0057, -0.0007, -0.0005);
+    // NATIVE COORDINATE ALIGNMENT (FND-01):
+    // Standard Blender MCP export: Length along X (Nose = +X, Tail = -X),
+    // Height along Y (Roof = +Y), Width symmetric along Z.
+    // Bottom of tires touches ground plane Y = 0.00 natively with zero rotation hacks.
+    clone.rotation.set(0, 0, 0);
+    clone.scale.set(1, 1, 1);
+    clone.position.set(0, 0, 0);
 
     return { clone, materials, liveryTextures };
   }, [scene, team, eraSpec]);
