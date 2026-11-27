@@ -5,37 +5,33 @@
 <h1 align="center">F1 // ARCHIVE — The Evolution of Speed</h1>
 
 <p align="center">
-  <strong>Cinematic Formula 1 Historical Archive, 3D Telemetry Replay, CAD Vehicle Lab &amp; Explainable AI Race Historian</strong><br/>
-  Spanning 77 seasons (1950–2026), 861 drivers, 214 constructors, 77 circuits, and interactive 3D WebGL engineering simulations.
+  <strong>Cinematic Formula 1 Historical Archive, 3D Telemetry Replay, Parametric Vehicle Lab &amp; Offline SQL Historian</strong><br/>
+  Spanning 77 seasons (1950–2026), 860+ drivers, 214 constructors, 77 circuits, and interactive 3D WebGL engineering simulations.
 </p>
 
 <p align="center">
-  <a href="https://github.com/Khare69/F1-Archive/releases/tag/v1.1.0"><img src="https://img.shields.io/badge/Release-v1.1.0-gold?style=flat-square&logo=github" alt="v1.1.0 Release" /></a>
   <img src="https://img.shields.io/badge/React-18.3.1-61DAFB?style=flat-square&logo=react&logoColor=white" alt="React 18" />
   <img src="https://img.shields.io/badge/TypeScript-5.5.3-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript 5" />
   <img src="https://img.shields.io/badge/Three.js-R174-000000?style=flat-square&logo=threedotjs&logoColor=white" alt="Three.js R174" />
   <img src="https://img.shields.io/badge/Vite-6.4.3-646CFF?style=flat-square&logo=vite&logoColor=white" alt="Vite 6" />
-  <img src="https://img.shields.io/badge/Vitest-91_Passed-00E701?style=flat-square&logo=vitest&logoColor=white" alt="Unit Tests: 91 Passed" />
-  <img src="https://img.shields.io/badge/Playwright-E2E_Passed-45ba4b?style=flat-square&logo=playwright&logoColor=white" alt="Playwright E2E" />
-  <img src="https://img.shields.io/badge/Model_Size-1.19_MB_Draco-00D2FF?style=flat-square" alt="1.19 MB Draco GLB" />
+  <img src="https://img.shields.io/badge/SQLite_WASM-Official_3.x-003B57?style=flat-square&logo=sqlite&logoColor=white" alt="SQLite WASM" />
+  <img src="https://img.shields.io/badge/Vitest-314+_Passed-00E701?style=flat-square&logo=vitest&logoColor=white" alt="Unit Tests" />
+  <img src="https://img.shields.io/badge/Playwright-25_Passed-45ba4b?style=flat-square&logo=playwright&logoColor=white" alt="Playwright E2E" />
+  <img src="https://img.shields.io/badge/5--Era_GLB_Suite-161_kB_Total-00D2FF?style=flat-square" alt="5-Era GLB Suite" />
 </p>
 
 ---
 
-## ⚡ Highlights & Engineering Benchmarks
+## ⚡ Architecture & Highlights
 
-- **Full F1DB Historical Vault (1950–2026)**: Ingests 77 world championship seasons, 861 drivers, 214 constructors, 77 circuits, and 1,100+ Grands Prix with zero runtime API dependency.
-- **Monte Carlo Pit-Wall Strategy & Undercut Simulator**: Seeded Monte Carlo engine (Mulberry32 PRNG) running 1,000–5,000 iterations in an off-thread Web Worker, modeling compound pace offsets, non-linear degradation cliffs, fuel burn-off ($-0.035\text{ s/lap}$), and pit loss with normalized win rate distributions.
-- **Multi-Car Timing Tower & Replay Stream Engine**: Per-driver ring buffers with 2-sample continuous linear interpolation for smooth 60 FPS motion across 20-car grids, tracking interval gaps, sector times, and 2026 Active Aero straight/corner modes.
-- **Voice Engineer Companion**: Authentic two-tone Web Audio synthesized pit-radio chirp & static squelch, Web Speech voice recognition facade, and Text-to-Speech radio transmissions.
-- **Shareable High-DPI Poster & Analysis Export**: Zero-dependency client-side HTML5 Canvas export generating high-resolution ($2.5\times$ scale) shareable PNG cards for strategy predictions, driver head-to-heads, and historical queries.
-- **Explainable AI Race Historian & SQL Lab**: Natural language query synthesizer over F1DB with 16 analytical presets, client-side entity parser, inspectable SQL, and optional hardened FastAPI SQLite microservice.
-- **3D Telemetry Ghost-Lap Replay**: Sector-anchored 3D dual-car playback (Silverstone, Monaco, Spa, Madrid 2026 sim) with 25 mini-sectors, dynamic delta times, synchronized telemetry traces, and 80 ms throttled UI updates.
-- **Strategy & Tyre Degradation Analytics**: Multi-stint compound wear curves, lap-time delta breakdowns, and fuel-corrected pace toggle ($-0.035\text{ s/lap}$ per kg burn-off).
-- **Driver Head-to-Head & Era Normalizer**: Mutual teammate gap analysis (filtering mid-season switches and DNSs), career points share percentage, and cross-era "What-If" championship scoring simulator (1988 Senna vs. Prost, 2008, 2021).
-- **3D Vehicle CAD Lab & 2026 Active Aero Inspector**: Draco-compressed 3D chassis (`f1_chassis.glb`, 1.19 MB down from 18 MB), procedural PBR liveries, 2,000-particle wind tunnel, and 2026 Straight Mode / Corner Mode active aerodynamics toggles.
-- **Zero-Waste WebGL Rendering**: Strict `frameloop="demand"` (0 FPS idle, zero battery drain when static), automated WebGL context reclamation on page navigation, and live GPU profiler overlay (`Shift + P` or `?debug=perf`).
-- **Offline PWA Architecture**: Custom service worker with Network-First navigations, Cache-First static assets and 3D models, Network-Only dynamic APIs, and web manifest.
+- **Full F1DB In-Browser SQLite Engine (`@sqlite.org/sqlite-wasm`)**: Queries a 4.67 MB pre-indexed SQLite 3 database directly inside an off-thread Web Worker. Zero server requirement for analytical queries, full text search, and historical aggregations.
+- **Parametric 5-Era 3D Vehicle Lab**: 5 distinct historical chassis (`1950s Front-Engine`, `1988 Turbo Cockpit-Forward`, `2004 V10 High-Downforce`, `2024 Ground-Effect`, and `2026 Active Aero`) proceduralized with Draco compression (<40 kB per era, ~161 kB total suite), real-time carbon weave PBR shaders, dynamic liveries, and interactive technical hotspots.
+- **Topographic 3D Circuit Ribbons & 2D SVG Maps**: Procedural 3D track extrusion using Frenet-Serret spatial frames, Open-Meteo SRTM satellite elevation deltas, zebra kerbs, and animated sector lighting across 28 venues with a clean 2D SVG toggle.
+- **High-Performance Telemetry & 3D Ghost-Lap Replay**: Micro-sector anchored dual-car playback, 4-channel synchronized uPlot graphs (speed, throttle, brake, gear/RPM), time delta traces ($\Delta t$), and OpenF1 live session ingestion with LRU caching.
+- **Monte Carlo Pit-Wall Strategy Simulator**: Deterministic Mulberry32 PRNG engine running 1,000–5,000 race simulations in an off-thread Web Worker, modeling compound degradation cliffs, fuel burn pace progression ($-0.035\text{ s/lap}$), and pit loss windows.
+- **3-Layer Audience Depth Model**: Seamless toggle between `Learn` (plain-English explanations & 25-term glossary tooltips), `Pro` (FIA technical specs & raw telemetry), and `Dev` (live query inspector drawer, database schema browser, and performance HUD).
+- **Zero-Waste WebGL Rendering**: Strict Three.js `frameloop="demand"` (0 FPS idle, zero battery drain when static), shared canvas architecture across sub-routes, and a live GPU performance overlay (`Shift + P` or `?debug=perf`).
+- **Offline PWA Architecture**: TanStack Query persist client backed by IndexedDB (`idb-keyval`), custom service worker with Stale-While-Revalidate caching, and strict bundle size enforcement ($< 1.5\text{ MB}$ JS, $< 120\text{ kB}$ CSS).
 
 ---
 
@@ -43,179 +39,146 @@
 
 ```mermaid
 flowchart TD
-    subgraph DataIngestion[Data Pipeline & Upstream ETL]
-        F1DB[(F1DB CC-BY-4.0)] --> SyncScript[scripts/sync-f1-data.mjs]
+    subgraph DataPipeline[Data Pipeline & Build-Time ETL]
+        F1DB[(F1DB CC-BY-4.0)] --> SyncScript[npm run sync:data]
         GeoJSON[(bacinger GeoJSON)] --> SyncScript
-        OpenF1[(OpenF1 CC BY-NC-SA 4.0)] --> SyncScript
-        SyncScript --> StaticBundles[public/data/seasons/ & telemetry/]
+        OpenMeteo[(Open-Meteo SRTM)] --> SyncScript
+        SyncScript --> StaticBundles[public/data/seasons/ & circuits/]
+        SyncScript --> DBBuilder[npm run build:browser-db]
+        DBBuilder --> BrowserDB[(public/data/f1db-browser.sqlite 4.67MB)]
     end
 
     subgraph ClientCore[Frontend Client Application (React 18 + Vite 6)]
-        AppRoot[App Shell & Routing] --> Nav[Navigation & Command Palette]
-        AppRoot --> StoragePersist[TanStack Query + safeStorage]
-        
-        Nav --> Seasons[Seasons Vault & What-If Simulator]
-        Nav --> Drivers[Drivers Archive & Teammate H2H]
-        Nav --> Circuits[Circuits Archive & 3D Topographic Ribbons]
-        Nav --> Standings[Live Standings Jolpica Client]
-        Nav --> Garage[Paddock Garage Simulator]
-        
-        Nav --> CADLab[3D Vehicle CAD Lab]
-        CADLab --> ThreeCore[Three.js r174 / R3F Canvas]
-        ThreeCore --> Draco[1.19 MB Draco GLB + PBR Shaders]
-        ThreeCore --> Aero2026[2026 Active Aero Inspector]
-        
-        Nav --> Telemetry[3D Telemetry Replay & Timing Tower]
-        Telemetry --> Ghost3D[Sector-Anchored Ghost Car Playback]
-        Telemetry --> StintAnalytics[Fuel-Corrected Stint Degradation]
-        Telemetry --> TimingTower[Multi-Car 20-Grid Timing Tower]
-        
-        Nav --> PitWall[Monte Carlo Pit-Wall Strategy Simulator]
-        PitWall --> WorkerEngine[Web Worker + Pure Seeded Mulberry32 Engine]
-        
-        Nav --> Historian[Explainable AI Race Historian & Voice Engineer]
-        Historian --> Tier1Engine[Tier 1: Client In-Memory F1DB Text-to-SQL]
-        Historian --> VoiceAudio[Web Audio Pit-Radio Chirp & Speech API]
-        
-        Drivers -.-> PosterExport[High-DPI 2.5x Canvas Poster Exporter]
-        PitWall -.-> PosterExport
-        Historian -.-> PosterExport
+        AppRoot[App Shell & Routing] --> Nav[Navigation & Search Palette]
+        AppRoot --> QueryProvider[TanStack Query + IndexedDB Persister]
+        AppRoot --> InspectDrawer[Live Inspect Query Drawer]
+
+        Nav --> Home[Home Hub & Starter Stories]
+        Nav --> ArchiveHub[Archive Hub: Seasons, Drivers, Constructors]
+        Nav --> Circuits[Circuits: 2D SVG / 3D Topographic Ribbons]
+        Nav --> Telemetry[Telemetry: Ghost Lap & uPlot Traces]
+        Nav --> Strategy[Strategy: Monte Carlo Pit-Wall Simulator]
+        Nav --> CADLab[Vehicle Lab: 5-Era 3D Models & Hotspots]
+        Nav --> Historian[AI Race Historian: SQL Lab & Voice Companion]
+        Nav --> Docs[System Architecture Explorer & ADRs]
+
+        Circuits --> RibbonEngine[circuitRibbonBuilder & Frenet-Serret Frame]
+        Telemetry --> TelemetryMath[Normalized Distance Interp & uPlot]
+        Strategy --> StrategyWorker[Mulberry32 Web Worker Engine]
+        CADLab --> ThreeCanvas[Three.js r174 / R3F Canvas]
+        Historian --> SQLiteWorker[@sqlite.org/sqlite-wasm Web Worker]
     end
 
     subgraph BackendTier2[Optional Tier 2 Backend Microservice]
         Historian -.->|VITE_HISTORIAN_API_URL| FastAPISvc[FastAPI SQLite Microservice]
-        FastAPISvc --> SQLiteSandboxed[(Sandboxed Read-Only SQLite F1DB ?mode=ro&immutable=1)]
-    end
-
-    subgraph OfflineObservability[PWA & Observability]
-        SW[Service Worker sw.js] --> CacheStorage[(CacheStorage v1.1.0)]
-        Obs[observability.ts] --> PerfObserver[Native PerformanceObserver]
-        Obs -.-> SentryPostHog[Sentry & PostHog Facades]
+        FastAPISvc --> SQLiteSandboxed[(Sandboxed Read-Only SQLite F1DB)]
     end
 ```
 
 ---
 
-## 📦 Feature Breakdown
+## 📦 Feature Breakdown by Hub
 
-### 1. 🏁 Monte Carlo Pit-Wall Strategy & Undercut Simulator (`/pitwall`)
-- **Web Worker Compute**: Off-threads 1,000 to 5,000 full race simulations using a seedable PRNG (Mulberry32) for 100% deterministic, reproducible strategy analysis.
-- **Physics & Degradation Model**: Non-linear tyre cliff degradation per compound (Soft, Medium, Hard, Wet), compound pace offsets (Soft $-0.6\text{ s}$, Medium base, Hard $+0.8\text{ s}$), and continuous fuel burn-off ($-0.035\text{ s/lap}$ per kg fuel consumed).
-- **Customizable Strategy Cards**: Compare standard 1-stop (M-H), aggressive 2-stop (S-M-H), and alternate undercut strategies (H-M) across any historic Grand Prix circuit with custom stint laps and pit loss penalties ($20\text{ s}$ to $30\text{ s}$).
-- **Normalized Win Rates**: Win-rate percentages calculated across Monte Carlo iterations and normalized strictly to sum to 100%.
+### 1. 🏠 Home Hub & Audience Depth
+- **Audience Mode Switcher**: Global toggle between **Learn** (simplified narratives, plain-English glossary tooltips), **Pro** (telemetry deltas, FIA tyre codes, downforce metrics), and **Dev** (live SQL/JSON drawer, query execution timings, memory heap stats).
+- **Curated Starter Stories**: Quick-launch analytical presets ("1988 Senna vs. Prost", "Monza Slipstream Masters", "Modern Ground Effect Era").
+- **Paddock Favorites**: Pin drivers, constructors, and circuits to local storage for instant access across the app.
+- **On This Day in F1**: Daily historical milestone banner pulling births, victories, and pivotal events with nearest-milestone fallbacks.
+- **Inspect Query Drawer (`</>`)**: Global CodeMirror 6 drawer displaying the live SQL or REST query powering the active view with copy-to-clipboard functionality.
+- **Keyboard Shortcuts**: Global hotkeys `1`–`5` for hub switching, `Cmd/Ctrl + K` for command search, `Shift + P` for performance HUD, and `?` for the shortcut cheat sheet.
 
-### 2. ⏱️ Multi-Car Timing Tower & Replay Stream Engine (`/telemetry`)
-- **20-Car Pilot Ladder**: Real-time broadcast-style timing tower tracking race leaders, interval deltas, speed traps ($km/h$), and mini-sector status (personal best, session fastest, normal).
-- **Per-Driver Ring Buffers**: Decoupled circular buffers (`LiveTelemetryRingBuffer`) storing timestamped telemetry packets per car.
-- **Two-Sample Continuous Linear Interpolation**: Interpolates continuous channels (`speed`, `throttle`, `distanceRatio`) between 10 Hz incoming packets to deliver smooth 60 FPS motion without stutter.
-- **2026 Active Aero & Overtake Modes**: Real-time status tags for Straight Mode (`STR`) vs. Corner Mode (`CNR`) and Manual Override Mode (`MOM`) energy deployment.
+### 2. 📚 Archive Hub: Seasons, Drivers & Constructors
+- **Virtualized Driver Directory**: Smooth 60 FPS scrolling through 860+ historical drivers using `@tanstack/react-virtual`.
+- **Era-Normalized Head-to-Head**: Direct teammate comparison engine filtering non-mutual races, DNS entries, and mid-season team transfers. Includes career points share percentage and podium conversion rates.
+- **Cross-Era What-If Championship Simulator**: Recalculates any World Championship (1950–2026) under alternative scoring systems: modern 25-18-15, classic 10-6-4, 9-6-4, 10-8-6, Olympic medal system, and best-11 dropped scores (resolving 1988 Senna vs. Prost).
+- **2026 Constructors & Historical Lineage**: Full constructor registry with official hexadecimal brand liveries, championship histories, and 2026 powertrain regulations.
+- **URL State Synchronization**: Deep-linkable search, filters, and active comparison tabs via `nuqs`.
 
-### 3. 🎙️ Voice Engineer Companion & Web Audio Engine (`/historian`)
-- **Native Two-Tone Pit-Radio Chirp**: Synthetic two-tone audio chirp ($880\text{ Hz} \to 1,760\text{ Hz}$) followed by a bandpass-filtered white noise burst simulating authentic Formula 1 team radio squelch with zero external audio assets.
-- **Web Speech API Facade**: Feature-detected speech recognition allowing users to speak natural language queries directly to the race engineer.
-- **Text-to-Speech Radio Transmission**: Audio synthesis reads out pit-wall answers accompanied by team radio audio cues.
-- **Quick-Prompt Radio Bar**: One-click team radio prompts ("Box this lap", "Tire degradation report", "Gap to leader", "Under-cut delta").
+### 3. 🗺️ Circuits Hub: 2D Maps & 3D Topographic Ribbons
+- **Dual Representation**: Instant toggle between lightweight 2D SVG vector maps and 3D WebGL extruded topographic ribbons.
+- **Real-World SRTM Elevation**: Extrudes asphalt ribbons using 1-meter resolution elevation profiles fetched from Open-Meteo satellite topography (e.g. Spa-Francorchamps' 103 m elevation delta through Eau Rouge and Raidillon).
+- **Frenet-Serret Spatial Curvature**: Computes smooth 3D track surfaces, banked corner angles, curbs, and apex kerbing using adaptive curve segmentation.
+- **Corner DNA Telemetry**: Interactive corner analysis for 28 premier circuits, detailing apex gear, entry speeds, corner radius, braking G-forces, and famous overtake zones.
 
-### 4. 🖼️ Shareable High-DPI Poster & Analysis Exporter
-- **Zero-Dependency HTML5 Canvas Rendering**: Programmatically renders crisp, high-resolution ($2.5\times$ scale) branded cards with circuit elevation, telemetry metrics, and comparison stats.
-- **Direct PNG Download**: Exports downloadable PNG files directly from the browser for Pit-Wall strategies, Driver Head-to-Head showdowns, and Race Historian findings.
+### 4. ⏱️ Telemetry & Monte Carlo Strategy Simulator
+- **Dual-Car 3D Ghost Lap**: Real-time dual-car replay synchronized along normalized track distance ($s \in [0, 1]$), eliminating Cartesian coordinates mismatches.
+- **Synchronized 4-Channel uPlot Traces**: Microsecond-fast rendering of Speed, Throttle, Brake, and Gear/RPM aligned with the 3D replay car position.
+- **OpenF1 Live Session Ingestion**: Direct loading of official OpenF1 session intervals, lap times, and driver telemetry with automatic LRU memory caching.
+- **Deterministic Monte Carlo Web Worker**: Simulates 1,000 to 5,000 race iterations using Mulberry32 PRNG. Models compound degradation curves, fuel burn pace offsets ($-0.035\text{ s/lap}$ per kg consumed), pit stop delta distributions, and undercut probability windows.
 
-### 5. 🏛️ Explainable AI Race Historian & SQL Lab (`/historian`)
-- **Natural Language Parsing**: Client-side intent parser converts natural language queries ("Tell me about Lewis Hamilton career stats", "Ferrari titles", "Monza masters", "1988 Senna vs Prost") into inspectable SQL.
-- **16 Analytical Presets**: Verified SQL queries covering all-time Grand Prix winners, constructor titles, pole-to-win advantages, youngest champions, dropped score simulations, and rain-master classifications.
-- **Dual View Modes**: Interactive sortable data tables and comparative horizontal bar charts.
-- **SQL Inspector**: Full formatted SQL code block with explanation of era regulations, translation reasoning, execution latency, and one-click copy button.
-- **Two-Tier Architecture**: Runs 100% in the browser (Tier 1) with zero server requirement; seamlessly integrates with the FastAPI microservice (Tier 2) when configured.
+### 5. 🏎️ 3D Vehicle Evolution Lab
+- **5-Era Architectural Progression**:
+  1. `1950s Front-Engine`: Long nose, exposed cockpit, narrow wire tyres, ground-level exhaust.
+  2. `1988 Turbo Era`: Cockpit-forward monocoque, rear turbo airbox, wide slick tyres.
+  3. `2004 V10 Era`: High-downforce multi-element wings, sidepod chimneys, grooved dry tyres.
+  4. `2024 Ground Effect`: Venturi floor tunnels, wheel wake deflectors, halo safety titanium cell.
+  5. `2026 Active Aero`: Compact chassis dimensions ($3,400\text{ mm}$ wheelbase, $1,900\text{ mm}$ width), active straight/corner aerodynamic modes, and $350\text{ kW}$ electric powertrain split.
+- **Extreme Draco Compression**: Custom glTF pipeline delivering 5 distinct era models totaling **161 kB** (<40 kB each), loading in single-digit milliseconds.
+- **Procedural PBR Shaders**: Carbon-fiber weave normal maps, metallic automotive clearcoat, and tyre rubber textures.
+- **Interactive Anatomy Hotspots**: Clickable 3D callouts detailing technical regulations, safety structures, and powertrain components.
 
-### 6. 🏎️ 3D Telemetry Ghost-Lap Replay & Strategy Analytics (`/telemetry`)
-- **Precomputed Iconic Showdowns**:
-  - *Silverstone 2024*: Hamilton vs. Verstappen (British GP victory duel)
-  - *Monaco 2024*: Leclerc vs. Piastri (Q3 pole shootout)
-  - *Spa 2024*: Verstappen vs. Norris (Eau Rouge & Kemmel sector duel)
-  - *Madrid 2026 (Simulation)*: Alonso vs. Sainz (Active Aero & MOM energy deployment)
-- **Sector-Anchored Coordinate Matching**: Uses normalized distance ($s \in [0, 1]$) along track splines to eliminate OpenF1 Cartesian coordinate mismatch.
-- **Multi-Channel Synchronized Traces**: Real-time speed ($km/h$), throttle (%), brake (%), gear, RPM, and delta time ($\Delta t$).
-- **25 Track Mini-Sectors**: Micro-sector delta map highlighting where each driver gained or lost time.
-- **Strategy & Stint Degradation**: Multi-stint degradation curves, tyre compound performance, and toggleable fuel-corrected pace ($-0.035\text{ s/lap}$ per kg burn-off).
+### 6. 🏛️ Offline SQL Historian & Optional Backend
+- **Browser-Native SQLite 3**: Embedded `@sqlite.org/sqlite-wasm` running inside an off-thread Web Worker over a pre-indexed 4.67 MB SQLite database.
+- **CodeMirror 6 Editor**: Syntax-highlighted SQL workspace with dark-mode styling, schema autocomplete, and query duration metrics.
+- **Analytical Presets**: 16 battle-tested queries (Monza past winners, pole-to-win conversion percentages, rain-master performances, elevation extremes, and decade-by-decade constructor dominance).
+- **Export Formats**: One-click export to CSV or JSON.
+- **Optional Tier 2 FastAPI Service**: Transparent fallback or remote execution via a sandboxed read-only Python FastAPI microservice (`?mode=ro&immutable=1`).
 
-### 7. 📐 3D Vehicle CAD Lab & 2026 Regulation Inspector (`/cars`)
-- **Draco Compressed GLB**: Chassis geometry optimized to **1.19 MB** (down from 18 MB original mesh).
-- **Procedural PBR Shaders**: Carbon-fiber weave, metallic car paint with clearcoat, glass, and tyre rubber.
-- **Wind-Tunnel Flow**: 2,000-particle aerodynamic streamline simulator.
-- **2026 Regulation Inspector**:
-  - Hotspot annotations highlighting Active Aero, $350\text{ kW}$ electric / 50-50 MGU-K split, Manual Override Mode (+0.5 MJ within 1 s), and 768 kg weight target.
-  - Interactive **Active Aero Toggle**: Straight Mode (low drag) vs. Corner Mode (high downforce).
-  - Parametric 3D wireframe box comparing 2026 compact dimensions ($3,400\text{ mm}$ wheelbase, $1,900\text{ mm}$ width) against 2022–2025 ground-effect regulations ($3,600\text{ mm} \times 2,000\text{ mm}$).
-
-### 8. ⚖️ Driver Head-to-Head & Cross-Era What-If Simulator
-- **Driver Comparison (`/drivers/compare`)**: Side-by-side radar and bar comparisons with mutual teammate head-to-head calculations (filtering non-mutual races, DNS entries, and mid-season team transfers) and career points share percentages.
-- **What-If Championship Simulator (`/seasons/:year`)**: Recalculates historical World Drivers' Championships under alternative points systems (25-18-15 modern, 10-6-4 classic, 9-6-4, 10-8-6, medal system, and dropped scores). Fully covers 1988 (Senna 11-best vs. Prost total), 2008, 2021, and complete FIA countback.
-
-### 9. 🗺️ Circuits Archive & 3D Topographic Ribbons (`/circuits`)
-- Topographic ribbon extrusion rendering 3D elevation profiles for all 77 historical circuits.
-- Historic statistics: circuit length, lap records, pole-to-win rates, and era layout changes.
-
-### 10. 🔧 Paddock Garage Telemetry Simulator (`/garage`)
-- Dynamic vehicle setup tuning: downforce levels, Pirelli tyre compounds, power unit engine modes.
-- Real-time physics engine calculating simulated lap times, cornering G-forces, top speeds, and tyre thermal degradation.
-
-### 11. 📊 Live Standings & Calendar (`/standings`)
-- Live drivers' and constructors' championship standings via Jolpica F1 API.
-- Offline resilience: in-memory + safeStorage caching with 12-hour TTL and curated static fallbacks.
+### 7. 📖 In-App Architecture Explorer (`/docs`)
+- **System Blueprint**: Interactive architectural topology visualizer rendering client-side data flows, Web Worker boundaries, and storage persisters.
+- **Architectural Decision Records (ADRs)**: Full in-app reader for project ADRs (`0001` through `0005`).
+- **Live Database Schema Inspector**: Real-time schema table browser querying `sqlite_master` to inspect tables, column types, foreign keys, and indexes.
 
 ---
 
 ## 🛠️ Tech Stack & Dependencies
 
-| Category | Technologies |
-|---|---|
-| **Core Framework** | React 18.3.1, TypeScript 5.5.3, Vite 6.4.3 |
-| **3D & WebGL Engine** | Three.js r174, `@react-three/fiber` 8.18.0, `@react-three/drei` 9.122.0 |
-| **Motion & Interaction** | Framer Motion 11.18.2, Lucide React |
-| **State & Data Caching**| TanStack Query v5.67.3 with safeStorage localStorage persister |
-| **Routing** | React Router DOM 6.30.1 |
-| **Testing** | Vitest 4.1.11, Testing Library (React / DOM / user-event), Playwright 1.58.2 |
-| **Microservice (Backend)**| Python 3.10+, FastAPI 0.115+, Uvicorn, SQLite3 (read-only URI sandbox) |
+| Category | Technologies | Description |
+|---|---|---|
+| **Core Framework** | React 18.3.1, TypeScript 5.5.3, Vite 6.4.3 | Strict mode, zero `any` policy, ESM architecture |
+| **3D & WebGL Engine** | Three.js r174, `@react-three/fiber` 8.18.0, `@react-three/drei` 9.122.0 | Canvas pooling, demand frameloop, Draco decoding |
+| **Database & Engine** | `@sqlite.org/sqlite-wasm` 3.49.1, Web Workers | Offline SQLite 3 B-Tree engine in browser worker |
+| **Data Viz & Telemetry** | `uplot` 1.6.31, `echarts` 5.6.0, `echarts-for-react` 3.0.2 | 60 FPS multi-channel synchronized traces |
+| **Code Editor** | `@uiw/react-codemirror` 4.23.15, `@codemirror/lang-sql` | SQL syntax highlighting, line numbers, dark theme |
+| **State & Networking** | `@tanstack/react-query` 5.67.3, `idb-keyval` 6.2.1, `nuqs` 2.4.1 | IndexedDB persistence, URL query param syncing |
+| **Styling & Motion** | Tailwind CSS 3.4.17, Radix UI Primitives, Lucide Icons | Fully accessible, responsive dark-mode styling |
+| **Validation & Schema** | `zod` 3.24.2 | Strict runtime data contracts across all models |
+| **Testing Suite** | Vitest 4.1.11, Playwright 1.58.2, Testing Library | 314+ unit tests, 25 full-page E2E specifications |
+| **Backend (Optional)** | Python 3.10+, FastAPI 0.115+, Uvicorn, SQLite3 | Sandboxed read-only query microservice |
 
 ---
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- **Node.js**: $\ge 18.0.0$
-- **npm**: $\ge 9.0.0$
-- *(Optional)* Python $\ge 3.10$ for the Tier 2 SQLite backend
+- **Node.js**: $\ge 20.19.0$
+- **npm**: $\ge 10.0.0$
+- *(Optional)* Python $\ge 3.10$ and `uv` for the optional Tier 2 FastAPI backend
 
-### 1. Clone & Install
+### 1. Clone & Install Dependencies
 ```bash
 git clone https://github.com/Khare69/F1-Archive.git
 cd F1-Archive
 npm install
 ```
 
-### 2. Environment Configuration (Optional)
-Copy `.env.example` to `.env.local` to enable optional services:
+### 2. Build the Browser Database & Static Data
+Ensure static bundles and the indexed SQLite 3 browser database are generated:
 ```bash
-cp .env.example .env.local
-```
+# Ingest raw historical datasets
+npm run sync:data
 
-```env
-# Optional: Tier 2 FastAPI Backend (leave blank for pure Tier 1 client mode)
-VITE_HISTORIAN_API_URL=http://localhost:8000
-
-# Optional: Production Observability
-VITE_SENTRY_DSN=
-VITE_POSTHOG_KEY=
-VITE_POSTHOG_HOST=https://us.i.posthog.com
+# Build the 4.67 MB pre-indexed SQLite browser database
+npm run build:browser-db
 ```
 
 ### 3. Run Development Server
 ```bash
 npm run dev
 ```
-Navigate to `http://localhost:5173` to explore the archive.
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
-### 4. (Optional) Run Tier 2 FastAPI Historian Backend
+### 4. (Optional) Run Tier 2 FastAPI Backend
 ```bash
 cd backend
 python -m venv .venv
@@ -231,56 +194,129 @@ uvicorn app:app --reload --port 8000
 
 ---
 
-## 🧪 Verification & Testing Suite
+## 📜 Available Scripts
 
-### Unit & Integration Tests (Vitest)
-Executes 91 unit tests across 16 test suites covering Monte Carlo strategy simulation, per-driver live stream telemetry ring buffers, voice engineer Web Audio chirps, poster canvas exports, telemetry math, scoring simulators, Jolpica client error handling, OpenF1 LRU caching, data integrity, and the AI Race Historian:
-```bash
-npm test
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Starts Vite dev server with hot module replacement (`localhost:5173`) |
+| `npm run build` | Compiles TypeScript and builds optimized production bundles to `dist/` |
+| `npm run preview` | Locally serves the production build in `dist/` |
+| `npm run lint` | Runs ESLint checks across TypeScript and React code |
+| `npm run format` | Checks and formats source code with Prettier |
+| `npm test` | Runs the full Vitest unit test suite (314+ tests) |
+| `npm run test:watch` | Starts Vitest in interactive watch mode |
+| `npm run test:coverage` | Computes test coverage with v8 engine (enforces $\ge 65\%$ global, $\ge 80\%$ math/ETL) |
+| `npm run test:e2e` | Executes Playwright end-to-end tests across all views (25 specs) |
+| `npm run models:optimize` | Runs Draco glTF compressor on raw vehicle meshes |
+| `npm run models:verify` | Validates geometry, polycount, bounding boxes, and Draco chunks on all 5 era models |
+| `npm run sync:data` | Executes the upstream data extraction and validation pipeline |
+| `npm run build:browser-db` | Assembles the pre-indexed SQLite browser database from F1DB data |
+| `npm run size` | Enforces bundle budgets ($< 1.5\text{ MB}$ JS, $< 120\text{ kB}$ CSS) |
+| `npm run audit:lighthouse` | Audits accessibility, SEO, and best practices with Lighthouse CI |
+
+---
+
+## 📂 Project Structure
+
+```
+f1-project/
+├── .github/                 # GitHub Actions CI workflows
+├── backend/                 # Optional Tier-2 FastAPI SQLite microservice
+│   ├── app.py               # Read-only sandboxed API routes
+│   ├── requirements.txt     # Python production dependencies
+│   └── tests/               # Backend pytest test suite
+├── docs/                    # Architecture documentation & decision records
+│   └── adr/                 # Architectural Decision Records (0001–0005)
+├── e2e/                     # Playwright end-to-end tests (app.spec.ts)
+├── public/                  # Static assets served directly
+│   ├── data/                # Static JSON feeds, track splines & f1db-browser.sqlite
+│   ├── models/              # Draco-compressed 5-era glTF chassis models (161 kB total)
+│   └── sw.js                # Custom Service Worker (PWA caching)
+├── scripts/                 # Automation, ETL, and verification tooling
+│   ├── blender/             # Parametric Blender Python (bpy) vehicle scripts & validators
+│   ├── etl/                 # F1DB transformation & schema validation scripts
+│   └── telemetry/           # Telemetry pack generation & invariant testing
+├── src/                     # React application source code
+│   ├── components/          # Reusable UI primitives, Navigation, DevTools & HUD
+│   ├── contexts/            # React context providers (ExperienceMode, InspectQuery)
+│   ├── data/                # Static schemas, glossary, hotspots & corner registries
+│   ├── features/            # Feature modules partitioned by domain
+│   │   ├── cars/            # 3D Vehicle Lab, era registry, liveries & anatomy
+│   │   ├── circuits/        # Topographic 3D ribbons, 2D SVG maps & Corner DNA
+│   │   ├── docs/            # Architecture Explorer & in-app ADR reader
+│   │   ├── drivers/         # Driver archive, virtual list & H2H comparison
+│   │   ├── historian/       # SQLite WASM client, presets, CodeMirror editor & audio
+│   │   ├── home/            # Home view, starter stories, Favorites & OnThisDay
+│   │   ├── seasons/         # Seasons archive & What-If scoring simulator
+│   │   ├── strategy/        # Monte Carlo pit-wall simulator & Web Worker
+│   │   └── telemetry/       # 3D ghost lap replay, uPlot graphs & OpenF1 loader
+│   ├── hooks/               # Custom hooks (shortcuts, media queries, sound)
+│   ├── lib/                 # IndexedDB persisters, query clients & utilities
+│   ├── routes/              # React Router definitions & route shells
+│   └── types/               # TypeScript interfaces & domain types
+├── package.json             # Pinned package dependencies and npm scripts
+├── tsconfig.json            # Strict TypeScript configuration
+└── vite.config.ts           # Vite build pipeline, proxy & coverage setup
 ```
 
-### End-to-End Tests (Playwright)
-Executes deterministic offline E2E tests verifying all 11 core pages, 3D WebGL canvases, transport controls, timing tower ladder, and command palette navigation:
-```bash
-npm run test:e2e
-```
+---
 
-### Type Checking & Linting
+## 🧪 Testing & Verification Matrix
+
+Every commit and pull request must satisfy the complete 9-gate quality matrix:
+
 ```bash
-npx tsc -b
+# 1. Clean code and dependency lint check
 npm run lint
+
+# 2. Strict TypeScript type compilation
+npx tsc -b
+
+# 3. 3D Era Vehicle Mesh Validation
+npm run models:verify
+
+# 4. Unit Test Suite & Code Coverage
+npm run test:coverage
+
+# 5. Optional Python Backend Linting & Tests
+uv run --with-requirements backend/requirements-dev.txt ruff check backend/
+uv run --with-requirements backend/requirements-dev.txt pytest backend/tests -v
+
+# 6. Production Bundle Build & Size Budget Enforcement
+npm run build && npm run size
+
+# 7. Playwright End-to-End Suite
+npx playwright test e2e/app.spec.ts
+
+# 8. Lighthouse CI Performance & Accessibility Audit
+npm run audit:lighthouse
+
+# 9. Clean Git Working Tree
+git status --short
 ```
 
-### Production Build
-```bash
-npm run build
-npm run preview
-```
+---
+
+## 🏛️ Architecture & Decision Records
+
+Technical decisions are documented as Architectural Decision Records under `docs/adr/` and viewable directly within the application at `/docs`:
+
+- [ADR-0001: WebGL Context Lifecycle & Route Architecture](docs/adr/0001-webgl-context-lifecycle-and-route-architecture.md)
+- [ADR-0002: Dual-Tier SQL Query Engine & Security Sandboxing](docs/adr/0002-dual-tier-sql-query-engine-and-security-sandboxing.md)
+- [ADR-0003: 3D Topographic Circuit Geometry with SRTM Elevation](docs/adr/0003-3d-topographic-circuit-geometry-with-srtm-elevation.md)
+- [ADR-0004: Monte Carlo Strategy Engine & Web Worker Architecture](docs/adr/0004-monte-carlo-strategy-engine-and-web-worker-architecture.md)
+- [ADR-0005: Blender Procedural 5-Era Car Pipeline](docs/adr/0005-blender-and-procedural-circuits.md)
+
+Detailed system architecture and data pipelines are elaborated in [ARCHITECTURE.md](ARCHITECTURE.md).
 
 ---
 
-## ⚡ Performance Profiling & WebGL Safety
+## ⚖️ Data Sources, Licensing & Attributions
 
-Press **`Shift + P`** or append **`?debug=perf`** to any URL to open the unified **Race Control Performance HUD**:
-- **FPS**: Real-time rendering frame rate.
-- **Frame Delta**: Elapsed frame time in milliseconds.
-- **Draw Calls**: Active GPU draw calls per frame.
-- **Triangles / Geometry**: Polycount of the active 3D scene.
-- **JS Heap**: Live heap usage via `performance.memory` (Chrome/Edge).
-- **Frameloop Mode**: Indicates `demand` (0 FPS idle) vs. `always` (playback active).
-
----
-
-## ⚖️ Legal Disclaimer
-
-> **This website is unofficial and is not associated in any way with the Formula 1 companies.**  
-> F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX and related marks are trade marks of Formula One Licensing B.V.  
-> Historical statistics, race results, and telemetry are aggregated for non-commercial educational, analytical, and research purposes.
-
----
-
-## 📄 Licensing & Security
-
-- **Source Code**: Licensed under the [MIT License](LICENSE).
-- **Data & Telemetry Attribution**: Comprehensive upstream licensing, CC-BY-4.0 attributions, and CC BY-NC-SA 4.0 telemetry firewall terms are detailed in [LICENSES.md](LICENSES.md).
-- **Security Policy**: Vulnerability disclosure guidelines are documented in [SECURITY.md](SECURITY.md).
+- **Formula 1 Disclaimer**: This project is unofficial and is not associated in any way with the Formula 1 companies. F1, FORMULA ONE, FORMULA 1, FIA FORMULA ONE WORLD CHAMPIONSHIP, GRAND PRIX, and related marks are trademarks of Formula One Licensing B.V.
+- **F1DB**: Historical race results, drivers, constructors, and championship standings are sourced from [F1DB](https://github.com/f1db/f1db) under the [Creative Commons Attribution 4.0 International (CC-BY-4.0)](https://creativecommons.org/licenses/by/4.0/) license.
+- **Circuit GeoJSON**: Geographic circuit outlines are adapted from [bacinger/f1-circuits](https://github.com/bacinger/f1-circuits) under the [MIT License](https://opensource.org/licenses/MIT).
+- **SRTM Topography**: Elevation data provided by the [Open-Meteo Elevation API](https://open-meteo.com/en/docs/elevation-api) under the [CC-BY-4.0 License](https://creativecommons.org/licenses/by/4.0/).
+- **Live Standings**: Live championship tables are queried via the [Jolpica F1 API](https://github.com/jolpica/jolpica-f1).
+- **Telemetry Feeds**: High-resolution telemetry traces are ingested via the [OpenF1 API](https://openf1.org) under the [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)](https://creativecommons.org/licenses/by-nc-sa/4.0/) license.
+- **Source Code**: The application code is open-source under the [MIT License](LICENSE).
